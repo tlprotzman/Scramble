@@ -50,6 +50,7 @@ end
 function Game:draw()
 	-- this is so that the things earlier in the screen stack get drawn first, so that things like pause menus get drawn on top.
 
+	love.graphics.setBackgroundColor(255, 255, 255)
 	for i = self.drawLayersStart, #self.screenStack, 1 do
 		self.screenStack[i]:draw()
 	end
