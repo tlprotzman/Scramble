@@ -3,7 +3,9 @@ io.stdout:setvbuf("no") -- this is so that sublime will print things when they c
 require "helperfunctions"
 
 require "game"
+require "inputmanager"
 
+inputManager = InputManager()
 game = Game()
 
 function love.load(args)
