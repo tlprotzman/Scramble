@@ -1,6 +1,7 @@
 
 -- require "inputmanager"
 require "mainmenu"
+require "gameplay"
 
 Game = class()
 
@@ -9,6 +10,7 @@ function Game:init(args)
 	-- self.inputManager = InputManager({inputStack = {self}})
 
 	-- self.font = love.graphics.newFont(13)
+	gameplay = Gameplay()
 
 	self.mainMenu = MainMenu()
 
