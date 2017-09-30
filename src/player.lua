@@ -32,15 +32,15 @@ function Player:loadImages()
 	end
 end
 
-function Player:update(dt)
-	self:movePlayer(dt)
+function Player:update(dt, platforms)
+	self:movePlayer(dt, platforms)
 end
 
-function Player:movePlayer(dt)
+function Player:movePlayer(dt, platforms)
 	xScaler = inputManager:getPlayerValues(self.uid).x
 	jump = inputManager:getPlayerValues(self.uid).raw.up > 0.9
 	self.move:move(dt, xScaler, jump)
-	self.move:collisions({}, self.size)
+	self.move:collisions(platforms, self.size)
 	
 	-- startJump = self.inputmanager:getPlayer(self.uid).jump and self.onGround
 	-- if (startJump) then

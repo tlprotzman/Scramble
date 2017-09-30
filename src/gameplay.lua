@@ -35,7 +35,7 @@ function Gameplay:draw()
 end
 
 function Gameplay:update(dt)
-	self.player:update(dt)
+	self.player:update(dt, self.platforms)
 end
 
 function Gameplay:resize(w, h)
