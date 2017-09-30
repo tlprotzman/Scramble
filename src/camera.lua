@@ -20,7 +20,7 @@ function Camera:draw(drawable, x, y, flip, ignoreCamera)
 	if not flip then
 		love.graphics.draw(drawable, x + offset.x, y + offset.y)
 	else
-		love.graphics.draw(drawable, x + offset.x, y + offset.y, 0, 1, -1)
+		love.graphics.draw(drawable, x + offset.x, y + offset.y, 0, -1, 1)
 	end
 end
 
