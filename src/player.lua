@@ -26,7 +26,7 @@ end
 function Player:loadImages()
 	self.idleLines, self.idleClothes, self.idleSkin = {}, {}, {}
 	for i = 1, 7 do
-		self.idleLines[i] = love.graphics.newImage("images/player/idleLines"..i..".png")
+		self.idleLines[i] = love.graphics.newImage("images/player/idleLine"..i..".png")
 		self.idleClothes[i] = love.graphics.newImage("images/player/idleClothes"..i..".png")
 		self.idleSkin[i] = love.graphics.newImage("images/player/idleSkin"..i..".png")
 	end
