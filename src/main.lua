@@ -58,6 +58,13 @@ function love.gamepadaxis(gamepad, axis, value)
 	inputManager:gamepadaxis(gamepad, axis, value)
 end
 
+function love.gamepadpressed(gamepad, button)
+	inputManager:gamepadpressed(gamepad, button)
+end
+
+function love.gamepadreleased(gamepad, button)
+	inputManager:gamepadreleased(gamepad, button)
+end
 
 -- function love.resize(w, h)
 -- 	game:resize(w, h)

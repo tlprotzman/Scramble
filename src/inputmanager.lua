@@ -7,7 +7,7 @@ function InputManager:_init(args)
 		args = {}
 	end
 	self.menuMapping = {} -- for player controls to menu controls
-	self.gamepads = {} -- gamepads get added to this whenever they're added to the game. we use their uids to index self.players for the player input tables.
+	-- self.gamepads = {} -- gamepads get added to this whenever they're added to the game. we use their uids to index self.players for the player input tables. they currenlty don't actually, and may never be
 
 	self.playerValues = {k1 = {x = 0, y = 0, playing = false, raw = {left = 0, right = 0, up = 0, down = 0}},
 							k2 = {x = 0, y = 0, playing = false, raw = {left = 0, right = 0, up = 0, down = 0}},
@@ -24,6 +24,8 @@ function InputManager:_init(args)
 	self.keyboardKeyMapping = {k1 = {w = "up", a = "left", s = "down", d = "right"},
 								k2 = {i = "up", j = "left", k = "down", l = "right"},
 								k3 = {kp8 = "up", kp4 = "left", kp5 = "down", kp6 = "right"}}
+	self.gamepadAxisMapping = {leftx = {"left", "right"}, lefty = {nil, "down"}, rightx = {nil, nil}, righty = {nil, nil}, triggerleft = {nil, nil}, triggerright = {nil, nil}}
+	self.gamepadButtonMapping = {a = "up"}
 
 	-- I'm going to need to deal with contexts for this.
 
@@ -109,18 +111,71 @@ function InputManager:gamepadaxis(gamepad, axis, value)
 	if values == nil then
 		error("JOYSTICK SOMEHOW WASN'T ADDED")
 	end
-	if axis == "leftx" then
-		-- this is where binding should be a thing
-		values.x = value
-		if value >= 0 then
-			values.raw.right = value
-			values.raw.left = 0
-		elseif value < 0 then
-			values.raw.right = 0
-			values.raw.left = -value
-		end
+	local mapping = self.gamepadAxisMapping[axis] -- this returns a table that has {negative thing, positive thing} but they could both be nil
+	local didSomething = false
+	if mapping[1] ~= nil then
+		values.raw[mapping[1]] = -math.min(value, 0)
+		didSomething = true
+	end
+	if mapping[2] ~= nil then
+		values.raw[mapping[2]] = math.max(value, 0)
+		didSomething = true
+	end
+
+	-- then recalculate the player x and y
+	if didSomething then
+		self:calculatePlayerStats(values)
+	end
+	-- if it's in a menu, distribute the menu stuff
+	if self.sendMenuInputs then
+		-- send the menu input pls.
 	end
 end
+
+function InputManager:gamepadpressed(gamepad, button)
+	local values = self.playerValues[gamepad:getID()]
+	if values == nil then
+		error("JOYSTICK SOMEHOW WASN'T ADDED")
+	end
+	local didSomething = false
+	if self.gamepadButtonMapping[button] then
+		values.raw[self.gamepadButtonMapping[button]] = 1
+		didSomething = true
+	end
+
+	if didSomething then
+		-- then recalculate the player x and y
+		self:calculatePlayerStats(values)
+	end
+
+	-- if it's in a menu, distribute the menu stuff
+	if self.sendMenuInputs then
+		-- send the menu input pls.
+	end
+end
+
+function InputManager:gamepadreleased(gamepad, button)
+	local values = self.playerValues[gamepad:getID()]
+	if values == nil then
+		error("JOYSTICK SOMEHOW WASN'T ADDED")
+	end
+	local didSomething = false
+	if self.gamepadButtonMapping[button] then
+		values.raw[self.gamepadButtonMapping[button]] = 0
+		didSomething = true
+	end
+
+	if didSomething then
+		-- then recalculate the player x and y
+		self:calculatePlayerStats(values)
+	end
+
+	-- if it's in a menu, distribute the menu stuff
+	if self.sendMenuInputs then
+		-- send the menu input pls.
+	end
+end
+
 
 
 
