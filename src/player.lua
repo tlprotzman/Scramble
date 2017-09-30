@@ -7,7 +7,7 @@ function Player:_init(game)
 	self.uid = 1
 
 	self.pos = {x = 250, y = 250}		-- Holds info about the players location and movement
-	self.acceleration = 200
+	self.acceleration = 300
 	self.maxDX = 500
 	self.jumpStrength = 500
 	self.move = Movement(self.pos.x, self.pos.y, self.acceleration, self.maxDX)
@@ -18,7 +18,7 @@ function Player:_init(game)
 
 	self.size = {width = 160, height = 320}
 
-
+	
 end
 
 
@@ -31,6 +31,8 @@ function Player:movePlayer(dt)
 	-- 	self.move.vel.dy = 500
 	-- end
 end
+
+
 
 function Player:draw()
 	love.graphics.rectangle("fill", self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
