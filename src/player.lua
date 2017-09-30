@@ -37,8 +37,8 @@ function Player:loadImages()
 	end
 end
 
-function Player:update(dt)
-	self:movePlayer(dt)
+function Player:update(dt, platforms)
+	self:movePlayer(dt, platforms)
 	self:animatePlayer(dt)
 end
 
