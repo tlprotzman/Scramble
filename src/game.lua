@@ -58,7 +58,6 @@ function Game:draw()
 		love.graphics.print("FPS: "..love.timer.getFPS(), 10, love.graphics.getHeight()-45)
 		love.graphics.setColor(255, 255, 255)
 	end
-
 end
 
 function Game:update(dt)
