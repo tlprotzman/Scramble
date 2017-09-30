@@ -1,6 +1,8 @@
+require "player"
+
 Gameplay = class()
 
-function Gameplay:init(game)
+function Gameplay:_init(game)
 	-- this is for the draw stack
 	self.game = game
 	self.player = Player(self.game)
@@ -19,6 +21,7 @@ function Gameplay:leave()
 end
 
 function Gameplay:draw()
+	self.player:draw()
 	love.graphics.rectangle("fill", 100, 100, 100, 100)
 	for i, v in ipairs(self.platforms) do
 		v:draw()
