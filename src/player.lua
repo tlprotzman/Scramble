@@ -32,7 +32,7 @@ function Player:loadImages()
 	for i = 1, 7 do
 		self.idleImages[1][i] = love.graphics.newImage("images/player/idleSkin"..i..".png")
 		self.idleImages[2][i] = love.graphics.newImage("images/player/idleClothes"..i..".png")
-		self.idleImages[3][i] = love.graphics.newImage("images/player/idleLine"..i..".png")
+		self.idleImages[3][i] = love.graphics.newImage("images/player/idleLines"..i..".png")
 	end
 end
 
