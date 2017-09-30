@@ -28,7 +28,7 @@ end
 
 function Player:loadImages()
 	self.idleImages = {{}, {}, {}}
-	self.idleColors = {{255, 255, 255}, {0, 255, 0}, {255, 255, 255}}
+	self.idleColors = {{170, 140, 132}, {0, 255, 0}, {255, 255, 255}}
 	for i = 1, 7 do
 		self.idleImages[1][i] = love.graphics.newImage("images/player/idleSkin"..i..".png")
 		self.idleImages[2][i] = love.graphics.newImage("images/player/idleClothes"..i..".png")
