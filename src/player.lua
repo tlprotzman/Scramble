@@ -17,7 +17,7 @@ function Player:_init(game)
 	self.crouching = false
 	self.facing = 1
 
-	self.size = {width = 160, height = 320}
+	self.size = {width = 80, height = 170}
 
 	self:loadImages()
 
@@ -40,7 +40,7 @@ function Player:movePlayer(dt, platforms)
 	xScaler = inputManager:getPlayerValues(self.uid).x
 	jump = inputManager:getPlayerValues(self.uid).raw.up > 0.9
 	self.move:move(dt, xScaler, jump)
-	self.move:collisions(platforms, self.size)
+	self.move:collisions(platforms, self.size, dt)
 	
 	-- startJump = self.inputmanager:getPlayer(self.uid).jump and self.onGround
 	-- if (startJump) then
@@ -49,10 +49,12 @@ function Player:movePlayer(dt, platforms)
 end
 
 function Player:draw()
-	love.graphics.setColor(255, 255, 255)
-	camera:draw(self.idleSkin[1], self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
-	love.graphics.setColor(255, 0, 0)
-	camera:draw(self.idleClothes[1], self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
-	love.graphics.setColor(255, 255, 255)
-	camera:draw(self.idleLines[1], self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
+	love.graphics.setColor(0, 0, 255)
+	camera:rectangle("fill", self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
+	-- love.graphics.setColor(255, 255, 255)
+	-- camera:draw(self.idleSkin[1], self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
+	-- love.graphics.setColor(255, 0, 0)
+	-- camera:draw(self.idleClothes[1], self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
+	-- love.graphics.setColor(255, 255, 255)
+	-- camera:draw(self.idleLines[1], self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
 end
