@@ -18,8 +18,19 @@ function Player:_init(game)
 	self.facing = 1
 
 	self.size = {width = 160, height = 320}
+
+	self:loadImages()
+
 end
 
+function Player:loadImages()
+	self.idleLines, self.idleClothes, self.idleSkin = {}, {}, {}
+	for i = 1, 7 do
+		self.idleLines[i] = love.graphics.newImage("images/player/playerIdle"..i..".png")
+		self.idleClothes[i] = love.graphics.newImage("images/player/playerIdleClothes"..i..".png")
+		self.idleSkin[i] = love.graphics.newImage("images/player/playerIdleSkin"..i..".png")
+	end
+end
 
 function Player:update(dt)
 	self:movePlayer(dt)
@@ -37,8 +48,11 @@ function Player:movePlayer(dt)
 	-- end
 end
 
-
-
 function Player:draw()
-	camera:rectangle("fill", self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
+	love.graphics.setColor(255, 255, 255)
+	camera:draw(self.idleSkin[1], self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
+	love.graphics.setColor(255, 0, 0)
+	camera:draw(self.idleClothes[1], self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
+	love.graphics.setColor(255, 255, 255)
+	camera:draw(self.idleLines[1], self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
 end
