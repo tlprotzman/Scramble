@@ -9,7 +9,7 @@ function Gameplay:_init(game)
 	self.player = Player(self.game)
 	self.platforms = {}
 	
-	camera.d.y = 10
+	--camera.d.y = 10
 	
 	self.drawUnder = false
 	self.updateUnder = false
@@ -35,7 +35,7 @@ function Gameplay:draw()
 end
 
 function Gameplay:update(dt)
-	self.player:movePlayer(dt)
+	self.player:update(dt, self.platforms)
 end
 
 function Gameplay:resize(w, h)

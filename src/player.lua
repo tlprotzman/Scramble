@@ -4,13 +4,14 @@ Player = class()
 
 function Player:_init(game)
 	self.game = game
-	self.uid = 1
+	self.uid = "k1"
 
-	self.pos = {x = 250, y = 250}		-- Holds info about the players location and movement
+	self.x = 250		-- Holds info about the players location and movement
+	self.y = 250
 	self.acceleration = 1500
 	self.maxDX = 1000
 	self.jumpStrength = 500
-	self.move = Movement(self.pos.x, self.pos.y, self.acceleration, self.maxDX)
+	self.move = Movement(self.x, self.y, self.acceleration, self.maxDX)
 
 	self.onGround = false		-- Used for drawing the player
 	self.crouching = false
@@ -18,13 +19,28 @@ function Player:_init(game)
 
 	self.size = {width = 160, height = 320}
 
+	self:loadImages()
 
 end
 
+function Player:loadImages()
+	self.idleLines, self.idleClothes, self.idleSkin = {}, {}, {}
+	for i = 1, 7 do
+		self.idleLines[i] = love.graphics.newImage("images/player/idleLine"..i..".png")
+		self.idleClothes[i] = love.graphics.newImage("images/player/idleClothes"..i..".png")
+		self.idleSkin[i] = love.graphics.newImage("images/player/idleSkin"..i..".png")
+	end
+end
 
-function Player:movePlayer(dt)
-	xScaler = inputManager:getPlayerValues("k1").x 
-	self.move:move(dt, xScaler)
+function Player:update(dt, platforms)
+	self:movePlayer(dt, platforms)
+end
+
+function Player:movePlayer(dt, platforms)
+	xScaler = inputManager:getPlayerValues(self.uid).x
+	jump = inputManager:getPlayerValues(self.uid).raw.up > 0.9
+	self.move:move(dt, xScaler, jump)
+	self.move:collisions(platforms, self.size)
 	
 	-- startJump = self.inputmanager:getPlayer(self.uid).jump and self.onGround
 	-- if (startJump) then
@@ -32,8 +48,11 @@ function Player:movePlayer(dt)
 	-- end
 end
 
-
-
 function Player:draw()
-	camera:rectangle("fill", self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
+	love.graphics.setColor(255, 255, 255)
+	camera:draw(self.idleSkin[1], self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
+	love.graphics.setColor(255, 0, 0)
+	camera:draw(self.idleClothes[1], self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
+	love.graphics.setColor(255, 255, 255)
+	camera:draw(self.idleLines[1], self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
 end
