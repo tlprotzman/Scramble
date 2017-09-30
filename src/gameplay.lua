@@ -19,7 +19,10 @@ function Gameplay:leave()
 end
 
 function Gameplay:draw()
-	--
+	love.graphics.rectangle("fill", 100, 100, 100, 100)
+	for i, v in ipairs(self.platforms) do
+		v:draw()
+	end
 end
 
 function Gameplay:update(dt)

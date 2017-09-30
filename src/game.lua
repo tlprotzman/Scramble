@@ -10,14 +10,14 @@ function Game:init(args)
 	-- self.inputManager = InputManager({inputStack = {self}})
 
 	-- self.font = love.graphics.newFont(13)
-	gameplay = Gameplay()
+	self.gameplay = Gameplay()
 
 	self.mainMenu = MainMenu()
 
 	self.screenStack = {}
 	self.drawLayersStart = 0
 
-	self:addToScreenStack(self.mainMenu)
+	self:addToScreenStack(self.gameplay)
 end
 
 function Game:calculateDrawUpdateLevels()
@@ -57,6 +57,7 @@ function Game:draw()
 		love.graphics.print("FPS: "..love.timer.getFPS(), 10, love.graphics.getHeight()-45)
 		love.graphics.setColor(255, 255, 255)
 	end
+
 end
 
 function Game:update(dt)
