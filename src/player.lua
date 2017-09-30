@@ -6,21 +6,20 @@ function Player:_init(game)
 	self.game = game
 	self.uid = "k1"
 
-	self.x = 250		-- Holds info about the players location and movement
-	self.y = 250
-	self.acceleration = 1500
-	self.maxDX = 1000
+	local x = 250		-- Holds info about the players location and movement
+	local y = 250
+	local acceleration = 1500
+	local maxDX = 1000
+	
 	self.jumpStrength = 500
-	self.move = Movement(self.x, self.y, self.acceleration, self.maxDX)
+	self.move = Movement(x, y, acceleration, maxDX)
 
-	self.onGround = false		-- Used for drawing the player
-	self.crouching = false
 	self.facing = 1
 
 	self.size = {width = 80, height = 170}
 	
 	self.animationFrame = 1
-	self.imageOffset = {x = -152, y = -30}
+	self.imageOffset = {x = -152, y = -20}
 
 
 	self:loadImages()
@@ -45,8 +44,12 @@ end
 function Player:movePlayer(dt, platforms)
 	xScaler = inputManager:getPlayerValues(self.uid).x
 	jump = inputManager:getPlayerValues(self.uid).raw.up > 0.9
-	self.move:move(dt, xScaler, jump)
 	self.move:collisions(platforms, self.size, dt)
+	if inputManager:getPlayerValues(self.uid).raw.down > 0.9 and self.move.onGround == true and self.move.onSolidGround == false then
+		self.move.onGround = false
+		self.move.pos.y = self.move.pos.y + 10
+	end
+	self.move:move(dt, xScaler, jump)
 	
 	-- startJump = self.inputmanager:getPlayer(self.uid).jump and self.onGround
 	-- if (startJump) then

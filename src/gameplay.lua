@@ -29,10 +29,10 @@ function Gameplay:draw()
 
 	camera:rectangle("fill", 100, 100, 100, 100)
 	
-	self.player:draw()
 	for i, v in ipairs(self.platforms) do
 		v:draw()
 	end
+	self.player:draw()
 	love.graphics.print(camera.pos.y, 10, 10)
 end
 
