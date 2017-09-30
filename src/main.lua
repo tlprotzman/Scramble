@@ -17,8 +17,8 @@ function love.load(args)
 	game:init(args)
 end
 
-
 function love.update(dt)
+	InputManager:update(dt)
 	game:update(dt)
 end
 
@@ -27,19 +27,20 @@ function love.draw()
 end
 
 function love.keypressed(key, unicode)
-	game:keypressed(key, unicode)
+	game:keypressed(key, unicode) -- still keeping this around because of quitting with escape, we should remove this
+	inputManager:keypressed(key, unicode)
 end
 
 function love.keyreleased(key, unicode)
-	game:keyreleased(key, unicode)
+	inputManager:keyreleased(key, unicode)
 end
 
 function love.mousepressed(button, x, y)
-	game:mousepressed(button, x, y)
+	inputManager:mousepressed(button, x, y)
 end
 
 function love.mousereleased(button, x, y)
-	game:mousereleased(button, x, y)
+	inputManager:mousereleased(button, x, y)
 end
 
 -- function love.resize(w, h)

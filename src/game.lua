@@ -66,7 +66,6 @@ function Game:update(dt)
 			break
 		end
 	end
-	InputManager:update(dt)
 end
 
 function Game:resize(w, h)
@@ -85,20 +84,8 @@ function Game:keypressed(key, unicode)
 			love.event.quit()
 		end
 	end
-	inputManager:keypressed(key, unicode)
 end
 
-function Game:keyreleased(key, unicode)
-	inputManager:keyreleased(key, unicode)
-end
-
-function Game:mousepressed(button, x, y)
-	inputManager:mousepressed(button, x, y)
-end
-
-function Game:mousereleased(button, x, y)
-	inputManager:mousereleased(button, x, y)
-end
 
 -- function Game:textinput(text)
 -- 	inputManager:textinput(text)
