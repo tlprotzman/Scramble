@@ -21,6 +21,10 @@ function Player:_init(game)
 end
 
 
+function Player:update(dt)
+	self:movePlayer(dt)
+end
+
 function Player:movePlayer(dt)
 	xScaler = inputManager:getPlayerValues(self.uid).x
 	jump = inputManager:getPlayerValues(self.uid).raw.up > 0.9
