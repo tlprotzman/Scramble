@@ -1,5 +1,3 @@
-require "class"
-
 Movement = class()
 
 function Movement:_init(_x, _y, _acceleration, _maxDX)
@@ -15,9 +13,9 @@ end
 
 function Movement:move(dt, xScaler)
 	ddx = xScaler * self.acceleration
-	self.vel.dx += ddx * dt
-	if (self.vel.dx > self.maxDX)
+	self.vel.dx = self.vel.dx + ddx * dt
+	if (self.vel.dx > self.maxDX) then
 		self.vel.dx = self.maxDX
 	end
-	self.pos.x += self.vel.dx * dt
+	self.pos.x = self.pos.x + self.vel.dx * dt
 end

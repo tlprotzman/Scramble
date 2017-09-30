@@ -1,10 +1,10 @@
-require "class"
 require "movement"
 
 Player = class()
 
 function Player:_init(game)
 	self.game = game
+	self.uid = 1
 
 	self.pos = {x = 250, y = 250}		-- Holds info about the players location and movement
 	self.acceleration = 2
