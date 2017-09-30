@@ -11,12 +11,12 @@ function Camera:update(dt)
 end
 
 function Camera:rectangle(style, x, y, w, h, ignoreCamera)
-	local offset = getOffset(ignoreCamera)
+	local offset = self:getOffset(ignoreCamera)
 	love.graphics.rectangle(style, x + offset.x, y + offset.y, w, h)
 end
 
 function Camera:draw(drawable, x, y, flip, ignoreCamera)
-	local offset = getOffset(ignoreCamera)
+	local offset = self:getOffset(ignoreCamera)
 	if not flip then
 		love.graphics.draw(drawable, x + offset.x, y + offset.y)
 	else
