@@ -7,8 +7,8 @@ function Player:_init(game)
 	self.uid = 1
 
 	self.pos = {x = 250, y = 250}		-- Holds info about the players location and movement
-	self.acceleration = 300
-	self.maxDX = 500
+	self.acceleration = 1500
+	self.maxDX = 1000
 	self.jumpStrength = 500
 	self.move = Movement(self.pos.x, self.pos.y, self.acceleration, self.maxDX)
 
@@ -18,12 +18,12 @@ function Player:_init(game)
 
 	self.size = {width = 160, height = 320}
 
-	
+
 end
 
 
 function Player:movePlayer(dt)
-	xScaler = 1--self.inputmanager:getPlayer(self.uid).x 		--PLACEHOLDER
+	xScaler = inputManager:getPlayerValues("k1").x 
 	self.move:move(dt, xScaler)
 	
 	-- startJump = self.inputmanager:getPlayer(self.uid).jump and self.onGround
@@ -35,5 +35,5 @@ end
 
 
 function Player:draw()
-	love.graphics.rectangle("fill", self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
+	camera:rectangle("fill", self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
 end
