@@ -8,7 +8,7 @@ Game = class()
 function Game:init(args)
 	self.args = args
 	-- self.inputManager = InputManager({inputStack = {self}})
-
+	self.debug = true
 	-- self.font = love.graphics.newFont(13)
 	self.gameplay = Gameplay()
 
@@ -68,6 +68,7 @@ function Game:update(dt)
 			break
 		end
 	end
+	
 	-- self.inputManager:update(dt)
 end
 

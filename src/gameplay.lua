@@ -1,10 +1,14 @@
+require "platform"
+
 Gameplay = class()
 
-function Gameplay:init(game)
+function Gameplay:_init(game)
 	-- this is for the draw stack
 	self.game = game
-	self.player = Player(self.game)
+	--self.player = Player(self.game)
 	self.platforms = {}
+	
+	camera.d.y = 10
 	
 	self.drawUnder = false
 	self.updateUnder = false
@@ -19,14 +23,17 @@ function Gameplay:leave()
 end
 
 function Gameplay:draw()
-	love.graphics.rectangle("fill", 100, 100, 100, 100)
+	camera:rectangle("fill", 100, 100, 100, 100)
+	
+	--love.graphics.rectangle("fill", 10 + camera.pos.x, 10 + camera.pos.y, 100, 100)
 	for i, v in ipairs(self.platforms) do
 		v:draw()
 	end
+	love.graphics.print(camera.pos.y, 10, 10)
 end
 
 function Gameplay:update(dt)
-	--
+
 end
 
 function Gameplay:resize(w, h)
