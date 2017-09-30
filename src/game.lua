@@ -7,6 +7,9 @@ Game = class()
 function Game:init(args)
 	self.args = args
 
+	-- self.inputManager = InputManager({inputStack = {self}})
+	self.debug = true
+
 	-- self.font = love.graphics.newFont(13)
 	self.gameplay = Gameplay()
 

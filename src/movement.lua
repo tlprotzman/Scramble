@@ -10,13 +10,20 @@ function Movement:_init(_x, _y, _acceleration, _maxDX)
 	self.vel = {dx = 0, dy = 0}
 	self.maxDX = _maxDX
 	self.acceleration = _acceleration
-	self.friction = 0.01
+	self.friction = 0.2
 
+end
+
+function Movement:setFriction(value)
+	self.friction = value
 end
 
 function Movement:move(dt, xScaler)
 	ddx = xScaler * self.acceleration
-	self.vel.dx = self.vel.dx + ddx * dt - self.vel.dx * self.friction
+	self.vel.dx = self.vel.dx + ddx * dt
+	if (math.abs(xScaler) < 0.05) then
+		self.vel.dx = self.vel.dx - self.vel.dx * self.friction
+	end
 	if (self.vel.dx > self.maxDX) then
 		self.vel.dx = self.maxDX
 	end

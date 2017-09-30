@@ -3,10 +3,12 @@ io.stdout:setvbuf("no") -- this is so that sublime will print things when they c
 require "helperfunctions"
 
 require "game"
+require "camera"
 require "inputmanager"
 
 inputManager = InputManager()
 game = Game()
+camera = Camera()
 
 function love.load(args)
 	love.window.setMode(1920/2, 1080/2, {resizable = false, vsync = true, fullscreen = false})
@@ -20,6 +22,7 @@ end
 function love.update(dt)
 	InputManager:update(dt)
 	game:update(dt)
+	camera:update(dt)
 end
 
 function love.draw()

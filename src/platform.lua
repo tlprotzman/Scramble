@@ -1,6 +1,6 @@
 Platform = class()
 
-function Platform:init(x, y, w, style)
+function Platform:_init(x, y, w, style)
 	self.pos = {x = x, y = y}
 	self.w = w
 	self.h = h

@@ -1,3 +1,4 @@
+require "platform"
 require "player"
 
 Gameplay = class()
@@ -7,6 +8,8 @@ function Gameplay:_init(game)
 	self.game = game
 	self.player = Player(self.game)
 	self.platforms = {}
+	
+	camera.d.y = 10
 	
 	self.drawUnder = false
 	self.updateUnder = false
@@ -21,11 +24,14 @@ function Gameplay:leave()
 end
 
 function Gameplay:draw()
+
+	camera:rectangle("fill", 100, 100, 100, 100)
+	
 	self.player:draw()
-	love.graphics.rectangle("fill", 100, 100, 100, 100)
 	for i, v in ipairs(self.platforms) do
 		v:draw()
 	end
+	love.graphics.print(camera.pos.y, 10, 10)
 end
 
 function Gameplay:update(dt)
