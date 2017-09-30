@@ -28,7 +28,6 @@ function Movement:move(dt, xScaler)
 		self.vel.dx = self.maxDX
 	end
 	self.pos.x = self.pos.x + self.vel.dx * dt
-	print(self.pos.x)
 end
 
 function Movement:collisions(elements, size)
