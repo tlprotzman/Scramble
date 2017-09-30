@@ -1,8 +1,12 @@
+io.stdout:setvbuf("no") -- this is so that sublime will print things when they come (rather than buffering).
+
 require "helperfunctions"
 
 require "game"
 require "camera"
+require "inputmanager"
 
+inputManager = InputManager()
 game = Game()
 camera = Camera()
 

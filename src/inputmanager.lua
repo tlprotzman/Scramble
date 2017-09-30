@@ -2,108 +2,117 @@
 InputManager = class()
 
 
-function InputManager:init(args)
-	self.context = args.context or "menu"
-	self.menumap = {space = "select", up = "up", down = "down", left = "left", right = "right", enter = "select"}
-	self.gameplaymap = {w = "moveup", a = "moveleft", s = "movedown", d = "moveright", ["-"] = "zoomout", ["="]="zoomin", space = "test", f2 = "fullscreen", escape = "pause"}
-	self.allmaps = args.allmaps or {menu = self.menumap, gameplay = self.gameplaymap}
-	self.valuemap = {}
-	self.mouseX = love.mouse.getX()
-	self.mouseY = love.mouse.getY()
+function InputManager:_init(args)
+	if args == nil then
+		args = {}
+	end
+	self.menuMapping = {} -- for player controls to menu controls
+	self.gamepads = {} -- gamepads get added to this whenever they're added to the game. we use their uids to index self.players for the player input tables.
+
+	self.playerValues = {k1 = {x = 0, y = 0, raw = {left = 0, right = 0, up = 0, down = 0}}} -- add a player table to this, the key for this is what gets passed
+
+	self.keyboardPlayerMapping = {w = "k1", a = "k1", s = "k1", d = "k1"}
+	self.keyboardKeyMapping = {k1 = {w = "up", a = "left", s = "down", d = "right"}}
 
 	-- I'm going to need to deal with contexts for this.
 
-	self.inputBuffer = {}
-	-- this is a list of all inputs along with delays until the next input, along with context at the time of the input, all so that it can recreate
-	-- things for multiplayer.
-	-- 1 = {input = "inputType", value = "inputValue", dt = time until next input or -1, time = time it occured, context = "context input was made in"}
-	-- we only care about the first context, since that was what was confirmed. All the other contexts should be re-evaluated after you get an input confirmation by the
-	-- server. That way we avoid having issues like opening chests when we shouldn't have, and instead we open the player's inventory instead of closing the chest.
-
 	self.inputStack = args.inputStack or {} -- this is so that things can claim the inputs
+
+	self.playerOwners = {} -- these are player uids that are allowed to control the menu currently
+	self.sendMenuInputs = false -- if you want menu inputs distributed upon keypresses etc, then this should be true, otherwise it won't do things
 end
 
-function InputManager:pruneInputHistory(pruneTime)
-	-- walk through the history list and remove all the things before the time.
-	local i = 1
-	for i, input in ipairs(self.inputBuffer) do
-		if input.time > pruneTime then
-			break
-		end
-	end
-	for i = i -1, 1, -1 do
-		table.remove(self.inputBuffer, i)
+function InputManager:ownMenu(playerUID)
+	-- pass in nothing if you want to clear the uids that are controlling it.
+	if playerUID == nil then
+		self.playerOwners = {} -- if it's empty, anyone can use it, if it's not empty then only those uids can control it 
+	else
+		table.insert(self.playerOwners, playerUID)
 	end
 end
-
---[[
-I think what needs to happen is that everything has to be undoable? So that when something is confirmed or denied, what happens is that the input manager prunes to that time,
-the client unwinds everything, then the changes are made (or not made? If it accepts it then do we need to do this? probably not.), then the inputs are all re-simulated, (and the
-things not controlled by the player are just stepped forward however they are.) -- what happens when you hit someone in the re-wind but not the original?
-
-This farming game is pretty basic. The only things we may need to be able to roll back are ground types (i.e. both people try to plant something at the same time, or chop down a
-tree, or whatever.) and there's also animal attraction, but that doesn't need to be rolled back neccisarily, since it can just occur, and be less precise. I may want leads though,
-but that's a simple thing of "lead denied" and the lead will just stop. The planting issue is easy as well since the server will just send the definitive ground type when it
-occurs. Thus all that needs to happen in this game is re-simulation of movements based on the confirmed player location.
-
-Next games will be harder, but that's fine. For now we can do this.
-
-My goal is to do things. I want to have the base game done within the week. I can work on art later. For now I want to do collision and changing the ground type on the test
-client. I should then make a fake networking connection between the server and the real client to test things easier? May as well.
-]]
 
 function InputManager:update(dt)
 	self.mouseX = love.mouse.getX()
 	self.mouseY = love.mouse.getY()
+
+	if self.sendMenuInputs then
+		-- send the menu inputs
+	end
+end
+
+function InputManager:calculatePlayerStats(playerValueTable)
+	-- currently this may be just for keyboards, because controllers have the opposite problem
+	playerValueTable.x = playerValueTable.raw.right - playerValueTable.raw.left
+	playerValueTable.y = playerValueTable.raw.down - playerValueTable.raw.up
 end
 
 function InputManager:keypressed(key, unicode)
-	if self.allmaps[self.context][key] then -- it's mapped to an input
-		self:distributeInput({intype = "input", input = self.allmaps[self.context][key], value = 1, raw = key})
-	else
-		-- just send the raw keypress
-		self:distributeInput({intype = "raw", value = 1, raw = key})
+	local player = self.keyboardPlayerMapping[key]
+	if player == nil then
+		return
+	end
+	local keyAction = self.keyboardKeyMapping[player][key]
+	self.playerValues[player].raw[keyAction] = 1
+
+	-- then recalculate the player x and y
+	self:calculatePlayerStats(self.playerValues[player])
+
+	-- if it's in a menu, distribute the menu stuff
+	if self.sendMenuInputs then
+		-- send the menu input pls.
 	end
 end
 
 function InputManager:keyreleased(key, unicode)
-	if self.allmaps[self.context][key] then -- it's an actual input
-		self:distributeInput({intype = "input", input = self.allmaps[self.context][key], value = 0, raw = key})
-	else
-		-- send the raw keypress
-		self:distributeInput({intype = "raw", value = 0, raw = key})
+	local player = self.keyboardPlayerMapping[key]
+	if player == nil then
+		return
+	end
+	local keyAction = self.keyboardKeyMapping[player][key]
+	self.playerValues[player].raw[keyAction] = 0
+
+	-- then recalculate the player x and y
+	self:calculatePlayerStats(self.playerValues[player])
+
+	-- if it's in a menu, distribute the menu stuff
+	if self.sendMenuInputs then
+		-- send the menu input pls.
 	end
 end
 
-function InputManager:setContext(newContext)
-	self.context = newContext
+function InputManager:getPlayerValues(playerID)
+	return self.playerValues[playerID]
 end
 
+
+
+
+
+
 function InputManager:mousepressed(x, y, button)
-	self:distributeInput({intype = "mousepressed", x = x, y = y, button = button, value = 1})
+	-- self:distributeInput({intype = "mousepressed", x = x, y = y, button = button, value = 1})
 end
 
 function InputManager:mousereleased(x, y, button)
-	self:distributeInput({intype = "mousepressed", x = x, y = y, button = button, value = 0})
+	-- self:distributeInput({intype = "mousepressed", x = x, y = y, button = button, value = 0})
 end
 
 function InputManager:mousemoved(x, y, dx, dy)
-	self:distributeInput({intype = "mousemoved", x = x, y = y, dx = dx, dy = dy})
+	-- self:distributeInput({intype = "mousemoved", x = x, y = y, dx = dx, dy = dy})
 end
 
-function InputManager:textinput(text)
-	self:distributeInput({intype = "textinput", text = text})
-end
+-- function InputManager:textinput(text)
+-- 	self:distributeInput({intype = "textinput", text = text})
+-- end
 
 function InputManager:addToInputStack(inputReceiver)
-	-- this is for things like text entry boxes which can claim inputs, so that you can't select menu buttons with space while entering things for example
-	-- I'm not quite certain the best way to do this, since there are things like textinput and keypressed, which currently create two separate inputs.
-	-- There probably will have to be some sort of stack thing though, and a way to remove yourself from the stack.
+	-- this is for things like menus that need it? I guess? this is left over stuff that may get scrapped
 	table.insert(self.inputStack, inputReceiver)
 	return true
 end
 
 function InputManager:removeFromInputStack(inputReceiver)
+	-- this is also left over, plus this is duplicated code from the helperfunctions file
 	for i = 1, #self.inputStack do
 		if self.inputStack[i] == inputReceiver then
 			table.remove(self.inputStack, i)
@@ -122,3 +131,20 @@ function InputManager:distributeInput(input)
 	end
 	return false
 end
+
+
+--[[
+Use case:
+Main Menu:
+Mouse pressing on things as well as player controlls doing things
+Can players control menus? Is there a pause game that only one person can unpause?
+We want owning menus, so there should be a way to own menu controls?
+
+Menu wise:
+if you send a thing to inputmanager saying: broadcast menu controls, then it will do so.
+Otherwise, during the gameplay itself, we only want to check in the player:update() function anyways, so that doesn't matter
+It's only in menus that we need to deal with getting keypresses.
+Then you can also send a variable to the input manager which restricts what player can influence a menu if the player owns the menu.
+
+
+]]--

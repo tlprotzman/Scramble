@@ -1,5 +1,4 @@
 
--- require "inputmanager"
 require "mainmenu"
 require "gameplay"
 
@@ -7,8 +6,10 @@ Game = class()
 
 function Game:init(args)
 	self.args = args
+
 	-- self.inputManager = InputManager({inputStack = {self}})
 	self.debug = true
+
 	-- self.font = love.graphics.newFont(13)
 	self.gameplay = Gameplay()
 
@@ -68,8 +69,7 @@ function Game:update(dt)
 			break
 		end
 	end
-	
-	-- self.inputManager:update(dt)
+	InputManager:update(dt)
 end
 
 function Game:resize(w, h)
@@ -88,23 +88,23 @@ function Game:keypressed(key, unicode)
 			love.event.quit()
 		end
 	end
-	-- self.inputManager:keypressed(key, unicode)
+	inputManager:keypressed(key, unicode)
 end
 
 function Game:keyreleased(key, unicode)
-	-- self.inputManager:keyreleased(key, unicode)
+	inputManager:keyreleased(key, unicode)
 end
 
 function Game:mousepressed(button, x, y)
-	-- self.inputManager:mousepressed(button, x, y)
+	inputManager:mousepressed(button, x, y)
 end
 
 function Game:mousereleased(button, x, y)
-	-- self.inputManager:mousereleased(button, x, y)
+	inputManager:mousereleased(button, x, y)
 end
 
 -- function Game:textinput(text)
--- 	self.inputManager:textinput(text)
+-- 	inputManager:textinput(text)
 -- end
 
 -- function love.gamepadpressed()
