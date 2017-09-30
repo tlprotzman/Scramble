@@ -9,7 +9,7 @@ function Gameplay:_init(game)
 	self.player = Player(self.game)
 	self.platforms = {}
 	
-	camera.d.y = 10
+	--camera.d.y = 10
 	
 	self.drawUnder = false
 	self.updateUnder = false
