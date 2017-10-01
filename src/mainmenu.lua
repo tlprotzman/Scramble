@@ -11,7 +11,7 @@ function MainMenu:_init(args)
 	self.backgroundImage = love.graphics.newImage("images/assets/titleBackground.png")
 
 	local menuButtons = {{text = "Play", rightOption = self.playButtonPressed},
-							{text = "Credits", rightOption = self.creditsButton},
+							-- {text = "Credits", rightOption = self.creditsButton},
 							{text = "Quit", leftOption = self.quitButton}}
 	self.menu = Menu{parent = self, x = 4*1920/5-250, y = 100, buttonwidth = 500, buttons = menuButtons, oneSelection = true}
 end

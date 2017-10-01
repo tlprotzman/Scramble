@@ -207,6 +207,11 @@ function InputManager:gamepadaxis(gamepad, axis, value)
 end
 
 function InputManager:gamepadpressed(gamepad, button)
+	if button == "start" then
+		if game.screenStack[#game.screenStack] == game.gameplay then
+			game:popScreenStack()
+		end
+	end
 	local values = self.playerValues[gamepad:getID()]
 	if values == nil then
 		error("JOYSTICK SOMEHOW WASN'T ADDED")
