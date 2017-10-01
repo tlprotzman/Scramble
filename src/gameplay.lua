@@ -142,6 +142,6 @@ function Gameplay:generateNextChunk(mode, offset)
 		end
 	end
 	
-	table.insert(self.avalanches, Avalanche(100, 3000, 5000))
-	table.insert(self.fallingrocks, FallingRock(100, 100, 500))		
+	--table.insert(self.avalanches, Avalanche(100, 3000, 5000))
+	--table.insert(self.fallingrocks, FallingRock(100, 100, 500))		
 end
