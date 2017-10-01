@@ -305,7 +305,7 @@ end
 
 function Gameplay:generatePlatform(x, y, w, vx, rx, vy, ry)
 	local y0 = self.chunkCount*1080
-	table.insert(self.platforms, Platform({x = x, y = y, w = self.platformSizes[w], style = style, vx = vx or 0, vy = vy or 0, rx = rx or 0, ry = ry or 0, y0 = y0, extra = math.random(-3, 5)}))
+	table.insert(self.platforms, Platform({x = x, y = y, w = self.platformSizes[w], style = style, vx = vx or 0, vy = vy or 0, rx = rx or 0, ry = ry or 0, y0 = y0, extra = math.random(-3, 6)}))
 	local item = math.max(math.random(-5, 2))
 	if item > 0 then
 		table.insert(self.items, Item(x + self.platformSizes[w]/2 - 25, y - 50 - y0, item))

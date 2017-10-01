@@ -20,14 +20,14 @@ sounds/jumpGrunt.mp3
 7
 false
 0
-.5
+.1
 
 scream
 sounds/scream.mp3
 5
 false
 0
-.5
+.25
 
 titlemusic
 sounds/Shanghai Action1.wav
@@ -41,11 +41,11 @@ sounds/thud.mp3
 5
 false
 0
-.5
+.25
 
 itemget
 sounds/A-Tone-His_Self-1266414414.mp3
 3
 false
 0
-.6
+.5
