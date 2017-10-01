@@ -49,10 +49,39 @@ function Player:loadImageOfType(name, frames)
 	end
 end
 
-function Player:update(dt, platforms, avalanches)
-	self:getAvalanched(avalanches)
+function Player:grab(players)
+	if (inputManager:getPlayerValues(self.uid).raw.grab > 0.9) then
+		-- print("ATTEMPTED")
+		if (self.move.hanging) then
+			for i, v in pairs(players) do
+				if (v.move.onPlatform == self.move.onPlatform and v ~= self and v.move.onGround) then
+					if (math.abs(v.move.pos.x - self.move.pos.x) < 20) then
+						-- print ("HIT")
+						v.move.pos.y = v.move.pos.y + 10
+						v.move.vel.dy = 600
+						v.move.noGrab = 1
+					end
+				end
+			end
+		end
+	end
+end
+
+
+function Player:update(dt, platforms, players, avalanches, fallingrocks)
+
+	self:getAvalanched(avalanches, dt)
+	self:getRocked(fallingrocks, dt)
 	self:movePlayer(dt, platforms)
+	self:grab(players)
 	self:animatePlayer(dt)
+
+	if (self.move.noGrab > 0) then
+		self.move.noGrab = self.move.noGrab + dt
+		if (self.move.noGrab > 2) then
+			self.move.noGrab =0
+		end
+	end
 end
 
 function Player:movePlayer(dt, platforms)
@@ -85,6 +114,22 @@ function Player:getAvalanched(avalanches)
 				self.move.hanging = false
 				self.move.onPlatform = false
 				self.isAvalanched = true
+			end
+		end
+	end
+end
+
+function Player:getRocked(rocks, dt)
+	for i, v in ipairs(rocks) do
+		if self.move.pos.x + self.size.width > v.x - v.s and self.move.pos.x < v.x + v.s then
+			if self.move.pos.y + self.size.height > v.y - v.s and self.move.pos.y < v.y + v.s then
+				self.move.vel.dx = self.move.vel.dx + v.vx/2
+				self.move.vel.dy = math.max(self.move.vel.dy + v.vy/2, -1000)
+				self.move.climbUpTimer = 0
+				self.wasHanging = false
+				self.move.onGround = false
+				self.move.hanging = false
+				self.move.onPlatform = false
 			end
 		end
 	end

@@ -22,14 +22,14 @@ function InputManager:_init(args)
 		end
 	end
 
-	self.keyboardPlayerMapping = {w = "k1", a = "k1", s = "k1", d = "k1",
-									i = "k2", j = "k2", k = "k2", l = "k2",
-									kp8 = "k3", kp4 = "k3", kp5 = "k3", kp6 = "k3"}
-	self.keyboardKeyMapping = {k1 = {w = "up", a = "left", s = "down", d = "right"},
-								k2 = {i = "up", j = "left", k = "down", l = "right"},
-								k3 = {kp8 = "up", kp4 = "left", kp5 = "down", kp6 = "right"}}
+	self.keyboardPlayerMapping = {w = "k1", a = "k1", s = "k1", d = "k1", c = "k1",
+									i = "k2", j = "k2", k = "k2", l = "k2", ["."] = "k2",
+									kp8 = "k3", kp4 = "k3", kp5 = "k3", kp6 = "k3", kp3 = "k3"}
+	self.keyboardKeyMapping = {k1 = {w = "up", a = "left", s = "down", d = "right", c = "grab"},
+								k2 = {i = "up", j = "left", k = "down", l = "right", ["."] = "grab"},
+								k3 = {kp8 = "up", kp4 = "left", kp5 = "down", kp6 = "right", kp3 = "grab"}}
 	self.gamepadAxisMapping = {leftx = {"left", "right"}, lefty = {nil, "down"}, rightx = {nil, nil}, righty = {nil, nil}, triggerleft = {nil, nil}, triggerright = {nil, nil}}
-	self.gamepadButtonMapping = {a = "up"}
+	self.gamepadButtonMapping = {a = "up", b = "grab"}
 
 	-- I'm going to need to deal with contexts for this.
 
@@ -61,7 +61,7 @@ function InputManager:setSendMenuInputs(sendBoolean)
 	-- if sendBoolean then the menu stuff will be sent, otherwise no
 	if sendBoolean and self.sendMenuInputs ~= sendBoolean then
 		-- then reset all the controller's menu variables as well.
-		for k, values in pairs(self.playerValues) do
+		for i, values in ipairs(self.playerValues) do
 			for j, k in pairs(values) do
 				k.timer = 10000 -- the player needs to re-center their controls for the menus to have effect? probably. We'll see...
 				k.value = values[k]
@@ -165,7 +165,7 @@ end
 
 function InputManager:addControllingMethod(key)
 	local menuTable = {x = {timer = 0, value = 0}, y = {timer = 0, value = 0}} -- if value * the actual current x or y is negative or 0, then it should trigger the action if the current magnitude is > a parameter
-	self.playerValues[key] = {x = 0, y = 0, playing = false, raw = {left = 0, right = 0, up = 0, down = 0}, menu = menuTable, playerID = key}
+	self.playerValues[key] = {x = 0, y = 0, playing = false, raw = {left = 0, right = 0, up = 0, down = 0, grab = 0}, menu = menuTable, playerID = key}
 	-- menu needs to be things. menu has to have timers for holding the key down moving repeatedly, it also should deal with reseting, so if you press twice it works both times...
 	-- essentially, if an x or a y goes less than a certain value, or opposite the current magnitude, then it should set the timer to 0, if the x or y goes above a certain value then it should send the menu behavior
 	-- plus if the timer is greater than whatever variable we choose, then it should re-trigger the menu action.

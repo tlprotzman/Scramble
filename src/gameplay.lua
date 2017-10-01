@@ -26,7 +26,7 @@ function Gameplay:_init(game)
 	
 	self.backgroundImage = love.graphics.newImage("images/assets/background.png")
 
-	for i = -100, 6 do
+	for i = -1000, 6 do
 		if (math.random(0, 10) < 8) then
 			if math.random(1,4)==1 then
 				table.insert(self.platforms, Platform({x=math.random(0, 900), y=math.random(-40, 40) + 160 * i, w=400, vx = 100, rx = 1000, style="wood"}))
@@ -39,7 +39,7 @@ function Gameplay:_init(game)
 	end
 	
 	table.insert(self.avalanches, Avalanche(100, 3000, 5000))
-	table.insert(self.fallingrocks, FallingRock(100, 100, 100))
+	table.insert(self.fallingrocks, FallingRock(100, 100, 500))
 	
 end
 
@@ -73,8 +73,8 @@ end
 function Gameplay:update(dt)
 	self.cameraTimer = self.cameraTimer + dt
 	if (self.cameraTimer > 6) then
-		-- camera.d.y = 0
-		camera.d.y = math.random(40, 150)
+		camera.d.y = 0
+		-- camera.d.y = math.random(40, 150)
 		self.cameraTimer = 0
 	end
 
@@ -83,7 +83,7 @@ function Gameplay:update(dt)
 	end
 
 	for i, v in ipairs(self.players) do
-		v:update(dt, self.platforms, self.avalanches)
+		v:update(dt, self.platforms, self.players, self.avalanches, self.fallingrocks)
 	end
 	for i, v in ipairs(self.platforms) do
 		v:update(dt)

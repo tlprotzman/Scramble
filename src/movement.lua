@@ -19,6 +19,8 @@ function Movement:_init(_x, _y, _acceleration, _maxDX)
 	self.jumpTimer = 0
 	self.climbUpTimer = 0
 
+	self.noGrab = 0
+
 end
 
 function Movement:setFriction(value)
@@ -121,7 +123,7 @@ function Movement:collisions(elements, size, dt)
 				self.onPlatform = v
 			
 			-- Code to check for hanging conditions
-			elseif (self.vel.dy > 0  and self.pos.y  < v.pos.y + 40 and self.pos.y + self.vel.dy * dt > v.pos.y + 30) then
+			elseif (self.noGrab == 0 and self.vel.dy > 10  and self.pos.y  < v.pos.y + 40 and self.pos.y + self.vel.dy * dt > v.pos.y + 30) then
 				-- print(self.pos.y)
 			-- if (self.pos.y < v.pos.y and self.pos.y + self.vel.dy > v.pos.y) then
 				self.pos.y = v.pos.y + 30
