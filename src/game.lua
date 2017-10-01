@@ -22,7 +22,7 @@ function Game:delayedinit(args)
 
 	self:addToScreenStack(self.mainMenu)
 	self:addToScreenStack(self.preRunMenu)
-	-- self:addToScreenStack(self.gameplay)
+	self:addToScreenStack(self.gameplay)
 
 	-- these are things for scaling the screen
 	self.SCREENWIDTH = 1920
