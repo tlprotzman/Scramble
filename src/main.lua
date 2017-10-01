@@ -47,6 +47,10 @@ function love.mousereleased(button, x, y)
 	inputManager:mousereleased(button, x, y)
 end
 
+function love.mousemoved(x, y, dx, dy)
+	inputManager:mousemoved(x, y, dx, dy)
+end
+
 function love.gamepadadded(gamepad)
 	inputManager:gamepadadded(gamepad)
 end
