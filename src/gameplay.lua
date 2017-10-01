@@ -1,5 +1,7 @@
 require "platform"
 require "player"
+require "avalanche"
+require "fallingrock"
 
 Gameplay = class()
 
@@ -13,6 +15,8 @@ function Gameplay:_init(game)
 	-- uncomment this one for testing joysticks
 	-- table.insert(self.players, Player(self.game, 1, {math.random(1, 255), math.random(1, 255), math.random(1, 255)}))
 	self.platforms = {}
+	self.avalanches = {}
+	self.fallingrocks = {}
 	
 	camera.d.y = 0
 	self.cameraTimer = 3
@@ -21,7 +25,6 @@ function Gameplay:_init(game)
 	self.updateUnder = false
 	
 	self.backgroundImage = love.graphics.newImage("images/assets/background.png")
-
 
 	for i = -100, 6 do
 		if (math.random(0, 10) < 8) then
@@ -34,6 +37,9 @@ function Gameplay:_init(game)
 		table.insert(self.platforms, Platform({x=math.random(0, 1800), y=math.random(-40, 40) + 160 * i, w=math.random(100, 500), style="wood"}))
 		-- table.insert(self.platforms, Platform(1300, 160 * i + 80, 250, "wood"))
 	end
+	
+	table.insert(self.avalanches, Avalanche(100, 3000, 5000))
+	table.insert(self.fallingrocks, FallingRock(100, 100, 100))
 	
 end
 
@@ -55,6 +61,12 @@ function Gameplay:draw()
 	for i, v in ipairs(self.players) do
 		v:draw()
 	end
+	for i, v in ipairs(self.avalanches) do
+		v:draw()
+	end
+	for i, v in ipairs(self.fallingrocks) do
+		v:draw()
+	end
 	love.graphics.print(camera.pos.y, 10, 10)
 end
 
@@ -71,10 +83,16 @@ function Gameplay:update(dt)
 	end
 
 	for i, v in ipairs(self.players) do
-		v:update(dt, self.platforms)
+		v:update(dt, self.platforms, self.avalanches)
 	end
 	for i, v in ipairs(self.platforms) do
 		v:update(dt)
+	end
+	for i, v in ipairs(self.avalanches) do
+		v:update(dt)
+	end
+	for i, v in ipairs(self.fallingrocks) do
+		v:update(dt, self.platforms)
 	end
 end
 
