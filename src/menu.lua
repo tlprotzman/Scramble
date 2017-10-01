@@ -5,6 +5,7 @@ require "button"
 Menu = class()
 
 function Menu:_init(args)
+	self.playerIcon = love.graphics.newImage("images/assets/pointer.png")
 	if not args then
 		args = {}
 	end
@@ -42,6 +43,7 @@ function Menu:handleinput(input)
 			-- if it's a single selection, I'm fine with it just working off the bat...
 		end
 	end
+
 	if input.inputtype == "join" then
 		-- they pressed start, so let them join in
 		self.selections[input.player] = {index = 1, color = {0, 0, 0}, string = ""} -- perhaps also color and player number though
@@ -145,29 +147,32 @@ function Menu:draw()
 		for buttonIndex, listOfPlayers in pairs(self.icons.left) do
 			-- draw the player icons where they should be
 			-- self.icons are a table of left ={buttonindex = {list of playerIDs that are there}}, right = same
-			local x = self.x - 15
+			local x = self.x - 5
 			local y = self.buttons[buttonIndex].y
 			for i, player in ipairs(listOfPlayers) do
 				love.graphics.setColor(self.selections[player].color)
-				love.graphics.rectangle("fill", x, y, 20, self.buttonHeight)
-				x = x - 30
+				love.graphics.draw(self.playerIcon, x, y, 0, -1, 1)
+				-- love.graphics.rectangle("fill", x, y, 20, self.buttonHeight)
+				x = x - 90
 			end
 		end
 		for buttonIndex, listOfPlayers in pairs(self.icons.right) do
 			-- draw the player icons where they should be
 			-- self.icons are a table of right ={buttonindex = {list of playerIDs that are there}}, left = same
-			local x = self.x + self.width + 15
+			local x = self.x + self.width + 5
 			local y = self.buttons[buttonIndex].y
 			for i, player in ipairs(listOfPlayers) do
 				love.graphics.setColor(self.selections[player].color)
-				love.graphics.rectangle("fill", x, y, 20, self.buttonHeight)
-				x = x - 30
+				love.graphics.draw(self.playerIcon, x, y, 0, 1, 1)
+				-- love.graphics.rectangle("fill", x, y, 20, self.buttonHeight)
+				x = x + 90
 			end
 		end
 	elseif self.usedSingleSelection or inputManager.numGamepads > 0 then
 		-- draw the white rectangle around the boxes I guesss...
-		love.graphics.setColor(255, 255, 100)
-		love.graphics.rectangle("line", self.x, self.buttons[self.singleSelection].y, self.width, self.buttonHeight)
+		love.graphics.setColor(255, 255, 255)
+		love.graphics.draw(self.playerIcon, self.x-5, self.buttons[self.singleSelection].y, 0, -1, 1)
+		-- love.graphics.rectangle("line", self.x, self.buttons[self.singleSelection].y, self.width, self.buttonHeight)
 	end -- otherwise don't draw, they may be using the mouse
 end
 
