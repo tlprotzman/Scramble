@@ -19,13 +19,20 @@ function Gameplay:_init(game)
 	
 	self.drawUnder = false
 	self.updateUnder = false
+
+
 	for i = -100, 6 do
 		if (math.random(0, 10) < 8) then
-			table.insert(self.platforms, Platform(math.random(0, 1800), math.random(-40, 40) + 160 * i, math.random(100, 500), "wood"))
+			if math.random(1,4)==1 then
+				table.insert(self.platforms, Platform({x=math.random(0, 900), y=math.random(-40, 40) + 160 * i, w=400, vx = 100, rx = 1000, style="wood"}))
+			else
+				table.insert(self.platforms, Platform({x=math.random(0, 1800), y=math.random(-40, 40) + 160 * i, w=math.random(100, 500), style="wood"}))
+			end
 		end
-		table.insert(self.platforms, Platform(math.random(0, 1800), math.random(-40, 40) + 160 * i, math.random(100, 500), "wood"))
+		table.insert(self.platforms, Platform({x=math.random(0, 1800), y=math.random(-40, 40) + 160 * i, w=math.random(100, 500), style="wood"}))
 		-- table.insert(self.platforms, Platform(1300, 160 * i + 80, 250, "wood"))
 	end
+	
 end
 
 function Gameplay:load()
@@ -62,6 +69,9 @@ function Gameplay:update(dt)
 
 	for i, v in ipairs(self.players) do
 		v:update(dt, self.platforms)
+	end
+	for i, v in ipairs(self.platforms) do
+		v:update(dt)
 	end
 end
 

@@ -33,7 +33,10 @@ function Movement:xMove(dt, xScaler)
 	end
 	if (self.vel.dx > self.maxDX) then
 		self.vel.dx = self.maxDX
+	elseif math.abs(self.vel.dx) < 0.1 then
+		self.vel.dx = 0
 	end
+	
 	self.pos.x = self.pos.x + self.vel.dx * dt
 end
 
@@ -63,12 +66,18 @@ end
 function Movement:move(dt, xScaler, jumping, onGround)
 	self:xMove(dt, xScaler)
 	self:yMove(dt, jumping)
+	
+	if self.onGround and self.onPlatform then
+		self.pos.x = self.pos.x + self.onPlatform.vel.x*dt
+		self.pos.y = self.pos.y + self.onPlatform.vel.y*dt
+	end
 end
 
 function Movement:collisions(elements, size, dt)
 	
 	self.onGround = false
 	self.onSolidGround = false
+	self.onPlatform = false
 	
 	for i, v in pairs(elements) do
 		if (self.pos.x + size.width > v.pos.x and self.pos.x < v.pos.x + v.w) then
@@ -78,6 +87,7 @@ function Movement:collisions(elements, size, dt)
 				self.pos.y = v.pos.y - size.height
 				self.vel.dy = 0
 				self.onGround = true
+				self.onPlatform = v
 			end 
 		end
 	end			
