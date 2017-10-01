@@ -66,11 +66,11 @@ function Movement:yMove(dt, jumping)
 	-- print(self.jumpTimer)
 	if (self.climbUpTimer > 12) then
 		self.climbUpTimer = 0
-		self.pos.x = self.pos.x + 50
+		self.pos.x = self.pos.x + 30
+		self.pos.y = self.pos.y - 200
 	end
 
 	if ((jumping and self.hanging) or self.climbUpTimer > 0) then
-		self.pos.y = self.pos.y - 3
 		self.climbUpTimer = self.climbUpTimer + 10*dt
 		return
 	end

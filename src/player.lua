@@ -180,7 +180,7 @@ function Player:draw()
 		
 			if self.move.climbUpTimer > 0 then
 				local frame = math.ceil(self.move.climbUpTimer)
-				camera:draw(self.pullUpImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, sign(self.move.vel.dx))
+				camera:draw(self.pullUpImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y - 140, sign(self.move.vel.dx))
 			elseif self.move.hanging then
 				local frame = math.floor(self.hangingAnimationFrame)
 				if frame > 6 then
