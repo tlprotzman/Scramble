@@ -29,14 +29,17 @@ end
 
 function Player:loadImages()
 	self.layerColors = {{170, 140, 132}, self.color, {255, 255, 255}}
-	self.idleImages = {{}, {}, {}}
-	for i = 1, 7 do
-		self.idleImages[1][i] = love.graphics.newImage("images/player/idleSkin"..i..".png")
-		self.idleImages[2][i] = love.graphics.newImage("images/player/idleClothes"..i..".png")
-		self.idleImages[3][i] = love.graphics.newImage("images/player/idleLines"..i..".png")
-	end
-	self.runImages = {{}, {}, {}}
+	self:loadImageOfType("running", 14)
+	self:loadImageOfType("idle", 7)
+end
 
+function Player:loadImageOfType(name, frames)
+	self[name.."Images"] = {{}, {}, {}}
+	for i = 1, frames do
+		self[name.."Images"][1][i] = love.graphics.newImage("images/player/"..name.."Skin"..i..".png")
+		self[name.."Images"][2][i] = love.graphics.newImage("images/player/"..name.."Clothes"..i..".png")
+		self[name.."Images"][3][i] = love.graphics.newImage("images/player/"..name.."Lines"..i..".png")
+	end
 end
 
 function Player:update(dt, platforms)
@@ -50,7 +53,7 @@ function Player:movePlayer(dt, platforms)
 	self.move:collisions(platforms, self.size, dt)
 	if inputManager:getPlayerValues(self.uid).raw.down > 0.9 and self.move.onGround == true and self.move.onSolidGround == false then
 		self.move.onGround = false
-		self.move.pos.y = self.move.pos.y + 10
+		self.move.pos.y = self.move.pos.y + 20
 	end
 	self.move:move(dt, xScaler, jump)
 	
@@ -62,15 +65,19 @@ end
 
 function Player:animatePlayer(dt)
 	self.animationFrame = self.animationFrame + 10*dt
-	if self.animationFrame > 7 then
+	if self.animationFrame > 14 then
 		self.animationFrame = 1
 	end
 end
 
 function Player:draw()
 	for i = 1, 3 do
-		love.graphics.setColor(unpack(self.idleColors[i]))
-		camera:draw(self.idleImages[i][math.floor(self.animationFrame)], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y)
+		love.graphics.setColor(unpack(self.layerColors[i]))
+		if math.abs(self.move.vel.dx) > 100 then
+			camera:draw(self.runningImages[i][math.floor(self.animationFrame)], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, sign(self.move.vel.dx))
+		else
+			camera:draw(self.idleImages[i][math.floor((self.animationFrame-1)/2)+1], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y)
+		end
 	end
 	love.graphics.setColor(0, 255, 0)
 	camera:rectangle("line", self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)

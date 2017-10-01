@@ -17,10 +17,10 @@ end
 
 function Camera:draw(drawable, x, y, flip, ignoreCamera)
 	local offset = self:getOffset(ignoreCamera)
-	if not flip then
+	if not flip or sign(flip)==1 then
 		love.graphics.draw(drawable, x + offset.x, y + offset.y)
 	else
-		love.graphics.draw(drawable, x + offset.x, y + offset.y, 0, -1, 1)
+		love.graphics.draw(drawable, x + offset.x + drawable:getWidth() , y + offset.y, 0, -1, 1)
 	end
 end
 

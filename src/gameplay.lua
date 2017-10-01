@@ -18,7 +18,7 @@ function Gameplay:_init(game)
 	self.updateUnder = false
 
 	for i = 1, 10 do
-		table.insert(self.platforms, Platform(250+50*i, 950 - 100*i, 250, "wood"))
+		table.insert(self.platforms, Platform({x=250+50*i, y=950 - 100*i, w=250, style="wood", vx=100, vy=100, rx = 1000, ry = 500}))
 	end
 end
 
@@ -46,6 +46,9 @@ end
 function Gameplay:update(dt)
 	for i, v in ipairs(self.players) do
 		v:update(dt, self.platforms)
+	end
+	for i, v in ipairs(self.platforms) do
+		v:update(dt)
 	end
 end
 
