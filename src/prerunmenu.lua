@@ -95,7 +95,7 @@ function PreRunMenu:backButtonPressed(text, player)
 		self.menu.selections[player] = nil
 		print(self.numPlayers)
 	end
-	if self.numPlayers <= 0 then
+	if self.numPlayers <= 1 then
 		-- exit out of this screen
 		game:popScreenStack()
 	end
