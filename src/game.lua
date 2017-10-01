@@ -1,6 +1,7 @@
 
 require "mainmenu"
 require "gameplay"
+require "prerunmenu"
 
 Game = class()
 
@@ -14,16 +15,19 @@ function Game:delayedinit(args)
 	self.gameplay = Gameplay()
 
 	self.mainMenu = MainMenu()
+	self.preRunMenu = PreRunMenu()
 
 	self.screenStack = {}
 	self.drawLayersStart = 0
 
-	self:addToScreenStack(self.gameplay)
-	love.window.setFullscreen(true)
+	self:addToScreenStack(self.mainMenu)
+	self:addToScreenStack(self.preRunMenu)
+	-- self:addToScreenStack(self.gameplay)
+
+	-- these are things for scaling the screen
 	self.SCREENWIDTH = 1920
 	self.SCREENHEIGHT = 1080
 	self.fullCanvas = love.graphics.newCanvas(self.SCREENWIDTH, self.SCREENHEIGHT)
-
 end
 
 function Game:calculateDrawUpdateLevels()
@@ -53,8 +57,13 @@ function Game:popScreenStack()
 end
 
 function Game:draw()
-	-- this is so that the things earlier in the screen stack get drawn first, so that things like pause menus get drawn on top.
+	-- this is for screen scaling:
+	love.graphics.setCanvas(self.fullCanvas)
+	love.graphics.clear()
 
+
+
+	-- this is so that the things earlier in the screen stack get drawn first, so that things like pause menus get drawn on top.
 	love.graphics.setBackgroundColor(255, 255, 255)
 	for i = self.drawLayersStart, #self.screenStack, 1 do
 		self.screenStack[i]:draw()
@@ -66,17 +75,40 @@ function Game:draw()
 		love.graphics.setColor(255, 255, 255)
 	end
 
-	if self.fullscreen then
+
+	-- this is also for screen scaling:
+	love.graphics.setCanvas()
+	love.graphics.setColor(255, 255, 255)
+	if true or self.fullscreen then
 		local width = love.graphics.getWidth()
 		local height = love.graphics.getHeight()
 		local scale = math.min(height/1080, width/1920)
 		-- width/2-300*scale
-		love.graphics.draw(self.fullCanvas, width/2-300*scale, 0, 0, scale, scale)
+		love.graphics.draw(self.fullCanvas, width/2-1920/2*scale, height/2-1080/2*scale, 0, scale, scale)
 		love.graphics.setColor(0, 0, 0)
-		love.graphics.rectangle("fill", 0, 0, width/2-300*scale, height)
-		love.graphics.rectangle("fill", width/2+300*scale, 0, width/2-300*scale, height)
+		-- the left and right bars
+		love.graphics.rectangle("fill", 0, 0, width/2-1920/2*scale, height)
+		love.graphics.rectangle("fill", width/2+1920/2*scale, 0, width/2-1920/2*scale, height)
+		-- the top and bottom bars
+		-- love.graphics.setColor(255, 0, 0)
+		love.graphics.rectangle("fill", 0, 0, width, height/2-1080/2*scale)
+		love.graphics.rectangle("fill", 0, height, width, -(height/2-1080/2*scale))
+		love.graphics.setColor(255, 255, 255)
 	else
-		love.graphics.draw(self.fullCanvas, 0, 0, 0, love.graphics.getWidth()/600, love.graphics.getHeight()/800)
+		local scale = math.min(love.graphics.getHeight()/1080, love.graphics.getWidth()/1920)
+		love.graphics.draw(self.fullCanvas, 0, 0, 0, scale, scale)
+	end
+end
+
+function Game:realToFakeMouse(x, y)
+	-- converts from what the screen sees to what the game wants to see
+	local width = love.graphics.getWidth()
+	local height = love.graphics.getHeight()
+	local scale = math.min(height/1080, width/1920)
+	if false and not self.fullscreen then
+		return x/scale, y/scale
+	else
+		return (x-(width/2-1920/2*scale))/scale, (y-(height/2-1080/2*scale))/scale -- returns two numbers that are the x and y as though the screen were 1920, 1080
 	end
 end
 
