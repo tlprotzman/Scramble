@@ -15,6 +15,8 @@ function Player:_init(game, x, y, uid, color)
 	self.facing = 1
 	self.carrying = false
 	self.playerGrabTimer = 0
+	self.carrierBreakFree = 0 -- if this is 0 then you've broke free and will jump away
+	self.carrierBreakFreeToggle = true -- you have to spam jump, which means it has to be 0 in between
 
 	self.size = {width = 80, height = 170}
 	
@@ -62,7 +64,7 @@ function Player:grab(players)
 		if (self.move.hanging) then
 			for i, v in pairs(players) do
 				if (v.move.onPlatform == self.move.onPlatform and v ~= self and v.move.onGround) then
-					if (math.abs(v.move.pos.x - self.move.pos.x) < 20) then
+					if (math.abs(v.move.pos.x - self.move.pos.x) < 50) then
 						-- print ("HIT")
 						v.move.pos.y = v.move.pos.y + 10
 						v.move.vel.dy = 450
@@ -74,11 +76,12 @@ function Player:grab(players)
 		elseif self.playerGrabTimer < 0 and not self.carrying then
 			-- try picking up a player nearby
 			for i, other in pairs(players) do
-				if other ~= self and self.move.pos.y < other.move.pos.y + 20 and self.move.pos.y > other.move.pos.y - 100 then
+				-- the other player can't be climbing, and can't be too far away, and can't be yourself.
+				if other ~= self and self.move.pos.y < other.move.pos.y + 20 and self.move.pos.y > other.move.pos.y - 100 and not other.move.hanging then
 					-- it's within grabbing height
 					if math.abs(other.move.pos.x - self.move.pos.x) < 50 then
-						print("caught you!")
 						other.move.carrier = self
+						other.carrierBreakFree = math.random(3, 10)
 						self.playerGrabTimer = 1
 						self.carrying = other
 						break
@@ -87,17 +90,32 @@ function Player:grab(players)
 			end
 		end
 	elseif self.carrying then
-		print("released")
 		self.carrying.move.carrier = false
 		self.carrying.move.vel.dx = 600 * self.facing + self.move.vel.dx
 		self.carrying.move.vel.dy = self.move.vel.dy + 200
+		self.carrying.move.thrown = true
 		self.carrying = false
 	end
 end
 
 
 function Player:update(dt, platforms, players, avalanches, fallingrocks, items)
-
+	if self.carrierBreakFree > 0 then
+		if inputManager:getPlayerValues(self.uid).raw.up > .5 then
+			if self.carrierBreakFreeToggle then
+				self.carrierBreakFree = self.carrierBreakFree - 1
+				self.carrierBreakFreeToggle = false
+				if self.carrierBreakFree == 0 then
+					-- jump away, free
+					self.move.carrier.carrying = false
+					self.move.carrier = false
+					self.carrierBreakFreeToggle = true
+				end
+			end
+		else
+			self.carrierBreakFreeToggle = true
+		end
+	end
 	self:getAvalanched(avalanches)
 	self:getRocked(fallingrocks)
 	self:getItems(items)
@@ -119,7 +137,7 @@ function Player:update(dt, platforms, players, avalanches, fallingrocks, items)
 end
 
 function Player:useItem()
-	if (inputManager:getPlayerValues(self.uid).raw.use > 0.9) then
+	if (inputManager:getPlayerValues(self.uid).raw.use > 0.9) and not self.carrying then -- can't use items when you're carrying someone else
 		if (self.hasItem == 1) then
 			table.insert(self.game.gameplay.fallingrocks, FallingRock(self.move.pos.x + 200 * self.move.facing, self.move.pos.y, 500 * self.move.facing))		
 			self.hasItem = 0
@@ -131,7 +149,7 @@ function Player:useItem()
 end
 
 function Player:makeSnow()
-	if self.move.onGround and math.abs(self.move.vel.dx) > 50 and math.random(1, 10) == 5 then
+	if self.move.onGround and math.abs(self.move.vel.dx) > 50 and math.random(1, 10) == 5 and not self.move.carrier then -- don't make snow when you're being carried
 		table.insert(self.game.gameplay.snowballs, Snow(self.move.pos.x - 180, self.move.pos.y - 70))
 	end
 end
@@ -140,7 +158,7 @@ function Player:movePlayer(dt, platforms)
 	xScaler = inputManager:getPlayerValues(self.uid).x
 	jump = inputManager:getPlayerValues(self.uid).raw.up > 0.9
 	if not self.isAvalanched then
-		self.move:collisions(platforms, self.size, dt)
+		self.move:collisions(platforms, self.size, not self.carrying, dt)
 		if inputManager:getPlayerValues(self.uid).raw.down > 0.9 and ((self.move.onGround == true and self.move.onSolidGround == false) or self.move.hanging or self.move.climbUpTimer > 0) then
 			self.move.climbUpTimer = 0
 			self.move.onGround = false

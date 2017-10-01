@@ -23,7 +23,9 @@ function Movement:_init(_x, _y, _acceleration, _maxDX)
 	self.climbUpTimer = 0
 	self.shimmyFrame = 1
 	self.noGrab = 0
+
 	self.carrier = false -- this is either false or the player that is carrying it...
+	self.thrown = false -- if this is the case, there is no limit on max dx or dy until you hit something, to allow for super fast throws
 
 end
 
@@ -68,7 +70,7 @@ function Movement:xMove(dt, xScaler)
 		if (self.onGround and (math.abs(xScaler) < 0.05 or xScaler * self.vel.dx < 0)) then
 			self.vel.dx = self.vel.dx - self.vel.dx * self.friction
 		end
-		if (math.abs(self.vel.dx) > self.maxDX) then
+		if (math.abs(self.vel.dx) > self.maxDX and not self.thrown) then
 			self.vel.dx = sign(self.vel.dx)*self.maxDX
 		elseif math.abs(self.vel.dx) < 0.1 then
 			self.vel.dx = 0
@@ -83,6 +85,7 @@ function Movement:yMove(dt, jumping)
 	if self.carrier then
 		-- you're being carried unless you spam the jump button
 		self.onGround = true
+		self.thrown = false
 		self.pos.y = self.carrier.move.pos.y - 100
 		self.vel.dy = self.carrier.move.vel.dy
 		return
@@ -137,7 +140,7 @@ function Movement:move(dt, xScaler, jumping, onGround)
 	end
 end
 
-function Movement:collisions(elements, size, dt)
+function Movement:collisions(elements, size, allowedToHang, dt)
 	
 	self.onGround = false
 	self.onSolidGround = false
@@ -154,10 +157,11 @@ function Movement:collisions(elements, size, dt)
 				self.pos.y = v.pos.y - size.height
 				self.vel.dy = 0
 				self.onGround = true
+				self.thrown = false
 				self.onPlatform = v
 			
 			-- Code to check for hanging conditions
-			elseif (not v.broken and self.noGrab == 0 and self.vel.dy > 10  and self.pos.y  < v.pos.y + 40 and self.pos.y + self.vel.dy * dt > v.pos.y + 30) then
+			elseif (not v.broken and allowedToHang and self.noGrab == 0 and self.vel.dy > 10  and self.pos.y  < v.pos.y + 40 and self.pos.y + self.vel.dy * dt > v.pos.y + 30) then
 				-- print(self.pos.y)
 			-- if (self.pos.y < v.pos.y and self.pos.y + self.vel.dy > v.pos.y) then
 				self.pos.y = v.pos.y + 30
@@ -172,15 +176,18 @@ function Movement:collisions(elements, size, dt)
 		self.pos.y = 1080 - size.height
 		self.vel.dy = 0
 		self.onGround = true
+		self.thrown = false
 		self.onSolidGround = true
 	end
 	-- print(self.pos.x)
 	if (self.pos.x < 0) then
 		self.pos.x = 0
 		self.vel.dx = 0
+		self.thrown = false
 	end
 	if (self.pos.x + size.width > 1920) then
 		self.pos.x = 1920 - size.width
 		self.vel.dx = 0
+		self.thrown = false
 	end
 end
