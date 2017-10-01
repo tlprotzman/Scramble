@@ -5,10 +5,14 @@ require "helperfunctions"
 require "game"
 require "camera"
 require "inputmanager"
+require "soundmanager"
+
 
 inputManager = InputManager()
 game = Game()
 camera = Camera()
+
+soundManager = SoundManager(game, game.gameplay, "soundconfig.txt")
 
 images = {}
 
@@ -16,7 +20,6 @@ function love.load(args)
 	-- this is the draw type to make things pixel perfect:
 	love.graphics.setDefaultFilter( 'nearest',  'nearest',  0 )
 	loadImages()
-
 
 	love.math.setRandomSeed(os.time())
 	math.randomseed(os.time()) 

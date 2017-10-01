@@ -32,6 +32,12 @@ function PreRunMenu:load()
 	-- everyone should be able to control the main menu probably
 	inputManager:ownMenu() -- leave it blank to let anyone control it
 	love.mouse.setVisible(true)
+	for k, v in pairs(self.menu.selections) do
+		v.ready = false
+	end
+	if not soundManager:isPlaying("titlemusic") then
+		soundManager:playSound("titlemusic")
+	end
 end
 
 function PreRunMenu:leave()
