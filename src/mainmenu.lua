@@ -40,12 +40,14 @@ function MainMenu:load()
 	inputManager:addToInputStack(self)
 	-- everyone should be able to control the main menu probably
 	inputManager:ownMenu() -- leave it blank to let anyone control it
+	love.mouse.setVisible(true)
 end
 
 function MainMenu:leave()
 	-- run when the level no longer has control
 	inputManager:setSendMenuInputs(false)
 	inputManager:removeFromInputStack(self)
+	love.mouse.setVisible(false)
 end
 
 function MainMenu:draw()
