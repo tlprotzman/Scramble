@@ -16,7 +16,7 @@ function love.load(args)
 	-- love.window.setTitle("MultiFarm")
 	love.math.setRandomSeed(os.time())
 	math.randomseed(os.time()) 
-	game:init(args)
+	game:delayedinit(args)
 end
 
 function love.update(dt)

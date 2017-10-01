@@ -4,7 +4,7 @@ require "gameplay"
 
 Game = class()
 
-function Game:init(args)
+function Game:delayedinit(args)
 	self.args = args
 
 	-- self.inputManager = InputManager({inputStack = {self}})
