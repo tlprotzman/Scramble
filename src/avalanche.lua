@@ -15,7 +15,7 @@ function Avalanche:draw()
 		love.graphics.setColor(220, 220, 220, math.max(0, 255-v.size))
 		camera:circle("fill", v.x, v.y + self.progress, v.size)
 		love.graphics.setColor(100, 100, 100, math.max(0, 255-v.size))
-		love.graphics.arc("line", "open", v.x, v.y + self.progress, v.size, 0, math.pi)
+		camera:arc("line", "open", v.x, v.y + self.progress, v.size, 0, math.pi)
 	end
 end
 

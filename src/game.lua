@@ -11,7 +11,7 @@ function Game:delayedinit(args)
 	self.debug = true
 
 	-- self.font = love.graphics.newFont(13)
-	self.gameplay = Gameplay()
+	self.gameplay = Gameplay(self)
 
 	self.mainMenu = MainMenu()
 

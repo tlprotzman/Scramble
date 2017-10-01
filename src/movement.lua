@@ -18,7 +18,7 @@ function Movement:_init(_x, _y, _acceleration, _maxDX)
 	self.maxJumpTime = 0.4
 	self.jumpTimer = 0
 	self.climbUpTimer = 0
-
+	self.shimmyFrame = 1
 	self.noGrab = 0
 
 end
@@ -37,8 +37,13 @@ function Movement:xMove(dt, xScaler)
 
 	if (self.hanging) then
 		self.vel.dx = xScaler * self.hangingSpeed
+		self.shimmyFrame = self.shimmyFrame + zsign(xScaler)*.2
+		if self.shimmyFrame < 1 then
+			self.shimmyFrame = 5.9
+		elseif self.shimmyFrame >= 6 then
+			self.shimmyFrame = 1
+		end
 	else
-
 		ddx = xScaler * self.acceleration
 		if (not self.onGround) then
 			xScaler = xScaler * 1.3

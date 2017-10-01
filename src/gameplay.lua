@@ -2,6 +2,7 @@ require "platform"
 require "player"
 require "avalanche"
 require "fallingrock"
+require "item"
 
 Gameplay = class()
 
@@ -18,6 +19,8 @@ function Gameplay:_init(game)
 	self.platforms = {}
 	self.avalanches = {}
 	self.fallingrocks = {}
+	self.items = {}
+	self.itemColors = {{0, 255, 255}, {255, 0, 0}}
 	
 	camera.d.y = 0
 	self.cameraTimer = 3
@@ -32,8 +35,8 @@ function Gameplay:_init(game)
 	
 	self.backgroundImage = love.graphics.newImage("images/assets/background.png")
 
+
 	table.insert(self.platforms, Platform({x=0, y=1000, w=1920, style="wood", unbreakable=true}))
-	-- for i = -1000, 6 do
 
 	
 end
@@ -53,13 +56,16 @@ function Gameplay:draw()
 	for i, v in ipairs(self.platforms) do
 		v:draw()
 	end
+	for i, v in ipairs(self.items) do
+		v:draw()
+	end
 	for i, v in ipairs(self.players) do
 		v:draw()
 	end
-	for i, v in ipairs(self.avalanches) do
+	for i, v in ipairs(self.fallingrocks) do
 		v:draw()
 	end
-	for i, v in ipairs(self.fallingrocks) do
+	for i, v in ipairs(self.avalanches) do
 		v:draw()
 	end
 	love.graphics.print(camera.pos.y, 10, 10)
@@ -78,7 +84,7 @@ function Gameplay:update(dt)
 	end
 
 	for i, v in ipairs(self.players) do
-		v:update(dt, self.platforms, self.players, self.avalanches, self.fallingrocks)
+		v:update(dt, self.platforms, self.players, self.avalanches, self.fallingrocks, self.items)
 	end
 	for i, v in ipairs(self.platforms) do
 		v:update(dt)
