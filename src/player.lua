@@ -33,6 +33,7 @@ function Player:_init(game, x, y, uid, color)
 	self.hasItem = 0 	-- 1 = pickaxe, 2 = dynamite
 	
 	self:loadImages()
+	self.dead = false
 
 end
 
@@ -124,6 +125,7 @@ function Player:update(dt, platforms, players, avalanches, fallingrocks, items)
 	self:getRocked(fallingrocks)
 	self:getItems(items)
 	self:useItem()
+	self:die()
 	self:movePlayer(dt, platforms)
 	if self.move.climbUpTimer > 0 then
 		self.size.height = 0
@@ -154,6 +156,12 @@ function Player:useItem()
 			table.insert(self.game.gameplay.avalanches, Avalanche(self.move.pos.x, 3000, 5000))
 			self.hasItem = 0
 		end
+	end
+end
+
+function Player:die()
+	if self.move.pos.y - camera.pos.y < 1080 + 30 then
+		self.dead = true
 	end
 end
 
@@ -253,7 +261,7 @@ function Player:animatePlayer(dt)
 	end
 end
 
-function Player:draw()
+function Player:draw
 	for i = 1, 3 do
 		love.graphics.setColor(unpack(self.layerColors[i]))
 		local idleFrames = self.idleImages
