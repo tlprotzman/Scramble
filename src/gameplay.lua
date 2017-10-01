@@ -99,6 +99,10 @@ function Gameplay:draw()
 	love.graphics.setColor(255, 0, 0)
 	love.graphics.print(math.abs(camera.pos.y), 50, 50)
 	love.graphics.print(self.chunkCount*1080, 50, 100)
+	love.graphics.print(#self.players, 50, 150)
+	if #self.players == 1 then
+		love.graphics.print("WINNER", 1920/2, 1080/2)
+	end
 end
 
 function Gameplay:update(dt)
@@ -115,7 +119,11 @@ function Gameplay:update(dt)
 	end
 
 	for i, v in ipairs(self.players) do
-		v:update(dt, self.platforms, self.players, self.avalanches, self.fallingrocks, self.items)
+		if v.dead then
+			table.remove(self.players, i)
+		else
+			v:update(dt, self.platforms, self.players, self.avalanches, self.fallingrocks, self.items)
+		end
 	end
 	for i, v in ipairs(self.platforms) do
 		v:update(dt)
@@ -218,7 +226,7 @@ end
 
 function Gameplay:generatePlatform(x, y, w, vx, rx, vy, ry)
 	local y0 = self.chunkCount*1080
-	table.insert(self.platforms, Platform({x = x, y = y, w = self.platformSizes[w], style = style, vx = vx or 0, vy = vy or 0, rx = rx or 0, ry = ry or 0, y0 = y0}))
+	table.insert(self.platforms, Platform({x = x, y = y, w = self.platformSizes[w], style = style, vx = vx or 0, vy = vy or 0, rx = rx or 0, ry = ry or 0, y0 = y0, extra = math.random(-3, 4)}))
 	local item = math.max(math.random(-5, 2))
 	if item > 0 then
 		table.insert(self.items, Item(x + self.platformSizes[w]/2 - 25, y - 50 - y0, item))
