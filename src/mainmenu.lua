@@ -10,12 +10,14 @@ end
 
 function MainMenu:load()
 	-- run when the level is given control
-	self.inputManager.sendMenuInputs = true -- distribute things to the handleinput functions of all members of the screen stack.
+	inputManager.sendMenuInputs = true -- distribute things to the handleinput functions of all members of the screen stack.
+	-- everyone should be able to control the main menu probably
+	inputManager:ownMenu() -- leave it blank to let anyone control
 end
 
 function MainMenu:leave()
 	-- run when the level no longer has control
-	self.inputManager.sendMenuInputs = false
+	inputManager.sendMenuInputs = false
 end
 
 function MainMenu:draw()
