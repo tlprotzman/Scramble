@@ -14,7 +14,7 @@ function Avalanche:draw()
 	--camera:rectangle("fill", self.x, self.progress, self.w, self.duration, true)
 
 	love.graphics.setColor(255, 255, 255, 150)
-	camera:rectangle("fill", self.x, self.progress, self.w, self.duration)
+	--camera:rectangle("fill", self.x, self.progress, self.w, self.duration)
 	for i, v in ipairs(self.snow) do
 		love.graphics.setColor(255, 255, 255, math.max(0, 255-v.size))
 		camera:draw(self.image, v.x, v.y + self.progress, v.size)
