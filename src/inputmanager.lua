@@ -63,9 +63,9 @@ function InputManager:setSendMenuInputs(sendBoolean)
 	if sendBoolean and self.sendMenuInputs ~= sendBoolean then
 		-- then reset all the controller's menu variables as well.
 		for i, values in ipairs(self.playerValues) do
-			for j, k in pairs(values) do
+			for j, k in pairs(values.menu) do
 				k.timer = 10000 -- the player needs to re-center their controls for the menus to have effect? probably. We'll see...
-				k.value = values[k]
+				k.value = values[j]
 			end
 		end
 	end
@@ -132,13 +132,14 @@ function InputManager:keypressed(key, unicode)
 
 	-- then recalculate the player x and y
 	self:calculatePlayerStats(self.playerValues[player])
-end
 
-function InputManager:keyreleased(key, unicode)
 	if self.sendMenuInputs and key == "escape" then
 		-- send the menu back command.
 		self:distributeInput({inputtype = "back", player = "mouse"})
 	end
+end
+
+function InputManager:keyreleased(key, unicode)
 	local player = self.keyboardPlayerMapping[key]
 	if player == nil then
 		return

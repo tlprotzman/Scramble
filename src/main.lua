@@ -51,12 +51,16 @@ function love.mousemoved(x, y, dx, dy)
 	inputManager:mousemoved(game:realToFakeMouse(x, y), dx, dy)
 end
 
-function love.gamepadadded(gamepad)
-	inputManager:gamepadadded(gamepad)
+function love.joystickadded(gamepad)
+	if gamepad:isGamepad() then
+		inputManager:gamepadadded(gamepad)
+	end
 end
 
-function love.gamepadremoved(gamepad)
-	inputManager:gamepadremoved(gamepad)
+function love.joystickremoved(gamepad)
+	if gamepad:isGamepad() then
+		inputManager:gamepadremoved(gamepad)
+	end
 end
 
 function love.gamepadaxis(gamepad, axis, value)

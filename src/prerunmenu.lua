@@ -76,6 +76,12 @@ function PreRunMenu:readyButton(text, player)
 	end
 	if numNotReady == 0 and numReady >= 2 then
 		-- start the game
+		local inplayers = {}
+		for k, v in pairs(self.players) do
+			table.insert(inplayers, {uid = k, color = v.color})
+		end
+		game.gameplay = Gameplay(game, inplayers)
+		game:addToScreenStack(game.gameplay)
 	end
 end
 
@@ -130,7 +136,9 @@ function PreRunMenu:handleinput(input)
 			-- then add the player key to the live thing! it's party time!
 			-- print("ADDED PLAYER "..tostring(player))
 			self.players[input.player] = {key = input.player, color = {math.random(0, 255), math.random(0, 255), math.random(0, 255)}, ready = false}
-			self.menu.selections.color = self.players[input.player].color
+			print(self.menu.selections[input.player])
+			print(input.player)
+			self.menu.selections[input.player].color = self.players[input.player].color
 			self.numPlayers = self.numPlayers + 1
 		end
 	end

@@ -4,7 +4,7 @@ Player = class()
 
 function Player:_init(game, x, y, uid, color)
 	self.game = game
-	self.uid = "k"..uid
+	self.uid = uid
 	self.color = color
 
 	local acceleration = 700
