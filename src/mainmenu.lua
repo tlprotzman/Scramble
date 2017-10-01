@@ -15,9 +15,13 @@ function MainMenu:_init(args)
 end
 
 
-function MainMenu:playButtonPressed(text)
+function MainMenu:playButtonPressed(text, player)
 	-- ignore text
 	game:addToScreenStack(game.preRunMenu)
+	if player ~= "mouse" then
+		-- then pretend it pressed join so that it's already a part of the next menu, wouldn't that be nice?
+		game.preRunMenu:handleinput({inputtype = "join", player = player})
+	end
 end
 
 function MainMenu:creditsButton(text)
