@@ -32,7 +32,9 @@ function InputManager:_init(args)
 	self.gamepadAxisMapping = {leftx = {"left", "right"}, lefty = {nil, "down"}, rightx = {nil, nil}, righty = {nil, nil}, triggerleft = {nil, "use"}, triggerright = {nil, "use"}}
 	self.gamepadAxisMenuMapping = {leftx = {"left", "right"}, lefty = {"up", "down"}, rightx = {nil, nil}, righty = {nil, nil}, triggerleft = {nil, "use"}, triggerright = {nil, "use"}}
 	-- the menuMapping is for when sendMenuInputs is true, otherwise use the top one.
-	self.gamepadButtonMapping = {a = "up", b = "grab"}
+	self.gamepadButtonMapping = {a = "up", b = "grab", start = "pause"}
+	self.gamepadButtonMenuMapping = {a = "up", b = "down", start = "join"}
+	-- this menuButtonMaping is also for menus
 
 	-- I'm going to need to deal with contexts for this.
 
@@ -122,13 +124,14 @@ function InputManager:calculatePlayerStats(playerValueTable)
 	-- currently this may be just for keyboards, because controllers have the opposite problem
 	playerValueTable.x = playerValueTable.raw.right - playerValueTable.raw.left
 	playerValueTable.y = playerValueTable.raw.down - playerValueTable.raw.up
-
-	if self.sendMenuInputs then
-		--
-	end
 end
 
 function InputManager:keypressed(key, unicode)
+	if self.sendMenuInputs and key == "escape" then
+		-- send the menu back command.
+		self:distributeInput({inputtype = "back", player = "mouse"})
+	end
+
 	local player = self.keyboardPlayerMapping[key]
 	if player == nil then
 		return
@@ -139,11 +142,6 @@ function InputManager:keypressed(key, unicode)
 
 	-- then recalculate the player x and y
 	self:calculatePlayerStats(self.playerValues[player])
-
-	if self.sendMenuInputs and key == "escape" then
-		-- send the menu back command.
-		self:distributeInput({inputtype = "back", player = "mouse"})
-	end
 end
 
 function InputManager:keyreleased(key, unicode)
@@ -214,7 +212,12 @@ function InputManager:gamepadpressed(gamepad, button)
 		error("JOYSTICK SOMEHOW WASN'T ADDED")
 	end
 	local didSomething = false
-	if self.gamepadButtonMapping[button] then
+	if self.sendMenuInputs then
+		if self.gamepadButtonMenuMapping[button] then
+			values.raw[self.gamepadButtonMenuMapping[button]] = 1
+			didSomething = true
+		end
+	elseif self.gamepadButtonMapping[button] then
 		values.raw[self.gamepadButtonMapping[button]] = 1
 		didSomething = true
 	end
@@ -235,7 +238,12 @@ function InputManager:gamepadreleased(gamepad, button)
 		error("JOYSTICK SOMEHOW WASN'T ADDED")
 	end
 	local didSomething = false
-	if self.gamepadButtonMapping[button] then
+	if self.sendMenuInputs then
+		if self.gamepadButtonMenuMapping[button] then
+			values.raw[self.gamepadButtonMenuMapping[button]] = 1
+			didSomething = true
+		end
+	elseif self.gamepadButtonMapping[button] then
 		values.raw[self.gamepadButtonMapping[button]] = 0
 		didSomething = true
 	end

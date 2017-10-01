@@ -100,7 +100,6 @@ function PreRunMenu:backButtonPressed(text, player)
 		-- print("REMOVED PLAYER "..tostring(player))
 		self.menu:removePlayerIcon(player)
 		self.menu.selections[player] = nil
-		print(self.numPlayers)
 	end
 	if self.numPlayers <= 0 then
 		-- exit out of this screen
@@ -139,13 +138,9 @@ function PreRunMenu:handleinput(input)
 			-- then add the player key to the live thing! it's party time!
 			-- print("ADDED PLAYER "..tostring(player))
 			self.players[input.player] = {key = input.player, color = {math.random(0, 255), math.random(0, 255), math.random(0, 255)}, ready = false}
-			print(self.menu.selections[input.player])
-			print(input.player)
-			print("Input type "..input.inputtype)
 			self.menu.selections[input.player].color = self.players[input.player].color
 			self.numPlayers = self.numPlayers + 1
 		end
 	end
-	-- return self.menu:handleinput(input)
-	return true
+	return true -- because I'm too lazy to actually do this part probably...
 end
