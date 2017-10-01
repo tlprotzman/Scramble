@@ -32,6 +32,7 @@ function Player:loadImages()
 	self:loadImageOfType("idle", 7)
 	self:loadImageOfType("fallDown", 5)
 	self:loadImageOfType("jumpUp", 5)
+	self:loadImageOfType("turn", 2)
 end
 
 function Player:loadImageOfType(name, frames)
@@ -78,9 +79,14 @@ function Player:draw()
 		--drawing images on ground
 		
 			--running
-			if math.abs(self.move.vel.dx) > 100 then
+			if math.abs(self.move.vel.dx) > 150 then
 				local frame = math.floor(self.animationFrame)
 				camera:draw(self.runningImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, sign(self.move.vel.dx))
+				
+			--turning
+			elseif math.abs(self.move.vel.dx) > 50 then
+				local frame = math.max(math.min(math.floor((self.move.vel.dx-50)/50), 2), 1)
+				camera:draw(self.turnImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, sign(self.move.vel.dx))
 				
 			--idle
 			else
