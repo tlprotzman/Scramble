@@ -107,6 +107,7 @@ function Gameplay:draw()
 	camera:rectangle("fill", 0, 0, 1920, 1820, true)
 	
 	if #self.players <=1 then
+		local y = 1080/2-50*#self.standingNames+150
 		for i, v in ipairs(self.standings) do
 			if i==1 then
 				love.graphics.setFont(MainFont[3])
@@ -115,9 +116,14 @@ function Gameplay:draw()
 			end
 				
 			love.graphics.setColor(0, 0, 0)
-			love.graphics.printf(self.standingNames[i].." Place", 0, 1080/2-50*#self.standingNames+150*i+5, 1920, "center")
+			love.graphics.printf(self.standingNames[i].." Place", 0, y, 1920, "center")
 			love.graphics.setColor(unpack(v))
-			love.graphics.printf(self.standingNames[i].." Place", 0, 1080/2-50*#self.standingNames+150*i, 1920, "center")
+			love.graphics.printf(self.standingNames[i].." Place", 0, y+8, 1920, "center")
+			if i==1 then
+				y = y + 200
+			else
+				y = y + 100
+			end
 		end
 	end
 end
@@ -297,7 +303,7 @@ end
 
 function Gameplay:generatePlatform(x, y, w, vx, rx, vy, ry)
 	local y0 = self.chunkCount*1080
-	table.insert(self.platforms, Platform({x = x, y = y, w = self.platformSizes[w], style = style, vx = vx or 0, vy = vy or 0, rx = rx or 0, ry = ry or 0, y0 = y0, extra = math.random(-3, 4)}))
+	table.insert(self.platforms, Platform({x = x, y = y, w = self.platformSizes[w], style = style, vx = vx or 0, vy = vy or 0, rx = rx or 0, ry = ry or 0, y0 = y0, extra = math.random(-3, 5)}))
 	local item = math.max(math.random(-5, 2))
 	if item > 0 then
 		table.insert(self.items, Item(x + self.platformSizes[w]/2 - 25, y - 50 - y0, item))
