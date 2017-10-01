@@ -16,7 +16,6 @@ function MainMenu:_init(args)
 	self.menu = Menu{parent = self, x = 4*1920/5-250, y = 100, buttonwidth = 500, buttons = menuButtons, oneSelection = true}
 end
 
-
 function MainMenu:playButtonPressed(text, player)
 	-- ignore text
 	game:addToScreenStack(game.preRunMenu)
