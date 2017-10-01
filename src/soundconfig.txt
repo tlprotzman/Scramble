@@ -16,11 +16,11 @@ false
 .75
 
 grunt
-sounds/avalanche.mp3
+sounds/jumpGrunt.mp3
 7
 false
 0
-.75
+.5
 
 scream
 sounds/scream.mp3
