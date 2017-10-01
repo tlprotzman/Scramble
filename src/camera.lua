@@ -15,6 +15,16 @@ function Camera:rectangle(style, x, y, w, h, ignoreCamera)
 	love.graphics.rectangle(style, x + offset.x, y + offset.y, w, h)
 end
 
+function Camera:circle(style, x, y, r, ignoreCamera)
+	local offset = self:getOffset(ignoreCamera)
+	love.graphics.circle(style, x + offset.x, y + offset.y, r)
+end
+
+function Camera:arc(style, style2, x, y, r, angle1, angle2, ignoreCamera)
+	local offset = self:getOffset(ignoreCamera)
+	love.graphics.arc(style, style2, x + offset.x, y + offset.y, r, angle1, angle2)
+end
+
 function Camera:draw(drawable, x, y, flip, ignoreCamera)
 	local offset = self:getOffset(ignoreCamera)
 	if not flip or sign(flip)==1 then
