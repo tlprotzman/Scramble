@@ -2,9 +2,10 @@ require "movement"
 
 Player = class()
 
-function Player:_init(game)
+function Player:_init(game, uid, color)
 	self.game = game
-	self.uid = "k1"
+	self.uid = uid
+	self.color = color
 
 	local x = 250		-- Holds info about the players location and movement
 	local y = 250
@@ -28,7 +29,7 @@ end
 
 function Player:loadImages()
 	self.idleImages = {{}, {}, {}}
-	self.idleColors = {{170, 140, 132}, {0, 255, 0}, {255, 255, 255}}
+	self.idleColors = {{170, 140, 132}, self.color, {255, 255, 255}}
 	for i = 1, 7 do
 		self.idleImages[1][i] = love.graphics.newImage("images/player/idleSkin"..i..".png")
 		self.idleImages[2][i] = love.graphics.newImage("images/player/idleClothes"..i..".png")
