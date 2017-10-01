@@ -90,7 +90,10 @@ function Movement:yMove(dt, jumping)
 	-- print(self.jumpTimer)
 	if (self.climbUpTimer > 12) then
 		self.climbUpTimer = 0
-		self.pos.x = self.pos.x + 30
+		self.pos.x = self.pos.x + 25
+		if self.facing == -1 then
+			self.pos.x = self.pos.x - 65
+		end
 		self.pos.y = self.pos.y - 200
 	end
 
@@ -144,6 +147,7 @@ function Movement:collisions(elements, size, dt)
 	if (self.climbUpTimer == 0) then
 		self.onPlatform = false
 	end
+	local wasHanging = self.hanging
 	self.hanging = false
 	
 	for i, v in pairs(elements) do
@@ -160,6 +164,11 @@ function Movement:collisions(elements, size, dt)
 			elseif (not v.broken and self.noGrab == 0 and self.vel.dy > 10  and self.pos.y  < v.pos.y + 40 and self.pos.y + self.vel.dy * dt > v.pos.y + 30) then
 				-- print(self.pos.y)
 			-- if (self.pos.y < v.pos.y and self.pos.y + self.vel.dy > v.pos.y) then
+				self.pos.y = v.pos.y + 30
+				self.vel.dy = 0
+				self.hanging = true
+				self.onPlatform = v
+			elseif wasHanging and not v.broken and self.noGrab == 0 and self.pos.y  < v.pos.y + 40 and self.pos.y + self.vel.dy * dt > v.pos.y + 30 then
 				self.pos.y = v.pos.y + 30
 				self.vel.dy = 0
 				self.hanging = true

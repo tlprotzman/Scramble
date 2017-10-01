@@ -103,7 +103,12 @@ function Player:update(dt, platforms, players, avalanches, fallingrocks, items)
 	self:getItems(items)
 	self:useItem()
 	self:movePlayer(dt, platforms)
-	if self.move.vel.dx ~= 0 then self.facing = sign(self.move.vel.dx) end
+	if self.move.climbUpTimer > 0 then
+		self.size.height = 0
+	else
+		self.size.height = 170
+	end
+	if self.move.vel.dx ~= 0 then self.facing = sign(self.move.vel.dx) self.move.facing = self.facing end
 	self:grab(players)
 	self.playerGrabTimer = self.playerGrabTimer - dt
 
@@ -233,36 +238,36 @@ function Player:draw()
 		--drawing images on ground
 			if self.grabAnimationFrame > 0 then
 				local frame = math.floor(self.grabAnimationFrame)*2
-				camera:draw(self.pullOffImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y - 140, sign(self.move.vel.dx))
+				camera:draw(self.pullOffImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y - 140, self.facing)
 			elseif self.move.climbUpTimer > 0 then
 				local frame = math.ceil(self.move.climbUpTimer)
-				camera:draw(self.pullUpImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y - 140, sign(self.move.vel.dx))
+				camera:draw(self.pullUpImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y - 140, self.facing)
 			elseif self.move.hanging then
 				local frame = math.floor(self.hangingAnimationFrame)
 				if frame > 6 then
 					frame = math.floor(self.move.shimmyFrame)
-					camera:draw(self.shimmyImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, sign(self.move.vel.dx))
+					camera:draw(self.shimmyImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, self.facing)
 				else
-					camera:draw(self.frontGrabImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, sign(self.move.vel.dx))
+					camera:draw(self.frontGrabImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, -self.facing)
 				end
 			--running
 			elseif math.abs(self.move.vel.dx) > 150 then
 				local frame = math.floor(self.animationFrame)
-				camera:draw(self.runningImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, sign(self.move.vel.dx))
+				camera:draw(self.runningImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, self.facing)
 			elseif 	not self.move.onGround then
 				if self.move.vel.dy < 0 then
 					local frame = math.max(math.min(math.floor(math.abs(self.move.vel.dy)/160), 5), 1)
-					camera:draw(self.fallDownImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y)
+					camera:draw(self.fallDownImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.facing)
 				
 				--falling down
 				else
 					local frame = 6-math.max(math.min(math.floor(math.abs(self.move.vel.dy)/160), 5), 1)
-					camera:draw(self.jumpUpImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y)
+					camera:draw(self.jumpUpImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.facing)
 				end
 			--turning
 			elseif math.abs(self.move.vel.dx) > 50 then
 				local frame = math.max(math.min(math.floor((self.move.vel.dx-50)/50), 2), 1)
-				camera:draw(self.turnImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, sign(self.move.vel.dx))
+				camera:draw(self.turnImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, self.facing)
 				
 			--idle
 			else
