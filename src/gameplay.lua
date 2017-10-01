@@ -10,6 +10,8 @@ function Gameplay:_init(game)
 	for i = 1, 2 do
 		table.insert(self.players, Player(self.game, "k"..i, {math.random(1, 255), math.random(1, 255), math.random(1, 255)}))
 	end
+	-- uncomment this one for testing joysticks
+	-- table.insert(self.players, Player(self.game, 1, {math.random(1, 255), math.random(1, 255), math.random(1, 255)}))
 	self.platforms = {}
 	
 	camera.d.y = 0
