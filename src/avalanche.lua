@@ -20,7 +20,7 @@ function Avalanche:draw()
 end
 
 function Avalanche:update(dt)
-	if self.progress > 1080 then
+	if self.progress < 1080 then
 		self.progress = self.progress + 2000*dt
 		for i = 1, 10 do
 			table.insert(self.snow, {x=math.random(self.x, self.w), y=math.random(0, self.duration), size=0})
