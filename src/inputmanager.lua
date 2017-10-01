@@ -3,7 +3,7 @@ InputManager = class()
 
 
 function InputManager:_init(args)
-	self.menuMovementThreshold = .1 -- minimum magnitude of a controller stick to trigger a menu movement
+	self.menuMovementThreshold = .5 -- minimum magnitude of a controller stick to trigger a menu movement
 	self.menuMovementRepeatTime = .5
 
 	if args == nil then
@@ -50,11 +50,14 @@ function InputManager:ownMenu(playerUID)
 end
 
 function InputManager:update(dt)
-	self.mouseX = love.mouse.getX()
-	self.mouseY = love.mouse.getY()
-
 	if self.sendMenuInputs then
-		-- send the menu inputs
+		-- update the menu repeat timers
+		for uid, player in pairs(self.playerValues) do
+			for k, v in ipairs(player.menu) do
+				v.timer = v.timer - dt
+				print(k, v)
+			end
+		end
 	end
 end
 
@@ -82,7 +85,7 @@ function InputManager:calculatePlayerStats(playerValueTable)
 		-- they get reset whenever you start sending menu inputs, so it's fine to stop updating these.
 		-- local menuTable = {x = {timer = 0, value = 0}, y = {timer = 0, value = 0}} -- if value * the actual current x or y is negative or 0, then it should trigger the action if the current magnitude is > a parameter
 		if math.abs(playerValueTable.x) > self.menuMovementThreshold then
-			if playerValueTable.menu.x.timer <= 0 or playerValueTable.menu.x.value * playerValueTable.x <= 0 then
+			if playerValueTable.menu.x.timer <= 0 then --  or playerValueTable.menu.x.value * playerValueTable.x <= 0
 				-- then either the timer is 0, and it can do its thing, or the thumbstick was flicked really fast in the opposite direction, so it should move in that direction
 				playerValueTable.menu.x.timer = self.menuMovementRepeatTime
 				-- trigger that menu action pls.
@@ -97,11 +100,11 @@ function InputManager:calculatePlayerStats(playerValueTable)
 			end
 		else
 			-- set the value to 0, and the timer to 0 as well
-			playerValueTable.menu.x.value = 0
+			playerValueTable.menu.x.timer = 0
 		end
 
 		if math.abs(playerValueTable.y) > self.menuMovementThreshold then
-			if playerValueTable.menu.y.timer <= 0 or playerValueTable.menu.y.value * playerValueTable.y <= 0 then
+			if playerValueTable.menu.y.timer <= 0 then -- or playerValueTable.menu.y.value * playerValueTable.y <= 0
 				-- then either the timer is 0, and it can do its thing, or the thumbstick was flicked really fast in the opposite direction, so it should move in that direction
 				playerValueTable.menu.y.timer = self.menuMovementRepeatTime
 				-- trigger that menu action pls.
@@ -116,7 +119,7 @@ function InputManager:calculatePlayerStats(playerValueTable)
 			end
 		else
 			-- set the value to 0, and the timer to 0 as well
-			playerValueTable.menu.y.value = 0
+			playerValueTable.menu.y.timer = 0
 		end
 	end
 end
