@@ -18,9 +18,11 @@ function Player:_init(game, x, y, uid, color)
 	self.carrierBreakFree = 0 -- if this is 0 then you've broke free and will jump away
 	self.carrierBreakFreeToggle = true -- you have to spam jump, which means it has to be 0 in between
 
+	
 	self.size = {width = 80, height = 170}
 	
 	self.animationFrame = 1
+	self.celebrationFrame = 1
 	self.imageOffset = {x = -152, y = -20}
 
 	self.wasHanging = false
@@ -55,6 +57,7 @@ function Player:loadImages()
 	self:loadImageOfType("shimmy", 5)
 	self:loadImageOfType("pullUp", 13)
 	self:loadImageOfType("pullOff", 10)
+	self:loadImageOfType("celebration", 18)
 end
 
 function Player:loadImageOfType(name, frames)
@@ -264,6 +267,10 @@ function Player:animatePlayer(dt)
 	if self.animationFrame > 14 then
 		self.animationFrame = 1
 	end
+	self.celebrationFrame = self.celebrationFrame + 15*dt
+	if self.celebrationFrame > 18 then
+		self.celebrationFrame = 1
+	end
 	if self.grabAnimationFrame > 0 then
 		self.grabAnimationFrame = self.grabAnimationFrame + .1
 		if self.grabAnimationFrame >= 6 then
@@ -331,8 +338,14 @@ function Player:draw()
 		else
 		
 			if self.move.onGround then
-				local frame = math.floor((self.animationFrame-1)/2)+1
-				camera:draw(idleFrames[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y - yOffset)
+				if self.game.gameplay.gameOver then
+					yOffset = self.size.height - 20
+					local frame = math.ceil(self.celebrationFrame)
+					camera:draw(self.celebrationImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y - yOffset)
+				else
+					local frame = math.floor((self.animationFrame-1)/2)+1
+					camera:draw(idleFrames[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y - yOffset)
+				end
 			else
 				
 			--jumping up
