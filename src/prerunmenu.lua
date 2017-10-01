@@ -78,6 +78,7 @@ function PreRunMenu:readyButton(text, player)
 		-- start the game
 		local inplayers = {}
 		for k, v in pairs(self.players) do
+			v.ready = false -- for next round
 			table.insert(inplayers, {uid = k, color = v.color})
 		end
 		game.gameplay = Gameplay(game, inplayers)
@@ -101,7 +102,7 @@ function PreRunMenu:backButtonPressed(text, player)
 		self.menu.selections[player] = nil
 		print(self.numPlayers)
 	end
-	if self.numPlayers <= 1 then
+	if self.numPlayers <= 0 then
 		-- exit out of this screen
 		game:popScreenStack()
 	end
@@ -115,8 +116,10 @@ function PreRunMenu:update(dt)
 	self.menu:update(dt)
 	if self.numPlayers <= 1 then
 		-- set the back button text to be "back" since it goes back to the main menu
+		self.menu.buttons[#self.menu.buttons].text = "Back"
 	else
 		--  otherwise "drop out"
+		self.menu.buttons[#self.menu.buttons].text = "Drop Out"
 	end
 end
 
@@ -125,19 +128,20 @@ end
 -- end
 
 function PreRunMenu:handleinput(input)
-	-- this should also add them to the game if they aren't added.
 	self.menu:handleinput(input)
+	-- this should also add them to the game if they aren't added.
 	if input.player == "mouse" then
 		if input.inputtype == "back" then
 			game:popScreenStack()
 		end
 	else
-		if self.players[input.player] == nil then
+		if self.players[input.player] == nil and self.menu.selections[input.player] then -- if self.menu.selections[input.player] is nil, then it literally just deleted it from this very tabble
 			-- then add the player key to the live thing! it's party time!
 			-- print("ADDED PLAYER "..tostring(player))
 			self.players[input.player] = {key = input.player, color = {math.random(0, 255), math.random(0, 255), math.random(0, 255)}, ready = false}
 			print(self.menu.selections[input.player])
 			print(input.player)
+			print("Input type "..input.inputtype)
 			self.menu.selections[input.player].color = self.players[input.player].color
 			self.numPlayers = self.numPlayers + 1
 		end

@@ -21,7 +21,7 @@ function love.load(args)
 end
 
 function love.update(dt)
-	InputManager:update(dt)
+	inputManager:update(dt)
 	game:update(dt)
 	camera:update(dt)
 end
