@@ -9,7 +9,7 @@ function Platform:_init(args)
 	self.h = 30
 	self.style = args.style
 	self.unbounded = args.unbounded
-
+	self.extra = args.extra
 	self.breaking = false
 	self.unbreakable = args.unbreakable
 	self.broken = false
@@ -18,6 +18,10 @@ function Platform:_init(args)
 	self.gearFrame = 1
 	
 	self.image = love.graphics.newImage("images/assets/platform"..self.w..".png")
+	
+	if self.extra > 0 then
+		self.extraImages = {love.graphics.newImage("images/assets/extra"..self.extra.."-1.png"), love.graphics.newImage("images/assets/extra"..self.extra.."-2.png")}
+	end
 	
 	if self.w == 200 then
 		self.gearImage = {}
@@ -31,10 +35,14 @@ function Platform:draw(x, y, w, style)
 	camera:rectangle("fill", self.pos.x, self.pos.y, self.w, self.h)
 	love.graphics.setColor(255, 255, 255)
 	camera:draw(self.image, self.pos.x, self.pos.y)
+	if self.extra > 0 then
+		local frame = math.floor(self.gearFrame/2)%2+1
+		camera:draw(self.extraImages[frame], self.pos.x + self.w/2 - self.extraImages[frame]:getWidth()/2, self.pos.y - self.extraImages[frame]:getHeight())
+	end
 end
 
 function Platform:drawGears(x, y, w, style)
-	if self.w == 200 then
+	if self.w == 200 then 
 		love.graphics.setColor(0, 0, 0)
 		love.graphics.setLineWidth(3)
 		camera:line(self.startPos.x + 100, self.startPos.y + 25, self.startPos.x + 100 + (self.range.x or 0), self.startPos.y + 25 + (self.range.y or 0))
