@@ -13,6 +13,8 @@ function Player:_init(game, x, y, uid, color)
 	self.move = Movement(x, y, acceleration, maxDX)
 
 	self.facing = 1
+	self.carrying = false
+	self.playerGrabTimer = 0
 
 	self.size = {width = 80, height = 170}
 	
@@ -66,7 +68,27 @@ function Player:grab(players)
 					end
 				end
 			end
+		elseif self.playerGrabTimer < 0 and not self.carrying then
+			-- try picking up a player nearby
+			for i, other in pairs(players) do
+				if other ~= self and self.move.pos.y < other.move.pos.y + 20 and self.move.pos.y > other.move.pos.y - 100 then
+					-- it's within grabbing height
+					if math.abs(other.move.pos.x - self.move.pos.x) < 50 then
+						print("caught you!")
+						other.move.carrier = self
+						self.playerGrabTimer = 1
+						self.carrying = other
+						break
+					end
+				end
+			end
 		end
+	elseif self.carrying then
+		print("released")
+		self.carrying.move.carrier = false
+		self.carrying.move.vel.dx = 600 * self.facing + self.move.vel.dx
+		self.carrying.move.vel.dy = self.move.vel.dy + 200
+		self.carrying = false
 	end
 end
 
@@ -78,7 +100,10 @@ function Player:update(dt, platforms, players, avalanches, fallingrocks, items)
 	self:getItems(items)
 	self:useItem()
 	self:movePlayer(dt, platforms)
+	if self.move.vel.dx ~= 0 then self.facing = sign(self.move.vel.dx) end
 	self:grab(players)
+	self.playerGrabTimer = self.playerGrabTimer - dt
+
 	self:animatePlayer(dt)
 
 	if (self.move.noGrab > 0) then

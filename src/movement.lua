@@ -23,6 +23,7 @@ function Movement:_init(_x, _y, _acceleration, _maxDX)
 	self.climbUpTimer = 0
 	self.shimmyFrame = 1
 	self.noGrab = 0
+	self.carrier = false -- this is either false or the player that is carrying it...
 
 end
 
@@ -31,6 +32,13 @@ function Movement:setFriction(value)
 end
 
 function Movement:xMove(dt, xScaler)
+	if self.carrier then
+		-- move with the carrier
+		self.pos.x = self.carrier.move.pos.x
+		self.vel.dx = self.carrier.move.vel.dx
+		return
+	end
+
 	if (xScaler > 0) then
 		self.facing = 1
 	elseif (xScaler < 0) then
@@ -52,7 +60,7 @@ function Movement:xMove(dt, xScaler)
 			self.shimmyFrame = 1
 		end
 	else
-		ddx = xScaler * self.acceleration
+		local ddx = xScaler * self.acceleration
 		if (not self.onGround) then
 			xScaler = xScaler * 1.3
 		end
@@ -66,11 +74,19 @@ function Movement:xMove(dt, xScaler)
 			self.vel.dx = 0
 		end
 	end
-	
+
+
 	self.pos.x = self.pos.x + self.vel.dx * dt
 end
 
 function Movement:yMove(dt, jumping)
+	if self.carrier then
+		-- you're being carried unless you spam the jump button
+		self.onGround = true
+		self.pos.y = self.carrier.move.pos.y - 100
+		self.vel.dy = self.carrier.move.vel.dy
+		return
+	end
 	-- print(self.jumpTimer)
 	if (self.climbUpTimer > 12) then
 		self.climbUpTimer = 0
