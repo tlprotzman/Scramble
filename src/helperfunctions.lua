@@ -42,6 +42,15 @@ function rectCollision(r1, r2)
 	-- also I should probably code something that accounts for fast movement to make things nice...
 end
 
+function coordsInsideRect(x, y, rx, ry, rw, rh)
+  if x > rx and x < rx + rw then
+    if y > ry and y < ry + rh then
+      return true
+    end
+  end
+  return false
+end
+
 
 -- we may be better off using HUMP (or the trimmed down version of this below) instead of this, but it works
 function class(...)
