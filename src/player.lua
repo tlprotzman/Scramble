@@ -52,7 +52,8 @@ function Player:movePlayer(dt, platforms)
 	xScaler = inputManager:getPlayerValues(self.uid).x
 	jump = inputManager:getPlayerValues(self.uid).raw.up > 0.9
 	self.move:collisions(platforms, self.size, dt)
-	if inputManager:getPlayerValues(self.uid).raw.down > 0.9 and ((self.move.onGround == true and self.move.onSolidGround == false) or self.move.hanging) then
+	if inputManager:getPlayerValues(self.uid).raw.down > 0.9 and ((self.move.onGround == true and self.move.onSolidGround == false) or self.move.hanging or self.move.climbUpTimer > 0) then
+		self.move.climbUpTimer = 0
 		self.move.onGround = false
 		self.move.pos.y = self.move.pos.y + 20
 	end
