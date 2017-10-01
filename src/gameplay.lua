@@ -6,16 +6,22 @@ require "item"
 
 Gameplay = class()
 
-function Gameplay:_init(game)
+function Gameplay:_init(game, inplayers)
 	-- this is for the draw stack
 	self.numPlayers = 2
 	self.game = game
 	self.players = {}
-	for i = 1, self.numPlayers do
-		table.insert(self.players, Player(self.game, (1920/(self.numPlayers + 1)) * i, 800, i, {math.random(1, 255), math.random(1, 255), math.random(1, 255)}))
+	if inplayers then
+		for i, v in ipairs(inplayers) do
+			table.insert(self.players, Player(self.game, (1920/ (#inplayers + 1))*i, 800, v.uid, v.color))
+		end
+	else
+		for i = 1, self.numPlayers do
+			table.insert(self.players, Player(self.game, (1920/(self.numPlayers + 1)) * i, 800, "k"..i, {math.random(1, 255), math.random(1, 255), math.random(1, 255)}))
+		end
+		-- uncomment this one for testing joysticks
+		-- table.insert(self.players, Player(self.game, 1, {math.random(1, 255), math.random(1, 255), math.random(1, 255)}))
 	end
-	-- uncomment this one for testing joysticks
-	-- table.insert(self.players, Player(self.game, 1, {math.random(1, 255), math.random(1, 255), math.random(1, 255)}))
 	self.platforms = {}
 	self.avalanches = {}
 	self.fallingrocks = {}
@@ -99,6 +105,11 @@ function Gameplay:update(dt)
 	if (camera.pos.y / self.spacing > self.lastChunkGenerated) then
 		self:generateNextChunk(math.random(1, 2), self.lastChunkGenerated + 10)
 		self.lastChunkGenerated = self.lastChunkGenerated + 10
+	end
+
+
+	if love.keyboard.isDown("escape") then
+		game:popScreenStack()
 	end
 end
 
