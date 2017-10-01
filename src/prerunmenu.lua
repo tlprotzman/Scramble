@@ -17,7 +17,7 @@ function PreRunMenu:_init(args)
 							{text = "Blue", rightOption = self.colorIncreased, leftOption = self.colorDecreased},
 							{text = "Back", leftOption = self.backButtonPressed}}
 	local buttonWidth = 500
-	self.menu = Menu{parent = self, x = love.graphics.getWidth()/2-buttonWidth/2, y = 200, buttonwidth = buttonWidth, buttons = menuButtons}
+	self.menu = Menu{parent = self, x = 1920/2-buttonWidth/2, y = 200, buttonwidth = buttonWidth, buttons = menuButtons}
 
 	self.players = {} -- this gets reset on page load, it's full of a table with playerIDs, player colors, and not much else?
 	self.numPlayers = 0
@@ -82,6 +82,8 @@ function PreRunMenu:readyButton(text, player)
 			table.insert(inplayers, {uid = k, color = v.color})
 		end
 		game.gameplay = Gameplay(game, inplayers)
+		camera.pos.x = 0
+		camera.pos.y = 0
 		game:addToScreenStack(game.gameplay)
 	end
 end

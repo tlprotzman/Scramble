@@ -5,7 +5,10 @@ require "button"
 Menu = class()
 
 function Menu:_init(args)
-	self.playerIcon = love.graphics.newImage("images/assets/pointer.png")
+	self.playerIcon = {}
+	for i = 1, 12 do
+		table.insert(self.playerIcon, love.graphics.newImage("images/assets/pointer"..i..".png"))
+	end
 	if not args then
 		args = {}
 	end
@@ -24,6 +27,7 @@ function Menu:_init(args)
 
 	self.oneSelection = args.oneSelection or false
 	self.singleSelection = 1 -- this just gets changed by everyone
+	self.singleSelectionFrame = 1
 	self.selections = {} -- the keys are the playerUIDs passed in from the input
 	self.icons = {left = {}, right = {}}
 	for i, v in ipairs(args.buttons) do
@@ -36,7 +40,7 @@ function Menu:handleinput(input)
 	if self.selections[input.player] == nil then
 		if not self.oneSelection then
 			-- add them to the game
-			self.selections[input.player] = {index = 1, color = {0, 0, 0}, string = ""}
+			self.selections[input.player] = {index = 1, color = {0, 0, 0}, string = "", frame = math.random(1, #self.playerIcon)}
 			self:addNewPlayerIcon(input.player)
 			return -- for now when you are added you can't move around
 		else
@@ -46,7 +50,7 @@ function Menu:handleinput(input)
 
 	if input.inputtype == "join" then
 		-- they pressed start, so let them join in
-		self.selections[input.player] = {index = 1, color = {0, 0, 0}, string = ""} -- perhaps also color and player number though
+		self.selections[input.player] = {index = 1, color = {0, 0, 0}, string = "" , frame = math.random(1, #self.playerIcon)} -- perhaps also color and player number though
 		self:addNewPlayerIcon(input.player)
 	elseif input.inputtype == "menuup" then
 		if not self.oneSelection then
@@ -151,7 +155,7 @@ function Menu:draw()
 			local y = self.buttons[buttonIndex].y
 			for i, player in ipairs(listOfPlayers) do
 				love.graphics.setColor(self.selections[player].color)
-				love.graphics.draw(self.playerIcon, x, y, 0, -1, 1)
+				love.graphics.draw(self.playerIcon[math.floor(self.selections[player].frame)], x, y, 0, -1, 1)
 				-- love.graphics.rectangle("fill", x, y, 20, self.buttonHeight)
 				x = x - 90
 			end
@@ -163,7 +167,7 @@ function Menu:draw()
 			local y = self.buttons[buttonIndex].y
 			for i, player in ipairs(listOfPlayers) do
 				love.graphics.setColor(self.selections[player].color)
-				love.graphics.draw(self.playerIcon, x, y, 0, 1, 1)
+				love.graphics.draw(self.playerIcon[math.floor(self.selections[player].frame)], x, y, 0, 1, 1)
 				-- love.graphics.rectangle("fill", x, y, 20, self.buttonHeight)
 				x = x + 90
 			end
@@ -171,7 +175,7 @@ function Menu:draw()
 	elseif self.usedSingleSelection or inputManager.numGamepads > 0 then
 		-- draw the white rectangle around the boxes I guesss...
 		love.graphics.setColor(255, 255, 255)
-		love.graphics.draw(self.playerIcon, self.x-5, self.buttons[self.singleSelection].y, 0, -1, 1)
+		love.graphics.draw(self.playerIcon[math.floor(self.singleSelectionFrame)], self.x-5, self.buttons[self.singleSelection].y, 0, -1, 1)
 		-- love.graphics.rectangle("line", self.x, self.buttons[self.singleSelection].y, self.width, self.buttonHeight)
 	end -- otherwise don't draw, they may be using the mouse
 end
@@ -179,5 +183,19 @@ end
 function Menu:update(dt)
 	for i, v in ipairs(self.buttons) do
 		v:update(dt)
+	end
+	if self.oneSelection then
+		self.singleSelectionFrame = self.singleSelectionFrame + dt*10
+		if self.singleSelectionFrame >= #self.playerIcon + 1 then
+			self.singleSelectionFrame = 1
+		end
+	else
+		-- update all of the selections[player].frame
+		for k, player in pairs(self.selections) do
+			player.frame = player.frame + dt*10
+			if player.frame >= #self.playerIcon + 1 then
+				player.frame = 1
+			end
+		end
 	end
 end

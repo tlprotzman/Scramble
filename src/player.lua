@@ -94,6 +94,7 @@ function Player:grab(players)
 		end
 	elseif self.carrying then
 		self.carrying.move.carrier = false
+		self.carrying.carrierBreakFree = 0
 		self.carrying.move.vel.dx = 600 * self.facing + self.move.vel.dx
 		self.carrying.move.vel.dy = self.move.vel.dy + 200
 		self.carrying.move.thrown = true
