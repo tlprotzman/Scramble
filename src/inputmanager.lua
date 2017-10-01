@@ -61,7 +61,7 @@ function InputManager:setSendMenuInputs(sendBoolean)
 	-- if sendBoolean then the menu stuff will be sent, otherwise no
 	if sendBoolean and self.sendMenuInputs ~= sendBoolean then
 		-- then reset all the controller's menu variables as well.
-		for k, values in pairs(self.playerValues) do
+		for i, values in ipairs(self.playerValues) do
 			for j, k in pairs(values) do
 				k.timer = 10000 -- the player needs to re-center their controls for the menus to have effect? probably. We'll see...
 				k.value = values[k]
