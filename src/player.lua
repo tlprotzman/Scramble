@@ -162,6 +162,9 @@ end
 
 function Player:die()
 	if math.abs(self.move.pos.y + camera.pos.y) > 1080 + 30 and math.abs(self.move.pos.y + camera.pos.y) < 4000 then
+		if not self.game.gameplay.gameOver then
+			table.insert(self.game.gameplay.standings, 1, self.color)
+		end
 		self.dead = true
 	end
 end
