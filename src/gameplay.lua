@@ -66,6 +66,7 @@ end
 
 function Gameplay:load()
 	-- run when the level is given control
+	soundManager:stopSound("titlemusic")
 end
 
 function Gameplay:leave()

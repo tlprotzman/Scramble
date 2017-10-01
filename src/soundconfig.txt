@@ -1,0 +1,44 @@
+// these are comments
+// 
+
+// soundName
+// fileLocation
+// soundCount to load
+// looping = boolean
+// pitch shifting amount (.5 = up to an octave)
+// volume
+
+avalanche
+sounds/avalanche.mp3
+3
+false
+0
+.75
+
+grunt
+sounds/avalanche.mp3
+7
+false
+0
+.75
+
+scream
+sounds/scream.mp3
+5
+false
+0
+.5
+
+titlemusic
+sounds/Shanghai Action1.wav
+1
+true
+0
+.5
+
+thud
+sounds/thud.mp3
+5
+false
+0
+.5
