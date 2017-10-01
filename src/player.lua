@@ -83,6 +83,7 @@ function Player:update(dt, platforms, players, avalanches, fallingrocks, items)
 	self:movePlayer(dt, platforms)
 	self:grab(players)
 	self:animatePlayer(dt)
+	self:makeSnow()
 
 	if (self.move.noGrab > 0) then
 		self.move.noGrab = self.move.noGrab + dt
@@ -101,6 +102,12 @@ function Player:useItem()
 			table.insert(self.game.gameplay.avalanches, Avalanche(self.move.pos.x, 3000, 5000))
 			self.hasItem = 0
 		end
+	end
+end
+
+function Player:makeSnow()
+	if self.move.onGround and math.abs(self.move.vel.dx) > 50 and math.random(1, 10) == 5 then
+		table.insert(self.game.gameplay.snowballs, Snow(self.move.pos.x - 180, self.move.pos.y - 70))
 	end
 end
 

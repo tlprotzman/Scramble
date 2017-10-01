@@ -60,8 +60,8 @@ function Movement:xMove(dt, xScaler)
 		if (self.onGround and (math.abs(xScaler) < 0.05 or xScaler * self.vel.dx < 0)) then
 			self.vel.dx = self.vel.dx - self.vel.dx * self.friction
 		end
-		if (self.vel.dx > self.maxDX) then
-			self.vel.dx = self.maxDX
+		if (math.abs(self.vel.dx) > self.maxDX) then
+			self.vel.dx = sign(self.vel.dx)*self.maxDX
 		elseif math.abs(self.vel.dx) < 0.1 then
 			self.vel.dx = 0
 		end

@@ -1,4 +1,5 @@
 require "platform"
+require "snow"
 require "player"
 require "avalanche"
 require "fallingrock"
@@ -26,6 +27,7 @@ function Gameplay:_init(game, inplayers)
 	self.avalanches = {}
 	self.fallingrocks = {}
 	self.items = {}
+	self.snowballs = {}
 	self.itemColors = {{0, 255, 255}, {255, 0, 0}}
 	
 	camera.d.y = 0
@@ -70,6 +72,9 @@ function Gameplay:draw()
 	for i, v in ipairs(self.platforms) do
 		v:draw()
 	end
+	for i, v in ipairs(self.snowballs) do
+		v:draw()
+	end
 	for i, v in ipairs(self.items) do
 		v:draw()
 	end
@@ -111,6 +116,13 @@ function Gameplay:update(dt)
 	for i, v in ipairs(self.avalanches) do
 		if v.dead then
 			table.remove(self.avalanches, i)
+		else
+			v:update(dt)
+		end
+	end
+	for i, v in ipairs(self.snowballs) do
+		if v.dead then
+			table.remove(self.snowballs, i)
 		else
 			v:update(dt)
 		end
