@@ -10,7 +10,7 @@ Button = class()
 
 function Button:_init(args)
 	self.frameUpdateSpeed = 5
-	
+
 	self.parent = args.parent
 	self.x = args.x
 	self.y = args.y
@@ -47,8 +47,17 @@ function Button:draw()
 	local scale = (self.width-2*fullArrowWidth)/500
 	love.graphics.draw(images.selectionButton[math.floor(self.centerFrame)], self.x+fullArrowWidth, self.y, 0, scale, 1)
 	-- love.graphics.rectangle("fill", self.x+fullArrowWidth, self.y, self.width-2*fullArrowWidth, self.height)
-	love.graphics.setColor(0, 255, 255)
-	love.graphics.printf(self.text, self.x+fullArrowWidth, self.y, self.width-2*fullArrowWidth)
+	if self.text == "Red" then
+		love.graphics.setColor(255, 0, 0)
+	elseif self.text == "Green" then
+		love.graphics.setColor(0, 255, 0)
+	elseif self.text == "Blue" then
+		love.graphics.setColor(0, 0, 255)
+	else
+		love.graphics.setColor(255, 255, 255)
+	end
+	love.graphics.setFont(MainFont[2])
+	love.graphics.printf(self.text, self.x+fullArrowWidth, self.y, self.width-2*fullArrowWidth, "center")
 	-- love.graphics.setColor(0, 0, 0)
 	-- love.graphics.rectangle("line", self.x+fullArrowWidth, self.y, self.width-2*fullArrowWidth, self.height)
 	if self.leftOption then

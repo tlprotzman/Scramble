@@ -20,6 +20,7 @@ function PreRunMenu:_init(args)
 	local buttonWidth = 500
 	self.menu = Menu{parent = self, x = 1920/2-buttonWidth/2, y = 200, buttonwidth = buttonWidth, buttons = menuButtons}
 
+	self.playerOrder = {} -- this is index to playerUID to get playernumber
 	self.players = {} -- this gets reset on page load, it's full of a table with playerIDs, player colors, and not much else?
 	self.numPlayers = 0
 end
@@ -54,6 +55,14 @@ function PreRunMenu:colorIncreased(text, player)
 	local textToColor = {Red = 1, Green = 2, Blue = 3}
 	self.players[player].color[textToColor[text]] = math.min(255, self.players[player].color[textToColor[text]] + self.colorChangeAmount)
 	self.menu.selections[player].color[textToColor[text]] = self.players[player].color[textToColor[text]] -- change the color on the menu icon as well
+end
+
+function PreRunMenu:drawPlayer(x, y, frame, bodyColor, type)
+	local colors = {{170, 140, 132}, bodyColor, {255, 255, 255}}
+	for i = 1, 3 do
+		love.graphics.setColor(colors[i])
+		love.graphics.draw(images.player[type.."Images"][i][math.floor(frame)], x, y, 0, 1, 1, images.player[type.."Images"][i][math.floor(frame)]:getWidth()/2, 0)
+	end
 end
 
 function PreRunMenu:readyButton(text, player)
@@ -99,7 +108,12 @@ function PreRunMenu:backButtonPressed(text, player)
 			self.players[k] = nil
 		end
 		self.numPlayers = 0
+		self.playerOrder = {}
 	else
+		local found, index = iInTable(self.playerOrder, player)
+		if found then
+			table.remove(self.playerOrder, index)
+		end
 		self.numPlayers = self.numPlayers - 1
 		self.players[player] = nil
 		-- print("REMOVED PLAYER "..tostring(player))
@@ -116,6 +130,18 @@ end
 function PreRunMenu:draw()
 	love.graphics.draw(self.backgroundImage, 0, 0)
 	self.menu:draw()
+	local x = 1920/(#self.playerOrder+1)
+	local y = 1080-202
+	for i, player in pairs(self.playerOrder) do
+		if not self.players[player].ready then
+			self:drawPlayer(x*i, y, self.players[player].frame, self.players[self.playerOrder[i]].color, "idle")
+		else
+			-- then do celibration one
+			-- self:drawPlayer(x*i, y, 1, self.players[self.playerOrder[i]].color)
+
+		end
+		-- x = x + 1920/(#self.playerOrder+1)
+	end
 end
 
 function PreRunMenu:update(dt)
@@ -126,6 +152,14 @@ function PreRunMenu:update(dt)
 	else
 		--  otherwise "drop out"
 		self.menu.buttons[#self.menu.buttons].text = "Drop Out"
+	end
+	for k, v in pairs(self.players) do
+		v.frame = v.frame + dt * 10
+		if v.ready and v.frame >= 18+1 then
+			v.frame = 1
+		elseif not v.ready and v.frame > 7+1 then
+			v.frame = 1
+		end
 	end
 end
 
@@ -145,9 +179,10 @@ function PreRunMenu:handleinput(input)
 		if self.players[input.player] == nil and self.menu.selections[input.player] then -- if self.menu.selections[input.player] is nil, then it literally just deleted it from this very tabble
 			-- then add the player key to the live thing! it's party time!
 			-- print("ADDED PLAYER "..tostring(player))
-			self.players[input.player] = {key = input.player, color = {math.random(0, 255), math.random(0, 255), math.random(0, 255)}, ready = false}
+			self.players[input.player] = {key = input.player, color = {math.random(0, 255), math.random(0, 255), math.random(0, 255)}, ready = false, frame = math.random(1, 7)}
 			self.menu.selections[input.player].color = self.players[input.player].color
 			self.numPlayers = self.numPlayers + 1
+			table.insert(self.playerOrder, input.player)
 		end
 	end
 	return true -- because I'm too lazy to actually do this part probably...
