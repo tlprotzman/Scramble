@@ -163,6 +163,9 @@ function Gameplay:update(dt)
 		self:generateNextChunk(math.random(1, 2), self.lastChunkGenerated + 10)
 		self.lastChunkGenerated = self.lastChunkGenerated + 10
 	end ]]--
+	if love.keyboard.isDown("escape") then
+		game:popScreenStack()
+	end
 end
 
 function Gameplay:updateDayLight()
@@ -187,11 +190,6 @@ function Gameplay:updateDayLight()
 			end
 		end
 	end
-
-
-	if love.keyboard.isDown("escape") then
-		game:popScreenStack()
-	end
 end
 
 function Gameplay:resize(w, h)
@@ -205,7 +203,7 @@ end
 
 function Gameplay:generateNextChunk()
 
-	local chunkType = math.random(1, 4)
+	local chunkType = 6--math.random(1, 4)
 	
 	if chunkType == 1 then
 		self:generatePlatform(100, 100,  1)
@@ -229,6 +227,25 @@ function Gameplay:generateNextChunk()
 		self:generatePlatform(100, 200,  3, 0, 0, 75, 700)
 		self:generatePlatform(1500, 200, 3, 0, 0, 100, 700)
 		self:generatePlatform(810, 0,  1)
+	elseif chunkType == 5 then
+		self:generatePlatform(100, 100, 3, 0, 0, 125, 922)
+		self:generatePlatform(1400, 800, 1)
+		self:generatePlatform(400, 800, 1)
+		self:generatePlatform(1000, 500, 2)
+		self:generatePlatform(400, 100, 1)
+		self:generatePlatform(1400, 100, 1)
+	elseif chunkType == 6 then
+		self.chunkCount = self.chunkCount + 1
+		self:generatePlatform(100, 100, 3, 0, 0, 125, 1900)
+		self:generatePlatform(1000, 1900, 2)
+		self:generatePlatform(400, 1800, 1)
+		self:generatePlatform(700, 1500, 1)
+		self:generatePlatform(1600, 1500, 2)
+		self:generatePlatform(1300, 1100, 3)
+		self:generatePlatform(300, 1175, 3)
+
+
+
 	end
 end
 

@@ -105,25 +105,26 @@ function Movement:yMove(dt, jumping)
 		return
 	end
 
+	if (self.onGround) then 
+		self.jumpTimer = 0
+		self.floatingJumpTimer = 0
+	end
 
 	if (jumping) then
-		self.onGround = false
 		self.jumpTimer = self.jumpTimer + dt
+		print(self.onGround)
 		if (self.onGround or (self.floatingJumpTimer < self.floatingJumpAllowance) or self.jumpTimer < self.maxJumpTime) then
 			self.vel.dy = -800*((self.maxJumpTime-self.jumpTimer+self.maxJumpTime*3)/(self.maxJumpTime*4)) -- this tries to reduce the "double jump feeling"
 			-- one attempted thing: -500*((self.maxJumpTime-self.jumpTimer+self.maxJumpTime*.999)/(self.maxJumpTime*1.999))
 			self.floatingJumpTimer = self.floatingJumpAllowance -- no longer allowed to jump
 		end
+		self.onGround = false
 	end
 	
 	if (not jumping and not self.onGround) then
 		self.jumpTimer = self.maxJumpTime
 	end
 
-	if (self.onGround) then 
-		self.jumpTimer = 0
-		self.floatingJumpTimer = 0
-	end
 	self.floatingJumpTimer = self.floatingJumpTimer + dt -- this allows the player to jump in mid-air after they just fell off of a platform
 
 
