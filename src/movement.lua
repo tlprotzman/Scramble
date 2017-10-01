@@ -12,18 +12,15 @@ function Movement:_init(_x, _y, _acceleration, _maxDX)
 	self.friction = 0.2
 
 	self.onGround = false
+	self.onSolidGround = false
 	self.maxJumpTime = 0.4
 	self.jumpTimer = 0
 
 end
 
-
-
 function Movement:setFriction(value)
 	self.friction = value
 end
-
-
 
 function Movement:xMove(dt, xScaler)
 	ddx = xScaler * self.acceleration
@@ -36,8 +33,6 @@ function Movement:xMove(dt, xScaler)
 	end
 	self.pos.x = self.pos.x + self.vel.dx * dt
 end
-
-
 
 function Movement:yMove(dt, jumping)
 	-- print(self.jumpTimer)
@@ -62,21 +57,19 @@ function Movement:yMove(dt, jumping)
 	self.pos.y = self.pos.y + self.vel.dy * dt
 end
 
-
-
-
 function Movement:move(dt, xScaler, jumping, onGround)
 	self:xMove(dt, xScaler)
 	self:yMove(dt, jumping)
 end
 
-
-
 function Movement:collisions(elements, size, dt)
 	
+	self.onGround = false
+	self.onSolidGround = false
+	
 	for i, v in pairs(elements) do
-		if (self.pos.x > v.pos.x - size.width and self.pos.x < v.pos.x + v.w) then
-			if (self.pos.y + size.height < v.pos.y and 10 + self.pos.y + size.height + self.vel.dy * dt > v.pos.y) then
+		if (self.pos.x + size.width > v.pos.x and self.pos.x < v.pos.x + v.w) then
+			if (self.pos.y + size.height < v.pos.y + 10 and self.pos.y + size.height + self.vel.dy * dt > v.pos.y) then
 				print(self.pos.y)
 			-- if (self.pos.y < v.pos.y and self.pos.y + self.vel.dy > v.pos.y) then
 				self.pos.y = v.pos.y - size.height
@@ -86,13 +79,11 @@ function Movement:collisions(elements, size, dt)
 		end
 	end			
 
-
-
-
 	if (self.pos.y + size.height > love.graphics.getHeight()) then
 		self.pos.y = love.graphics.getHeight() - size.height
-		self.pos.dy = 0
+		self.vel.dy = 0
 		self.onGround = true
+		self.onSolidGround = true
 	end
 	-- print(self.pos.x)
 	if (self.pos.x < 0) then
