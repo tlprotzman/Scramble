@@ -4,6 +4,7 @@ require "gameplay"
 require "prerunmenu"
 
 Game = class()
+MainFont = { love.graphics.newFont("fonts/ferrum.otf", 3), love.graphics.newFont("fonts/ferrum.otf", 72), love.graphics.newFont("fonts/ferrum.otf", 144) }
 
 function Game:delayedinit(args)
 	self.args = args
@@ -69,6 +70,7 @@ function Game:draw()
 
 	if self.debug then
 		love.graphics.setColor(255, 0, 0)
+		love.graphics.setFont(MainFont[1])
 		love.graphics.print("FPS: "..love.timer.getFPS(), 10, 1080-45)
 		love.graphics.setColor(255, 255, 255)
 	end

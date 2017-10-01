@@ -94,15 +94,22 @@ function Gameplay:draw()
 	for i, v in ipairs(self.avalanches) do
 		v:draw()
 	end
-	love.graphics.print(camera.pos.y, 10, 10)
 	
 	love.graphics.setColor(self.dayLightColor[1], self.dayLightColor[2], self.dayLightColor[3], self.dayLightColor[4])
 	camera:rectangle("fill", 0, 0, 1920, 1820, true)
 	
 	if #self.players <=1 then
 		for i, v in ipairs(self.standings) do
+			if i==1 then
+				love.graphics.setFont(MainFont[3])
+			else
+				love.graphics.setFont(MainFont[2])
+			end
+				
+			love.graphics.setColor(0, 0, 0)
+			love.graphics.printf(self.standingNames[i].." Place", 0, 1080/2-50*#self.standingNames+150*i+5, 1920, "center")
 			love.graphics.setColor(unpack(v))
-			love.graphics.print(self.standingNames[i].." Place", 1920/2, 1080/2-50*#self.standingNames+100*i)
+			love.graphics.printf(self.standingNames[i].." Place", 0, 1080/2-50*#self.standingNames+150*i, 1920, "center")
 		end
 	end
 end
