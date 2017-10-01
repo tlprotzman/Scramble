@@ -2,7 +2,7 @@
 Screen = class()
 
 
-function Screen:init(args)
+function Screen:_init(args)
 	-- this is for the draw stack
 	self.drawUnder = false
 	self.updateUnder = false

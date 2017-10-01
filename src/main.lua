@@ -40,11 +40,15 @@ function love.keyreleased(key, unicode)
 end
 
 function love.mousepressed(button, x, y)
-	inputManager:mousepressed(button, x, y)
+	inputManager:mousepressed(button, game:realToFakeMouse(x, y))
 end
 
 function love.mousereleased(button, x, y)
-	inputManager:mousereleased(button, x, y)
+	inputManager:mousereleased(button, game:realToFakeMouse(x, y))
+end
+
+function love.mousemoved(x, y, dx, dy)
+	inputManager:mousemoved(game:realToFakeMouse(x, y), dx, dy)
 end
 
 function love.gamepadadded(gamepad)
