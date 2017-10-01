@@ -14,5 +14,6 @@ function Item:_init(x, y, itemType)
 end
 
 function Item:draw()
+	love.graphics.setColor(255, 255, 255)
 	camera:draw(self.image, self.x, self.y)
 end
