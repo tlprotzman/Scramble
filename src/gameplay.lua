@@ -29,9 +29,12 @@ function Gameplay:_init(game, inplayers)
 	self.items = {}
 	self.snowballs = {}
 	self.itemColors = {{0, 255, 255}, {255, 0, 0}}
+	self.gameOver = false
 	
 	camera.d.y = 0
 	self.cameraTimer = 1
+	self.standingNames = {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"}
+	self.standings = {}
 	
 	self.drawUnder = false
 	self.updateUnder = false
@@ -96,12 +99,11 @@ function Gameplay:draw()
 	love.graphics.setColor(self.dayLightColor[1], self.dayLightColor[2], self.dayLightColor[3], self.dayLightColor[4])
 	camera:rectangle("fill", 0, 0, 1920, 1820, true)
 	
-	love.graphics.setColor(255, 0, 0)
-	love.graphics.print(math.abs(camera.pos.y), 50, 50)
-	love.graphics.print(self.chunkCount*1080, 50, 100)
-	love.graphics.print(#self.players, 50, 150)
-	if #self.players == 1 then
-		love.graphics.print("WINNER", 1920/2, 1080/2)
+	if #self.players <=1 then
+		for i, v in ipairs(self.standings) do
+			love.graphics.setColor(unpack(v))
+			love.graphics.print(self.standingNames[i].." Place", 1920/2, 1080/2-50*#self.standingNames+100*i)
+		end
 	end
 end
 
@@ -150,6 +152,11 @@ function Gameplay:update(dt)
 	if math.abs(camera.pos.y) > self.chunkCount*1080 then
 		self.chunkCount = self.chunkCount + 1
 		self:generateNextChunk()
+	end
+	
+	if not self.gameOver and #self.players==1 then
+		table.insert(self.standings, 1, self.players[1].color)
+		self.gameOver = true
 	end
 --[[
 	if (camera.pos.y / self.spacing > self.lastChunkGenerated) then

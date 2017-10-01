@@ -8,10 +8,12 @@ function MainMenu:_init(args)
 	self.drawUnder = false
 	self.updateUnder = false
 
+	self.backgroundImage = love.graphics.newImage("images/assets/titleBackground.png")
+
 	local menuButtons = {{text = "Play", rightOption = self.playButtonPressed},
 							{text = "Credits", rightOption = self.creditsButton},
 							{text = "Quit", leftOption = self.quitButton}}
-	self.menu = Menu{parent = self, x = 1920/2-250, y = 100, buttonwidth = 500, buttons = menuButtons, oneSelection = true}
+	self.menu = Menu{parent = self, x = 4*1920/5-250, y = 100, buttonwidth = 500, buttons = menuButtons, oneSelection = true}
 end
 
 
@@ -51,6 +53,7 @@ function MainMenu:leave()
 end
 
 function MainMenu:draw()
+	love.graphics.draw(self.backgroundImage, 0, 0)
 	self.menu:draw()
 end
 

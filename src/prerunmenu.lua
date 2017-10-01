@@ -16,6 +16,7 @@ function PreRunMenu:_init(args)
 							{text = "Green", rightOption = self.colorIncreased, leftOption = self.colorDecreased},
 							{text = "Blue", rightOption = self.colorIncreased, leftOption = self.colorDecreased},
 							{text = "Back", leftOption = self.backButtonPressed}}
+	self.backgroundImage = love.graphics.newImage("images/assets/titleBackground.png")
 	local buttonWidth = 500
 	self.menu = Menu{parent = self, x = 1920/2-buttonWidth/2, y = 200, buttonwidth = buttonWidth, buttons = menuButtons}
 
@@ -112,6 +113,7 @@ function PreRunMenu:backButtonPressed(text, player)
 end
 
 function PreRunMenu:draw()
+	love.graphics.draw(self.backgroundImage, 0, 0)
 	self.menu:draw()
 end
 
