@@ -87,11 +87,11 @@ function InputManager:calculatePlayerStats(playerValueTable)
 				-- trigger that menu action pls.
 				if playerValueTable.x > 0 then
 					-- handle the "menuright" event
-					self:distributeInput({inputtype = "menuright"})
+					self:distributeInput({inputtype = "menuright", player = playerValueTable.playerID})
 				else
 					-- we don't need an elseif, because it can't be 0
 					-- handle the left event.
-					self:distributeInput({inputtype = "menuleft"})
+					self:distributeInput({inputtype = "menuleft", player = playerValueTable.playerID})
 				end
 			end
 		else
@@ -106,11 +106,11 @@ function InputManager:calculatePlayerStats(playerValueTable)
 				-- trigger that menu action pls.
 				if playerValueTable.y > 0 then
 					-- handle the "menudown" event, (keep in mind - is up...)
-					self:distributeInput({inputtype = "menudown"})
+					self:distributeInput({inputtype = "menudown", player = playerValueTable.playerID})
 				else
 					-- we don't need an elseif, because it can't be 0
 					-- handle the up event.
-					self:distributeInput({inputtype = "menuup"})
+					self:distributeInput({inputtype = "menuup", player = playerValueTable.playerID})
 				end
 			end
 		else
@@ -165,7 +165,7 @@ end
 
 function InputManager:addControllingMethod(key)
 	local menuTable = {x = {timer = 0, value = 0}, y = {timer = 0, value = 0}} -- if value * the actual current x or y is negative or 0, then it should trigger the action if the current magnitude is > a parameter
-	self.playerValues[key] = {x = 0, y = 0, playing = false, raw = {left = 0, right = 0, up = 0, down = 0}, menu = menuTable}
+	self.playerValues[key] = {x = 0, y = 0, playing = false, raw = {left = 0, right = 0, up = 0, down = 0}, menu = menuTable, playerID = key}
 	-- menu needs to be things. menu has to have timers for holding the key down moving repeatedly, it also should deal with reseting, so if you press twice it works both times...
 	-- essentially, if an x or a y goes less than a certain value, or opposite the current magnitude, then it should set the timer to 0, if the x or y goes above a certain value then it should send the menu behavior
 	-- plus if the timer is greater than whatever variable we choose, then it should re-trigger the menu action.
@@ -241,19 +241,19 @@ end
 
 function InputManager:mousepressed(x, y, button)
 	if self.sendMenuInputs then
-		self:distributeInput({inputtype = "mousepressed", x = x, y = y, button = button, value = 1})
+		self:distributeInput({inputtype = "mousepressed", x = x, y = y, button = button, value = 1, player = "mouse"})
 	end
 end
 
 function InputManager:mousereleased(x, y, button)
 	if self.sendMenuInputs then
-		self:distributeInput({inputtype = "mousepressed", x = x, y = y, button = button, value = 0})
+		self:distributeInput({inputtype = "mousepressed", x = x, y = y, button = button, value = 0, player = "mouse"})
 	end
 end
 
 function InputManager:mousemoved(x, y, dx, dy)
 	if self.sendMenuInputs then
-		self:distributeInput({inputtype = "mousemoved", x = x, y = y, dx = dx, dy = dy})
+		self:distributeInput({inputtype = "mousemoved", x = x, y = y, dx = dx, dy = dy, player = "mouse"})
 	end
 end
 

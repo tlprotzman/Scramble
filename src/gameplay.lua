@@ -19,6 +19,8 @@ function Gameplay:_init(game)
 	
 	self.drawUnder = false
 	self.updateUnder = false
+	
+	self.backgroundImage = love.graphics.newImage("images/assets/background.png")
 
 
 	for i = -100, 6 do
@@ -45,7 +47,7 @@ end
 
 function Gameplay:draw()
 
-	camera:rectangle("fill", 100, 100, 100, 100)
+	--camera:draw(self.backgroundImage, 0, 0)
 	
 	for i, v in ipairs(self.platforms) do
 		v:draw()
