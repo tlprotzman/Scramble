@@ -32,7 +32,7 @@ function Gameplay:_init(game, inplayers)
 	self.gameOver = false
 	
 	camera.d.y = 0
-	self.cameraTimer = 3
+	self.cameraTimer = 1
 	self.standingNames = {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"}
 	self.standings = {}
 	
@@ -210,7 +210,7 @@ end
 
 function Gameplay:generateNextChunk()
 
-	local chunkType = 6--math.random(1, 4)
+	local chunkType = math.random(1, 7)
 	
 	if chunkType == 1 then
 		self:generatePlatform(100, 100,  1)
@@ -244,13 +244,25 @@ function Gameplay:generateNextChunk()
 	elseif chunkType == 6 then
 		self.chunkCount = self.chunkCount + 1
 		self:generatePlatform(100, 100, 3, 0, 0, 125, 1900)
-		self:generatePlatform(1000, 1900, 2)
+		self:generatePlatform(1000, 1800, 2)
 		self:generatePlatform(400, 1800, 1)
 		self:generatePlatform(700, 1500, 1)
 		self:generatePlatform(1600, 1500, 2)
 		self:generatePlatform(1300, 1100, 3)
-		self:generatePlatform(300, 1175, 3)
-
+		self:generatePlatform(300, 1175, 2)
+		self:generatePlatform(400, 811, 1)
+		self:generatePlatform(850, 700, 2)
+		self:generatePlatform(1500, 700, 1)
+		self:generatePlatform(420, 420, 1)
+		self:generatePlatform(900, 200, 3, 70, 800, 0, 0)
+		self:generatePlatform(600, 0, 2)
+	elseif chunkType == 7 then
+		self:generatePlatform(300, 750, 3, 70, 800, 0, 0)
+		self:generatePlatform(1400, 600, 2)
+		self:generatePlatform(50, 300, 1)
+		self:generatePlatform(900, 100, 1)
+		self:generatePlatform(150, 0, 3)
+	elseif chunkType == 8 then
 
 
 	end

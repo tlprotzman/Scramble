@@ -37,6 +37,10 @@ function Player:_init(game, x, y, uid, color)
 
 end
 
+function Player:gatherImages()
+	-- load all of the images from the global "images" table
+end
+
 function Player:loadImages()
 	self.layerColors = {{170, 140, 132}, self.color, {255, 255, 255}}
 	self:loadImageOfType("running", 14)
@@ -56,9 +60,12 @@ end
 function Player:loadImageOfType(name, frames)
 	self[name.."Images"] = {{}, {}, {}}
 	for i = 1, frames do
-		self[name.."Images"][1][i] = love.graphics.newImage("images/player/"..name.."Skin"..i..".png")
-		self[name.."Images"][2][i] = love.graphics.newImage("images/player/"..name.."Clothes"..i..".png")
-		self[name.."Images"][3][i] = love.graphics.newImage("images/player/"..name.."Lines"..i..".png")
+		-- self[name.."Images"][1][i] = love.graphics.newImage("images/player/"..name.."Skin"..i..".png")
+		-- self[name.."Images"][2][i] = love.graphics.newImage("images/player/"..name.."Clothes"..i..".png")
+		-- self[name.."Images"][3][i] = love.graphics.newImage("images/player/"..name.."Lines"..i..".png")
+		self[name.."Images"][1][i] = images.player[name.."Images"][1][i]
+		self[name.."Images"][2][i] = images.player[name.."Images"][2][i]
+		self[name.."Images"][3][i] = images.player[name.."Images"][3][i]
 	end
 end
 
