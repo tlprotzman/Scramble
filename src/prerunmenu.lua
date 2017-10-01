@@ -109,6 +109,7 @@ function PreRunMenu:backButtonPressed(text, player)
 	if self.numPlayers <= 0 then
 		-- exit out of this screen
 		game:popScreenStack()
+		self.menu:clearIcons()
 	end
 end
 
@@ -138,6 +139,7 @@ function PreRunMenu:handleinput(input)
 	if input.player == "mouse" then
 		if input.inputtype == "back" then
 			game:popScreenStack()
+			self.menu:clearIcons()
 		end
 	else
 		if self.players[input.player] == nil and self.menu.selections[input.player] then -- if self.menu.selections[input.player] is nil, then it literally just deleted it from this very tabble

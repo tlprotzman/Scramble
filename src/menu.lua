@@ -29,11 +29,17 @@ function Menu:_init(args)
 	self.singleSelection = 1 -- this just gets changed by everyone
 	self.singleSelectionFrame = 1
 	self.selections = {} -- the keys are the playerUIDs passed in from the input
+	self:clearIcons()
+end
+
+function Menu:clearIcons()
+	-- delete all the icons
 	self.icons = {left = {}, right = {}}
-	for i, v in ipairs(args.buttons) do
+	for i, v in ipairs(self.buttons) do
 		self.icons.left[i] = {}
 		self.icons.right[i] = {}
 	end
+	self.selections = {}
 end
 
 function Menu:handleinput(input)
