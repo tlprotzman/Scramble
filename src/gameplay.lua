@@ -198,7 +198,7 @@ end
 
 function Gameplay:generateNextChunk()
 
-	local chunkType = 4--math.random(1, 4)
+	local chunkType = math.random(1, 4)
 	
 	if chunkType == 1 then
 		self:generatePlatform(100, 100,  1)
