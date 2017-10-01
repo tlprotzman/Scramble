@@ -27,16 +27,19 @@ function Gameplay:_init(game)
 	
 	self.drawUnder = false
 	self.updateUnder = false
-
-	self:generateNextChunk(1, -4)
-	self:generateNextChunk(1, 1)
-	self:generateNextChunk(2, 11)
-	self.lastChunkGenerated = 1
 	
+	self.platformSizes = {280, 500}
+
+	table.insert(self.platforms, Platform({x = 100, y = 100, w = self.platformSizes[1], style = style}))
+	table.insert(self.platforms, Platform({x = 1200, y = 400, w = self.platformSizes[2], style = style}))
+	table.insert(self.platforms, Platform({x = 800, y = 800, w = self.platformSizes[2], style = style}))
+
 	self.backgroundImage = love.graphics.newImage("images/assets/background.png")
 
-
-	table.insert(self.platforms, Platform({x=0, y=1000, w=1920, style="wood", unbreakable=true}))
+	self.dayLightColor = {255, 255, 255, 100}
+	self.targetColors = {{255, 255, 255, 100}, {255, 0, 0, 20}, {0, 0, 0, 200}, {255, 255, 0, 80}}
+	self.targetColor = 1
+--	table.insert(self.platforms, Platform({x=0, y=1000, w=1920, style="wood", unbreakable=true}))
 
 	
 end
@@ -51,7 +54,8 @@ end
 
 function Gameplay:draw()
 
-	--camera:draw(self.backgroundImage, 0, 0)
+	love.graphics.setColor(220, 255, 240, 90)
+	camera:draw(self.backgroundImage, 0, 0)
 	
 	for i, v in ipairs(self.platforms) do
 		v:draw()
@@ -69,6 +73,9 @@ function Gameplay:draw()
 		v:draw()
 	end
 	love.graphics.print(camera.pos.y, 10, 10)
+	
+	love.graphics.setColor(self.dayLightColor[1], self.dayLightColor[2], self.dayLightColor[3], self.dayLightColor[4])
+	camera:rectangle("fill", 0, 0, 1920, 1820)
 end
 
 function Gameplay:update(dt)
@@ -79,6 +86,8 @@ function Gameplay:update(dt)
 		self.cameraTimer = 0
 	end
 
+	self:updateDayLight()
+	
 	for i, v in pairs(self.platforms) do
 		v:update(dt)
 	end
@@ -95,10 +104,34 @@ function Gameplay:update(dt)
 	for i, v in ipairs(self.fallingrocks) do
 		v:update(dt, self.platforms)
 	end
-
+--[[
 	if (camera.pos.y / self.spacing > self.lastChunkGenerated) then
 		self:generateNextChunk(math.random(1, 2), self.lastChunkGenerated + 10)
 		self.lastChunkGenerated = self.lastChunkGenerated + 10
+	end ]]--
+end
+
+function Gameplay:updateDayLight()
+	local numDif = 0
+	for i = 1, 3 do
+		if self.dayLightColor[i] ~= self.targetColors[self.targetColor][i] then
+			numDif = numDif + 1
+		end
+	end
+	if numDif == 0 then
+		self.targetColor = self.targetColor + 1
+		if self.targetColor > #self.targetColors then
+			self.targetColor = 1
+		end
+	else
+		local speed = (1*numDif)/4
+		for i = 1, 4 do
+			if self.dayLightColor[i] > self.targetColors[self.targetColor][i] then
+				self.dayLightColor[i] = self.dayLightColor[i] - speed
+			elseif self.dayLightColor[i] < self.targetColors[self.targetColor][i] then
+				self.dayLightColor[i] = self.dayLightColor[i] + speed
+			end
+		end
 	end
 end
 
@@ -110,6 +143,7 @@ function Gameplay:handleinput(input)
 	--
 end
 
+--[[
 function Gameplay:generateNextChunk(mode, offset)
 	if (mode == 1) then
 	self.variance = 0
@@ -143,3 +177,4 @@ function Gameplay:generateNextChunk(mode, offset)
 	--table.insert(self.avalanches, Avalanche(100, 3000, 5000))
 	--table.insert(self.fallingrocks, FallingRock(100, 100, 500))		
 end
+]]--

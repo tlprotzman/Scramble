@@ -11,6 +11,9 @@ end
 function Avalanche:draw()
 	love.graphics.setColor(200, 200, 200, 245)
 	--camera:rectangle("fill", self.x, self.progress, self.w, self.duration, true)
+
+	love.graphics.setColor(255, 255, 255, 150)
+	--camera:rectangle("fill", self.x, self.progress, self.w, self.duration)
 	for i, v in ipairs(self.snow) do
 		love.graphics.setColor(220, 220, 220, math.max(0, 255-v.size))
 		camera:circle("fill", v.x, v.y + self.progress, v.size)
@@ -20,11 +23,9 @@ function Avalanche:draw()
 end
 
 function Avalanche:update(dt)
-	if self.progress < 1080 then
+	if self.progress < 1800 then
 		self.progress = self.progress + 2000*dt
-		for i = 1, 10 do
-			table.insert(self.snow, {x=math.random(self.x, self.w), y=math.random(0, self.duration), size=0})
-		end
+		table.insert(self.snow, {x=math.random(self.x, self.x+self.w), y=math.random(0, self.duration), size=0})
 		for i, v in ipairs(self.snow) do
 			v.size = v.size + 10
 			if v.size > 255 then

@@ -61,7 +61,7 @@ function Game:draw()
 	love.graphics.setCanvas(self.fullCanvas)
 	love.graphics.clear()
 
-	love.graphics.setBackgroundColor(200, 255, 255)
+	love.graphics.setBackgroundColor(200, 230, 255)
 	
 	for i = self.drawLayersStart, #self.screenStack, 1 do
 		self.screenStack[i]:draw()
