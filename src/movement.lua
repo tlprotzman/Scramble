@@ -40,7 +40,8 @@ function Movement:yMove(dt, jumping)
 		self.onGround = false
 		self.jumpTimer = self.jumpTimer + dt
 		if (self.onGround or self.jumpTimer < self.maxJumpTime) then
-			self.vel.dy = -500
+			self.vel.dy = -500*((self.maxJumpTime-self.jumpTimer+self.maxJumpTime*3)/(self.maxJumpTime*4)) -- this tries to reduce the "double jump feeling"
+			-- one attempted thing: -500*((self.maxJumpTime-self.jumpTimer+self.maxJumpTime*.999)/(self.maxJumpTime*1.999))
 		end
 	end
 	
