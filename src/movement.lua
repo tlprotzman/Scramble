@@ -23,7 +23,7 @@ function Movement:setFriction(value)
 end
 
 function Movement:xMove(dt, xScaler)
-	ddx = xScaler * self.acceleration
+	local ddx = xScaler * self.acceleration
 	if (not self.onGround) then
 		xScaler = xScaler * 1.3
 	end
@@ -68,8 +68,8 @@ function Movement:move(dt, xScaler, jumping, onGround)
 	self:yMove(dt, jumping)
 	
 	if self.onGround and self.onPlatform then
-		self.pos.x = self.pos.x + self.onPlatform.vel.x*dt
-		self.pos.y = self.pos.y + self.onPlatform.vel.y*dt
+		self.pos.x = self.pos.x + self.onPlatform.vel.x*dt*2
+		self.pos.y = self.pos.y + self.onPlatform.vel.y*dt*2
 	end
 end
 
@@ -77,7 +77,6 @@ function Movement:collisions(elements, size, dt)
 	
 	self.onGround = false
 	self.onSolidGround = false
-	self.onPlatform = false
 	
 	for i, v in pairs(elements) do
 		if (self.pos.x + size.width > v.pos.x and self.pos.x < v.pos.x + v.w) then
