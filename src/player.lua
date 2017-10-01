@@ -23,8 +23,11 @@ function Player:_init(game, uid, color)
 
 	self.wasHanging = false
 	self.hangingAnimationFrame = 1
+	self.shimmyFrame = 1
 	
 	self.isAvalanched = false
+	
+	self.hasItem = false
 
 	self:loadImages()
 
@@ -38,6 +41,7 @@ function Player:loadImages()
 	self:loadImageOfType("jumpUp", 5)
 	self:loadImageOfType("turn", 2)
 	self:loadImageOfType("frontGrab", 6)
+	self:loadImageOfType("shimmy", 5)
 end
 
 function Player:loadImageOfType(name, frames)
@@ -68,10 +72,11 @@ function Player:grab(players)
 end
 
 
-function Player:update(dt, platforms, players, avalanches, fallingrocks)
+function Player:update(dt, platforms, players, avalanches, fallingrocks, items)
 
-	self:getAvalanched(avalanches, dt)
-	self:getRocked(fallingrocks, dt)
+	self:getAvalanched(avalanches)
+	self:getRocked(fallingrocks)
+	self:getItems(items)
 	self:movePlayer(dt, platforms)
 	self:grab(players)
 	self:animatePlayer(dt)
@@ -135,6 +140,19 @@ function Player:getRocked(rocks, dt)
 	end
 end
 
+function Player:getItems(items)
+	if not self.hasItem then
+		for i, v in ipairs(items) do
+			if self.move.pos.x + self.size.width > v.x and self.move.pos.x < v.x + v.w then
+				if self.move.pos.y + self.size.height > v.y and self.move.pos.y < v.y + v.h then
+					self.hasItem = v.itemType
+					table.remove(items, i)
+				end
+			end
+		end
+	end
+end
+
 function Player:animatePlayer(dt)
 
 	if self.move.hanging and not self.move.wasHanging then
@@ -143,7 +161,7 @@ function Player:animatePlayer(dt)
 	elseif not self.move.hanging then
 		self.move.wasHanging = false
 	elseif self.move.wasHanging then
-		self.hangingAnimationFrame = math.min(self.hangingAnimationFrame + 20*dt, 6)
+		self.hangingAnimationFrame = self.hangingAnimationFrame + 20*dt
 	end
 	local animationSpeed = 12
 	if self.move.onGround == false and math.abs(self.move.vel.dx) > 150 then
@@ -163,8 +181,12 @@ function Player:draw()
 		
 			if self.move.hanging then
 				local frame = math.floor(self.hangingAnimationFrame)
-				camera:draw(self.frontGrabImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, sign(self.move.vel.dx))
-					
+				if frame > 6 then
+					frame = math.floor(self.move.shimmyFrame)
+					camera:draw(self.shimmyImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, sign(self.move.vel.dx))
+				else
+					camera:draw(self.frontGrabImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, sign(self.move.vel.dx))
+				end
 			--running
 			elseif math.abs(self.move.vel.dx) > 150 then
 				local frame = math.floor(self.animationFrame)
@@ -199,6 +221,12 @@ function Player:draw()
 			end
 		
 	end
+	
+	
 	love.graphics.setColor(0, 255, 0)
+	
+	if self.hasItem then
+		love.graphics.setColor(unpack(self.game.gameplay.itemColors[self.hasItem]))
+	end
 	camera:rectangle("line", self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)
 end
