@@ -23,6 +23,31 @@ function love.load(args)
 	game:delayedinit(args)
 end
 
+function loadPlayerImages()
+	images.player = {}
+	loadPlayerImageOfType("running", 14)
+	loadPlayerImageOfType("runningPickUp", 14)
+	loadPlayerImageOfType("idle", 7)
+	loadPlayerImageOfType("idlePickUp", 7)
+	loadPlayerImageOfType("fallDown", 5)
+	loadPlayerImageOfType("jumpUp", 5)
+	loadPlayerImageOfType("turn", 2)
+	loadPlayerImageOfType("turnPickUp", 2)
+	loadPlayerImageOfType("frontGrab", 6)
+	loadPlayerImageOfType("shimmy", 5)
+	loadPlayerImageOfType("pullUp", 13)
+	loadPlayerImageOfType("pullOff", 10)
+end
+
+function loadPlayerImageOfType(name, frames)
+	images.player[name.."Images"] = {{}, {}, {}}
+	for i = 1, frames do
+		images.player[name.."Images"][1][i] = love.graphics.newImage("images/player/"..name.."Skin"..i..".png")
+		images.player[name.."Images"][2][i] = love.graphics.newImage("images/player/"..name.."Clothes"..i..".png")
+		images.player[name.."Images"][3][i] = love.graphics.newImage("images/player/"..name.."Lines"..i..".png")
+	end
+end
+
 function loadImages()
 	images.selectionButton = {}
 	for i = 1, 6 do
@@ -32,6 +57,7 @@ function loadImages()
 	for i = 1, 7 do
 		table.insert(images.selectionArrow, love.graphics.newImage("images/assets/selectionArrow"..i..".png"))
 	end
+	loadPlayerImages()
 end
 
 function love.update(dt)
