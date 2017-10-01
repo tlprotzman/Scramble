@@ -20,8 +20,8 @@ function Game:delayedinit(args)
 	self.screenStack = {}
 	self.drawLayersStart = 0
 
-	self:addToScreenStack(self.mainMenu)
-	self:addToScreenStack(self.preRunMenu)
+	-- self:addToScreenStack(self.mainMenu)
+	-- self:addToScreenStack(self.preRunMenu)
 	self:addToScreenStack(self.gameplay)
 
 	-- these are things for scaling the screen
@@ -69,7 +69,7 @@ function Game:draw()
 
 	if self.debug then
 		love.graphics.setColor(255, 0, 0)
-		love.graphics.print("FPS: "..love.timer.getFPS(), 10, love.graphics.getHeight()-45)
+		love.graphics.print("FPS: "..love.timer.getFPS(), 10, 1080-45)
 		love.graphics.setColor(255, 255, 255)
 	end
 

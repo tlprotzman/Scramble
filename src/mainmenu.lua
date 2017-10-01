@@ -11,7 +11,7 @@ function MainMenu:_init(args)
 	local menuButtons = {{text = "Play", rightOption = self.playButtonPressed},
 							{text = "Credits", rightOption = self.creditsButton},
 							{text = "Quit", leftOption = self.quitButton}}
-	self.menu = Menu{parent = self, x = 100, y = 100, buttonwidth = 500, buttons = menuButtons, oneSelection = true}
+	self.menu = Menu{parent = self, x = 1920/2-250, y = 100, buttonwidth = 500, buttons = menuButtons, oneSelection = true}
 end
 
 
