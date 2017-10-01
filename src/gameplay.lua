@@ -108,6 +108,7 @@ function Gameplay:draw()
 	camera:rectangle("fill", 0, 0, 1920, 1820, true)
 	
 	if #self.players <=1 then
+		local y = 1080/2-50*#self.standingNames+150
 		for i, v in ipairs(self.standings) do
 			if i==1 then
 				love.graphics.setFont(MainFont[3])
@@ -116,9 +117,14 @@ function Gameplay:draw()
 			end
 				
 			love.graphics.setColor(0, 0, 0)
-			love.graphics.printf(self.standingNames[i].." Place", 0, 1080/2-50*#self.standingNames+150*i+5, 1920, "center")
+			love.graphics.printf(self.standingNames[i].." Place", 0, y, 1920, "center")
 			love.graphics.setColor(unpack(v))
-			love.graphics.printf(self.standingNames[i].." Place", 0, 1080/2-50*#self.standingNames+150*i, 1920, "center")
+			love.graphics.printf(self.standingNames[i].." Place", 0, y+8, 1920, "center")
+			if i==1 then
+				y = y + 200
+			else
+				y = y + 100
+			end
 		end
 	end
 end
@@ -189,11 +195,11 @@ function Gameplay:update(dt)
 
 	self.eventTimer = self.eventTimer + dt
 	if (self.eventTimer > self.eventSpacing) then
-		if (math.random() < 0.001) then
+		if (math.random() < 0.01) then
 			if (math.random() < 0.5) then
 				local xpos = math.random(300, 1620)
-				table.insert(self.avalanches, Avalanche(xpos, 3000, 5000))
-				table.insert(self.alerts, Alert(xpos + 65, 3))
+				table.insert(self.avalanches, Avalanche(xpos - 300, 3000, 5000))
+				table.insert(self.alerts, Alert(xpos, 3))
 
 			else
 				table.insert(self.fallingrocks, FallingRock(math.random(300, 1320), -camera.pos.y - 200, 500 * (math.random(0, 1) * 2 - 1)))		
@@ -298,7 +304,7 @@ end
 
 function Gameplay:generatePlatform(x, y, w, vx, rx, vy, ry)
 	local y0 = self.chunkCount*1080
-	table.insert(self.platforms, Platform({x = x, y = y, w = self.platformSizes[w], style = style, vx = vx or 0, vy = vy or 0, rx = rx or 0, ry = ry or 0, y0 = y0, extra = math.random(-3, 4)}))
+	table.insert(self.platforms, Platform({x = x, y = y, w = self.platformSizes[w], style = style, vx = vx or 0, vy = vy or 0, rx = rx or 0, ry = ry or 0, y0 = y0, extra = math.random(-3, 5)}))
 	local item = math.max(math.random(-5, 2))
 	if item > 0 then
 		table.insert(self.items, Item(x + self.platformSizes[w]/2 - 25, y - 50 - y0, item))

@@ -40,6 +40,7 @@ function loadPlayerImages()
 	loadPlayerImageOfType("shimmy", 5)
 	loadPlayerImageOfType("pullUp", 13)
 	loadPlayerImageOfType("pullOff", 10)
+	loadPlayerImageOfType("celebration", 18)
 end
 
 function loadPlayerImageOfType(name, frames)
