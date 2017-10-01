@@ -161,7 +161,8 @@ function Player:useItem()
 			table.insert(self.game.gameplay.fallingrocks, FallingRock(self.move.pos.x + 200 * self.move.facing, self.move.pos.y, 500 * self.move.facing))		
 			self.hasItem = 0
 		elseif (self.hasItem == 2) then
-			table.insert(self.game.gameplay.avalanches, Avalanche(self.move.pos.x, 3000, 5000))
+			table.insert(self.game.gameplay.avalanches, Avalanche(self.move.pos.x-300, 3000, 5000))
+				table.insert(self.game.gameplay.alerts, Alert(self.move.pos.x-65, 3))
 			self.hasItem = 0
 		end
 	end

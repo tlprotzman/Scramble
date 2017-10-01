@@ -188,11 +188,11 @@ function Gameplay:update(dt)
 
 	self.eventTimer = self.eventTimer + dt
 	if (self.eventTimer > self.eventSpacing) then
-		if (math.random() < 0.001) then
+		if (math.random() < 0.01) then
 			if (math.random() < 0.5) then
 				local xpos = math.random(300, 1620)
-				table.insert(self.avalanches, Avalanche(xpos, 3000, 5000))
-				table.insert(self.alerts, Alert(xpos + 65, 3))
+				table.insert(self.avalanches, Avalanche(xpos - 300, 3000, 5000))
+				table.insert(self.alerts, Alert(xpos, 3))
 
 			else
 				table.insert(self.fallingrocks, FallingRock(math.random(300, 1320), -camera.pos.y - 200, 500 * (math.random(0, 1) * 2 - 1)))		
