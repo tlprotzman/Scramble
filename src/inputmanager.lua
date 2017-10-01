@@ -190,6 +190,9 @@ function InputManager:gamepadaxis(gamepad, axis, value)
 		mapping = self.gamepadAxisMenuMapping[axis] -- this is to allow you to go up on your thumbstick
 	end
 	local didSomething = false
+	if math.abs(value) < .1 then
+		value = 0
+	end
 	if mapping[1] ~= nil then
 		values.raw[mapping[1]] = -math.min(value, 0)
 		didSomething = true
