@@ -40,7 +40,7 @@ function Gameplay:_init(game, inplayers)
 
 	self.backgroundImage = love.graphics.newImage("images/assets/background.png")
 
-	self.dayLightColor = {255, 255, 255, 100}
+	self.dayLightColor = {255, 200, 100, 30}
 	self.targetColors = {{255, 255, 255, 40}, {255, 50, 50, 50}, {50, 50, 50, 100}, {255, 255, 50, 40}}
 	self.targetColor = 1
 	
@@ -112,7 +112,7 @@ function Gameplay:update(dt)
 		self.cameraTimer = 0
 	end
 
-	self:updateDayLight()
+	--self:updateDayLight()
 	
 	for i, v in pairs(self.platforms) do
 		v:update(dt)
@@ -198,7 +198,7 @@ end
 
 function Gameplay:generateNextChunk()
 
-	local chunkType = math.random(1, 4)
+	local chunkType = 4--math.random(1, 4)
 	
 	if chunkType == 1 then
 		self:generatePlatform(100, 100,  1)
@@ -221,7 +221,7 @@ function Gameplay:generateNextChunk()
 		self:generatePlatform(100, 200,  3, 100, 1400, 50, 700)
 		self:generatePlatform(100, 200,  3, 0, 0, 75, 700)
 		self:generatePlatform(1500, 200, 3, 0, 0, 100, 700)
-		self:generatePlatform(890, 0,  1)
+		self:generatePlatform(810, 0,  1)
 	end
 end
 
