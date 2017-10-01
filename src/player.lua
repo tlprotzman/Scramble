@@ -125,7 +125,6 @@ function Player:update(dt, platforms, players, avalanches, fallingrocks, items)
 	self:getRocked(fallingrocks)
 	self:getItems(items)
 	self:useItem()
-	self:die()
 	self:movePlayer(dt, platforms)
 	if self.move.climbUpTimer > 0 then
 		self.size.height = 0
@@ -138,6 +137,8 @@ function Player:update(dt, platforms, players, avalanches, fallingrocks, items)
 
 	self:animatePlayer(dt)
 	self:makeSnow()
+
+	self:die()
 
 	if (self.move.noGrab > 0) then
 		self.move.noGrab = self.move.noGrab + dt
@@ -160,7 +161,7 @@ function Player:useItem()
 end
 
 function Player:die()
-	if self.move.pos.y - camera.pos.y < 1080 + 30 then
+	if math.abs(self.move.pos.y + camera.pos.y) > 1080 + 30 and math.abs(self.move.pos.y + camera.pos.y) < 4000 then
 		self.dead = true
 	end
 end
