@@ -42,3 +42,10 @@ sounds/thud.mp3
 false
 0
 .5
+
+itemget
+sounds/A-Tone-His_Self-1266414414.mp3
+3
+false
+0
+.6

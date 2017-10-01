@@ -26,6 +26,7 @@ function FallingRock:update(dt, platforms, players)
 			if self.y + self.s < v.pos.y + 10 and self.y + self.s + self.vy*dt > v.pos.y then
 				self.vy = -4*math.abs(self.vy)/5
 				self.y = v.pos.y - self.s
+				soundManager:playSound("thud")
 			end
 		end
 	end
