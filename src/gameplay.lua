@@ -221,6 +221,7 @@ function Gameplay:generateNextChunk()
 		self:generatePlatform(100, 200,  3, 100, 1400, 50, 700)
 		self:generatePlatform(100, 200,  3, 0, 0, 75, 700)
 		self:generatePlatform(1500, 200, 3, 0, 0, 100, 700)
+		self:generatePlatform(890, 0,  1)
 	end
 end
 
