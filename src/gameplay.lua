@@ -12,12 +12,18 @@ function Gameplay:_init(game)
 	end
 	self.platforms = {}
 	
-	--camera.d.y = 10
+	camera.d.y = 0
+	self.cameraTimer = 3
 	
 	self.drawUnder = false
 	self.updateUnder = false
-
-	table.insert(self.platforms, Platform(250, 350, 250, "wood"))
+	for i = -100, 6 do
+		if (math.random(0, 10) < 8) then
+			table.insert(self.platforms, Platform(math.random(0, 1800), math.random(-40, 40) + 160 * i, math.random(100, 500), "wood"))
+		end
+		table.insert(self.platforms, Platform(math.random(0, 1800), math.random(-40, 40) + 160 * i, math.random(100, 500), "wood"))
+		-- table.insert(self.platforms, Platform(1300, 160 * i + 80, 250, "wood"))
+	end
 end
 
 function Gameplay:load()
@@ -42,6 +48,16 @@ function Gameplay:draw()
 end
 
 function Gameplay:update(dt)
+	self.cameraTimer = self.cameraTimer + dt
+	if (self.cameraTimer > 6) then
+		camera.d.y = math.random(40, 150)
+		self.cameraTimer = 0
+	end
+
+	for i, v in pairs(self.platforms) do
+		v:update(dt)
+	end
+
 	for i, v in ipairs(self.players) do
 		v:update(dt, self.platforms)
 	end
