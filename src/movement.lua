@@ -24,6 +24,9 @@ end
 
 function Movement:xMove(dt, xScaler)
 	ddx = xScaler * self.acceleration
+	if (not self.onGround) then
+		xScaler = xScaler * 1.3
+	end
 	self.vel.dx = self.vel.dx + ddx * dt
 	if (self.onGround and (math.abs(xScaler) < 0.05 or xScaler * self.vel.dx < 0)) then
 		self.vel.dx = self.vel.dx - self.vel.dx * self.friction
