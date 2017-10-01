@@ -29,9 +29,12 @@ function Gameplay:_init(game, inplayers)
 	self.items = {}
 	self.snowballs = {}
 	self.itemColors = {{0, 255, 255}, {255, 0, 0}}
+	self.gameOver = false
 	
 	camera.d.y = 0
 	self.cameraTimer = 3
+	self.standingNames = {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"}
+	self.standings = {}
 	
 	self.drawUnder = false
 	self.updateUnder = false
@@ -96,12 +99,11 @@ function Gameplay:draw()
 	love.graphics.setColor(self.dayLightColor[1], self.dayLightColor[2], self.dayLightColor[3], self.dayLightColor[4])
 	camera:rectangle("fill", 0, 0, 1920, 1820, true)
 	
-	love.graphics.setColor(255, 0, 0)
-	love.graphics.print(math.abs(camera.pos.y), 50, 50)
-	love.graphics.print(self.chunkCount*1080, 50, 100)
-	love.graphics.print(#self.players, 50, 150)
-	if #self.players == 1 then
-		love.graphics.print("WINNER", 1920/2, 1080/2)
+	if #self.players <=1 then
+		for i, v in ipairs(self.standings) do
+			love.graphics.setColor(unpack(v))
+			love.graphics.print(self.standingNames[i].." Place", 1920/2, 1080/2-50*#self.standingNames+100*i)
+		end
 	end
 end
 
@@ -151,6 +153,11 @@ function Gameplay:update(dt)
 		self.chunkCount = self.chunkCount + 1
 		self:generateNextChunk()
 	end
+	
+	if not self.gameOver and #self.players==1 then
+		table.insert(self.standings, 1, self.players[1].color)
+		self.gameOver = true
+	end
 --[[
 	if (camera.pos.y / self.spacing > self.lastChunkGenerated) then
 		self:generateNextChunk(math.random(1, 2), self.lastChunkGenerated + 10)
@@ -196,7 +203,7 @@ end
 
 function Gameplay:generateNextChunk()
 
-	local chunkType = math.random(1, 4)
+	local chunkType = 6--math.random(1, 4)
 	
 	if chunkType == 1 then
 		self:generatePlatform(100, 100,  1)
@@ -220,6 +227,25 @@ function Gameplay:generateNextChunk()
 		self:generatePlatform(100, 200,  3, 0, 0, 75, 700)
 		self:generatePlatform(1500, 200, 3, 0, 0, 100, 700)
 		self:generatePlatform(810, 0,  1)
+	elseif chunkType == 5 then
+		self:generatePlatform(100, 100, 3, 0, 0, 125, 922)
+		self:generatePlatform(1400, 800, 1)
+		self:generatePlatform(400, 800, 1)
+		self:generatePlatform(1000, 500, 2)
+		self:generatePlatform(400, 100, 1)
+		self:generatePlatform(1400, 100, 1)
+	elseif chunkType == 6 then
+		self.chunkCount = self.chunkCount + 1
+		self:generatePlatform(100, 100, 3, 0, 0, 125, 1900)
+		self:generatePlatform(1000, 1900, 2)
+		self:generatePlatform(400, 1800, 1)
+		self:generatePlatform(700, 1500, 1)
+		self:generatePlatform(1600, 1500, 2)
+		self:generatePlatform(1300, 1100, 3)
+		self:generatePlatform(300, 1175, 3)
+
+
+
 	end
 end
 
