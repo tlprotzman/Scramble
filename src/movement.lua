@@ -4,6 +4,8 @@ Movement = class()
 function Movement:_init(_x, _y, _acceleration, _maxDX)
 	self.gravity = 2000
 
+	self.floatingJumpAllowance = .2 -- the amount of time after someone falls off of a platform that they're still allowed to jump
+	self.floatingJumpTimer = 0
 
 	self.pos = {x = _x, y = _y}
 	self.vel = {dx = 0, dy = 0}
@@ -85,9 +87,10 @@ function Movement:yMove(dt, jumping)
 	if (jumping) then
 		self.onGround = false
 		self.jumpTimer = self.jumpTimer + dt
-		if (self.onGround or self.jumpTimer < self.maxJumpTime) then
+		if (self.onGround or (self.floatingJumpTimer < self.floatingJumpAllowance) or self.jumpTimer < self.maxJumpTime) then
 			self.vel.dy = -800*((self.maxJumpTime-self.jumpTimer+self.maxJumpTime*3)/(self.maxJumpTime*4)) -- this tries to reduce the "double jump feeling"
 			-- one attempted thing: -500*((self.maxJumpTime-self.jumpTimer+self.maxJumpTime*.999)/(self.maxJumpTime*1.999))
+			self.floatingJumpTimer = self.floatingJumpAllowance -- no longer allowed to jump
 		end
 	end
 	
@@ -97,8 +100,11 @@ function Movement:yMove(dt, jumping)
 
 	if (self.onGround) then 
 		self.jumpTimer = 0
+		self.floatingJumpTimer = 0
 	end
-	
+	self.floatingJumpTimer = self.floatingJumpTimer + dt -- this allows the player to jump in mid-air after they just fell off of a platform
+
+
 	self.vel.dy = self.vel.dy + self.gravity * dt
 	self.pos.y = self.pos.y + self.vel.dy * dt
 end
