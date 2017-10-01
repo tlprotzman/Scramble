@@ -38,7 +38,7 @@ true
 
 thud
 sounds/thud.mp3
-5
+10
 false
 0
 .25
@@ -49,3 +49,10 @@ sounds/A-Tone-His_Self-1266414414.mp3
 false
 0
 .5
+
+schuyler
+sounds/Scramble.ogg
+1
+true
+0
+.2

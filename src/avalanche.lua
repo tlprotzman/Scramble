@@ -26,7 +26,7 @@ function Avalanche:draw()
 end
 
 function Avalanche:update(dt)
-	if not self.startedSound and self.progress + self.duration + 1000 > camera.pos.y then
+	if not self.startedSound and self.progress + self.duration + 2000 > camera.pos.y then
 		self.startedSound = true
 		soundManager:playSound("avalanche")
 	end

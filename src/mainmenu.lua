@@ -57,6 +57,11 @@ end
 function MainMenu:draw()
 	love.graphics.draw(self.backgroundImage, 0, 0)
 	self.menu:draw()
+	love.graphics.setFont(MainFont[3])
+	love.graphics.setColor(0, 0, 0)
+	love.graphics.printf("The Slippery Slope", 50, 100+8, 10000)
+	love.graphics.setColor(255, 255, 255)
+	love.graphics.printf("The Slippery Slope", 50, 100, 10000)
 end
 
 function MainMenu:update(dt)
