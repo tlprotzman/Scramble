@@ -27,6 +27,11 @@ end
 
 function Movement:xMove(dt, xScaler)
 
+	if (self.climbUpTimer > 0) then
+		xScaler = 0
+	end
+
+
 	if (self.hanging) then
 		self.vel.dx = xScaler * self.hangingSpeed
 	else
@@ -88,7 +93,7 @@ function Movement:move(dt, xScaler, jumping, onGround)
 	self:yMove(dt, jumping)
 	
 
-	if self.onGround and self.onPlatform then
+	if (self.onGround and self.onPlatform) or (self.hanging and self.onPlatform) or (self.climbUpTimer > 0 and self.onPlatform) then
 		self.pos.x = self.pos.x + self.onPlatform.vel.x*dt*2
 		self.pos.y = self.pos.y + self.onPlatform.vel.y*dt*2
 
@@ -99,7 +104,9 @@ function Movement:collisions(elements, size, dt)
 	
 	self.onGround = false
 	self.onSolidGround = false
-	self.onPlatform = false
+	if (self.climbUpTimer == 0) then
+		self.onPlatform = false
+	end
 	self.hanging = false
 	
 	for i, v in pairs(elements) do
