@@ -44,9 +44,36 @@ function Player:loadImageOfType(name, frames)
 	end
 end
 
-function Player:update(dt, platforms)
+function Player:grab(players)
+	if (inputManager:getPlayerValues(self.uid).raw.grab > 0.9) then
+		-- print("ATTEMPTED")
+		if (self.move.hanging) then
+			for i, v in pairs(players) do
+				if (v.move.onPlatform == self.move.onPlatform and v ~= self and v.move.onGround) then
+					if (math.abs(v.move.pos.x - self.move.pos.x) < 20) then
+						-- print ("HIT")
+						v.move.pos.y = v.move.pos.y + 10
+						v.move.vel.dy = 600
+						v.move.noGrab = 1
+					end
+				end
+			end
+		end
+	end
+end
+
+
+function Player:update(dt, platforms, players)
 	self:movePlayer(dt, platforms)
+	self:grab(players)
 	self:animatePlayer(dt)
+
+	if (self.move.noGrab > 0) then
+		self.move.noGrab = self.move.noGrab + dt
+		if (self.move.noGrab > 2) then
+			self.move.noGrab =0
+		end
+	end
 end
 
 function Player:movePlayer(dt, platforms)
