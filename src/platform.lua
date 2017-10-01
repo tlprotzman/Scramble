@@ -15,6 +15,8 @@ function Platform:_init(args)
 	self.broken = false
 	self.brokenTimer = 0
 	self.timeToBreak = 1
+	
+	self.image = love.graphics.newImage("images/assets/platform"..self.w..".png")
 end
 
 function Platform:draw(x, y, w, style)
@@ -26,6 +28,8 @@ function Platform:draw(x, y, w, style)
 		love.graphics.setColor(100, 100, 100)
 	end
 	camera:rectangle("fill", self.pos.x, self.pos.y, self.w, self.h)
+	love.graphics.setColor(255, 255, 255)
+	camera:draw(self.image, self.pos.x, self.pos.y)
 end
 
 function Platform:update(dt)
@@ -41,7 +45,7 @@ function Platform:update(dt)
 		end
 	end
 	
-	-- [[
+	--[[
 	if (self.breaking) then
 		self.brokenTimer = self.brokenTimer + dt
 		if (self.brokenTimer > self.timeToBreak) then
@@ -56,5 +60,5 @@ function Platform:update(dt)
 		end
 	end
 	
-	-- ]]--
+	 ]]--
 end
