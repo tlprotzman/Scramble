@@ -156,6 +156,9 @@ function Gameplay:update(dt)
 		self:generateNextChunk(math.random(1, 2), self.lastChunkGenerated + 10)
 		self.lastChunkGenerated = self.lastChunkGenerated + 10
 	end ]]--
+	if love.keyboard.isDown("escape") then
+		game:popScreenStack()
+	end
 end
 
 function Gameplay:updateDayLight()
@@ -179,11 +182,6 @@ function Gameplay:updateDayLight()
 				self.dayLightColor[i] = self.dayLightColor[i] + speed
 			end
 		end
-	end
-
-
-	if love.keyboard.isDown("escape") then
-		game:popScreenStack()
 	end
 end
 
