@@ -261,7 +261,7 @@ function Player:animatePlayer(dt)
 	end
 end
 
-function Player:draw
+function Player:draw()
 	for i = 1, 3 do
 		love.graphics.setColor(unpack(self.layerColors[i]))
 		local idleFrames = self.idleImages
