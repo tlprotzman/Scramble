@@ -177,6 +177,7 @@ function Player:die()
 		if not self.game.gameplay.gameOver then
 			table.insert(self.game.gameplay.standings, 1, self.color)
 		end
+		soundManager:playSound("scream")
 		self.dead = true
 	end
 end
@@ -245,6 +246,7 @@ function Player:getItems(items)
 				if self.move.pos.y + self.size.height > v.y and self.move.pos.y < v.y + v.h then
 					self.hasItem = v.itemType
 					table.remove(items, i)
+					soundManager:playSound("itemget")
 				end
 			end
 		end
