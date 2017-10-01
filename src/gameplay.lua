@@ -4,6 +4,7 @@ require "player"
 require "avalanche"
 require "fallingrock"
 require "item"
+require "alert"
 
 Gameplay = class()
 
@@ -28,6 +29,7 @@ function Gameplay:_init(game, inplayers)
 	self.fallingrocks = {}
 	self.items = {}
 	self.snowballs = {}
+	self.alerts = {}
 	self.itemColors = {{0, 255, 255}, {255, 0, 0}}
 	self.gameOver = false
 	
@@ -46,6 +48,9 @@ function Gameplay:_init(game, inplayers)
 	self.dayLightColor = {255, 200, 100, 30}
 	self.targetColors = {{255, 255, 255, 40}, {255, 50, 50, 50}, {50, 50, 50, 100}, {255, 255, 50, 40}}
 	self.targetColor = 1
+
+	self.eventTimer = 0
+	self.eventSpacing = 15 
 	
 	--table.insert(self.items, Item(900, 600, 2, self.itemColors))
 	--table.insert(self.items, Item(1340, 200, 1, self.itemColors))
@@ -92,6 +97,9 @@ function Gameplay:draw()
 		v:draw()
 	end
 	for i, v in ipairs(self.avalanches) do
+		v:draw()
+	end
+	for i, v in ipairs(self.alerts) do
 		v:draw()
 	end
 	
@@ -154,7 +162,11 @@ function Gameplay:update(dt)
 	for i, v in ipairs(self.fallingrocks) do
 		v:update(dt, self.platforms)
 	end
-	
+	for i, v in ipairs(self.alerts) do
+		if (not v:update(dt)) then
+			table.remove(self.alerts, i)
+		end
+	end
 	
 	if math.abs(camera.pos.y) > self.chunkCount*1080 then
 		self.chunkCount = self.chunkCount + 1
@@ -172,6 +184,21 @@ function Gameplay:update(dt)
 	end ]]--
 	if love.keyboard.isDown("escape") then
 		game:popScreenStack()
+	end
+
+	self.eventTimer = self.eventTimer + dt
+	if (self.eventTimer > self.eventSpacing) then
+		if (math.random() < 0.001) then
+			if (math.random() < 0.5) then
+				local xpos = math.random(300, 1620)
+				table.insert(self.avalanches, Avalanche(xpos, 3000, 5000))
+				table.insert(self.alerts, Alert(xpos + 65, 3))
+
+			else
+				table.insert(self.fallingrocks, FallingRock(math.random(300, 1320), -camera.pos.y - 200, 500 * (math.random(0, 1) * 2 - 1)))		
+			end
+			self.eventTimer = 0
+		end
 	end
 end
 
