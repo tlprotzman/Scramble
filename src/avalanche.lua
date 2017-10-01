@@ -2,7 +2,7 @@ Avalanche = class()
 
 function Avalanche:_init(x, duration, delay)
 	self.x = x
-	self.progress = -3000 - (delay or 0)
+	self.progress = -3000 - (delay or 0) - camera.pos.y
 	self.w = 600
 	self.duration = duration
 	self.snow = {}

@@ -72,10 +72,12 @@ function PreRunMenu:readyButton(text, player)
 	if player == "mouse" then
 		for k, v in pairs(self.players) do
 			v.ready = true
+			self.menu.selections[player].ready = true
 		end
 	else
 		-- change the status of the player's ready
 		self.players[player].ready = not self.players[player].ready
+		self.menu.selections[player].ready = self.players[player].ready
 	end
 	local numReady = 0
 	local numNotReady = 0
@@ -91,6 +93,7 @@ function PreRunMenu:readyButton(text, player)
 		local inplayers = {}
 		for k, v in pairs(self.players) do
 			v.ready = false -- for next round
+			self.menu.selections[player].ready = false
 			table.insert(inplayers, {uid = k, color = v.color})
 		end
 		game.gameplay = Gameplay(game, inplayers)
