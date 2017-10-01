@@ -3,6 +3,9 @@ InputManager = class()
 
 
 function InputManager:_init(args)
+	self.menuMovementThreshold = .1 -- minimum magnitude of a controller stick to trigger a menu movement
+	self.menuMovementRepeatTime = .5
+
 	if args == nil then
 		args = {}
 	end
@@ -54,10 +57,67 @@ function InputManager:update(dt)
 	end
 end
 
+function InputManager:setSendMenuInputs(sendBoolean)
+	-- if sendBoolean then the menu stuff will be sent, otherwise no
+	if sendBoolean and self.sendMenuInputs ~= sendBoolean then
+		-- then reset all the controller's menu variables as well.
+		for k, values in pairs(self.playerValues) do
+			for j, k in pairs(values) do
+				k.timer = 10000 -- the player needs to re-center their controls for the menus to have effect? probably. We'll see...
+				k.value = values[k]
+			end
+		end
+	end
+	self.sendMenuInputs = sendBoolean
+end
+
 function InputManager:calculatePlayerStats(playerValueTable)
 	-- currently this may be just for keyboards, because controllers have the opposite problem
 	playerValueTable.x = playerValueTable.raw.right - playerValueTable.raw.left
 	playerValueTable.y = playerValueTable.raw.down - playerValueTable.raw.up
+
+	if self.sendMenuInputs then
+		-- then deal with menu stats as well
+		-- they get reset whenever you start sending menu inputs, so it's fine to stop updating these.
+		-- local menuTable = {x = {timer = 0, value = 0}, y = {timer = 0, value = 0}} -- if value * the actual current x or y is negative or 0, then it should trigger the action if the current magnitude is > a parameter
+		if math.abs(playerValueTable.x) > self.menuMovementThreshold then
+			if playerValueTable.menu.x.timer <= 0 or playerValueTable.menu.x.value * playerValueTable.x <= 0 then
+				-- then either the timer is 0, and it can do its thing, or the thumbstick was flicked really fast in the opposite direction, so it should move in that direction
+				playerValueTable.menu.x.timer = self.menuMovementRepeatTime
+				-- trigger that menu action pls.
+				if playerValueTable.x > 0 then
+					-- handle the "menuright" event
+					self:distributeInput({inputtype = "menuright"})
+				else
+					-- we don't need an elseif, because it can't be 0
+					-- handle the left event.
+					self:distributeInput({inputtype = "menuleft"})
+				end
+			end
+		else
+			-- set the value to 0, and the timer to 0 as well
+			playerValueTable.x.value = 0
+		end
+
+		if math.abs(playerValueTable.y) > self.menuMovementThreshold then
+			if playerValueTable.menu.y.timer <= 0 or playerValueTable.menu.y.value * playerValueTable.y <= 0 then
+				-- then either the timer is 0, and it can do its thing, or the thumbstick was flicked really fast in the opposite direction, so it should move in that direction
+				playerValueTable.menu.y.timer = self.menuMovementRepeatTime
+				-- trigger that menu action pls.
+				if playerValueTable.y > 0 then
+					-- handle the "menudown" event, (keep in mind - is up...)
+					self:distributeInput({inputtype = "menudown"})
+				else
+					-- we don't need an elseif, because it can't be 0
+					-- handle the up event.
+					self:distributeInput({inputtype = "menuup"})
+				end
+			end
+		else
+			-- set the value to 0, and the timer to 0 as well
+			playerValueTable.y.value = 0
+		end
+	end
 end
 
 function InputManager:keypressed(key, unicode)
@@ -104,7 +164,11 @@ function InputManager:gamepadadded(gamepad)
 end
 
 function InputManager:addControllingMethod(key)
-	self.playerValues[key] = {x = 0, y = 0, playing = false, raw = {left = 0, right = 0, up = 0, down = 0}, menu = {}}
+	local menuTable = {x = {timer = 0, value = 0}, y = {timer = 0, value = 0}} -- if value * the actual current x or y is negative or 0, then it should trigger the action if the current magnitude is > a parameter
+	self.playerValues[key] = {x = 0, y = 0, playing = false, raw = {left = 0, right = 0, up = 0, down = 0}, menu = menuTable}
+	-- menu needs to be things. menu has to have timers for holding the key down moving repeatedly, it also should deal with reseting, so if you press twice it works both times...
+	-- essentially, if an x or a y goes less than a certain value, or opposite the current magnitude, then it should set the timer to 0, if the x or y goes above a certain value then it should send the menu behavior
+	-- plus if the timer is greater than whatever variable we choose, then it should re-trigger the menu action.
 end
 
 function InputManager:gamepadremoved(gamepad)
@@ -131,10 +195,6 @@ function InputManager:gamepadaxis(gamepad, axis, value)
 	if didSomething then
 		self:calculatePlayerStats(values)
 	end
-	-- if it's in a menu, distribute the menu stuff
-	if self.sendMenuInputs then
-		-- send the menu input pls.
-	end
 end
 
 function InputManager:gamepadpressed(gamepad, button)
@@ -152,11 +212,10 @@ function InputManager:gamepadpressed(gamepad, button)
 		-- then recalculate the player x and y
 		self:calculatePlayerStats(values)
 	end
+end
 
-	-- if it's in a menu, distribute the menu stuff
-	if self.sendMenuInputs then
-		-- send the menu input pls.
-	end
+function InputManager:playerStartedPlaying()
+	-- somehow we have to tell the game that a player wants to start playing. Maybe that should be a menu feature? That could actually make a ton of sense
 end
 
 function InputManager:gamepadreleased(gamepad, button)
@@ -174,11 +233,6 @@ function InputManager:gamepadreleased(gamepad, button)
 		-- then recalculate the player x and y
 		self:calculatePlayerStats(values)
 	end
-
-	-- if it's in a menu, distribute the menu stuff
-	if self.sendMenuInputs then
-		-- send the menu input pls.
-	end
 end
 
 
@@ -186,15 +240,21 @@ end
 
 
 function InputManager:mousepressed(x, y, button)
-	-- self:distributeInput({intype = "mousepressed", x = x, y = y, button = button, value = 1})
+	if self.sendMenuInputs then
+		self:distributeInput({inputtype = "mousepressed", x = x, y = y, button = button, value = 1})
+	end
 end
 
 function InputManager:mousereleased(x, y, button)
-	-- self:distributeInput({intype = "mousepressed", x = x, y = y, button = button, value = 0})
+	if self.sendMenuInputs then
+		self:distributeInput({inputtype = "mousepressed", x = x, y = y, button = button, value = 0})
+	end
 end
 
 function InputManager:mousemoved(x, y, dx, dy)
-	-- self:distributeInput({intype = "mousemoved", x = x, y = y, dx = dx, dy = dy})
+	if self.sendMenuInputs then
+		self:distributeInput({inputtype = "mousemoved", x = x, y = y, dx = dx, dy = dy})
+	end
 end
 
 -- function InputManager:textinput(text)
@@ -202,20 +262,16 @@ end
 -- end
 
 function InputManager:addToInputStack(inputReceiver)
-	-- this is for things like menus that need it? I guess? this is left over stuff that may get scrapped
 	table.insert(self.inputStack, inputReceiver)
 	return true
 end
 
 function InputManager:removeFromInputStack(inputReceiver)
-	-- this is also left over, plus this is duplicated code from the helperfunctions file
-	for i = 1, #self.inputStack do
-		if self.inputStack[i] == inputReceiver then
-			table.remove(self.inputStack, i)
-			return true
-		end
+	local found, i = iInTable(self.inputStack, inputReceiver)
+	if found then
+		table.remove(self.inputStack, i)
 	end
-	return false
+	return found
 end
 
 function InputManager:distributeInput(input)
