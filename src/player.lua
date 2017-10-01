@@ -30,6 +30,8 @@ function Player:loadImages()
 	self.layerColors = {{170, 140, 132}, self.color, {255, 255, 255}}
 	self:loadImageOfType("running", 14)
 	self:loadImageOfType("idle", 7)
+	self:loadImageOfType("fallDown", 5)
+	self:loadImageOfType("jumpUp", 5)
 end
 
 function Player:loadImageOfType(name, frames)
@@ -72,11 +74,36 @@ end
 function Player:draw()
 	for i = 1, 3 do
 		love.graphics.setColor(unpack(self.layerColors[i]))
-		if math.abs(self.move.vel.dx) > 100 then
-			camera:draw(self.runningImages[i][math.floor(self.animationFrame)], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, sign(self.move.vel.dx))
-		else
-			camera:draw(self.idleImages[i][math.floor((self.animationFrame-1)/2)+1], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y)
-		end
+		
+		--drawing images on ground
+		
+			--running
+			if math.abs(self.move.vel.dx) > 100 then
+				local frame = math.floor(self.animationFrame)
+				camera:draw(self.runningImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, sign(self.move.vel.dx))
+				
+			--idle
+			else
+			
+				if self.move.onGround then
+					local frame = math.floor((self.animationFrame-1)/2)+1
+					camera:draw(self.idleImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y)
+				else
+					
+				--jumping up
+					if self.move.vel.dy < 0 then
+						local frame = math.max(math.min(math.floor(math.abs(self.move.vel.dy)/160), 5), 1)
+						camera:draw(self.fallDownImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y)
+					
+					--falling down
+					else
+						local frame = 6-math.max(math.min(math.floor(math.abs(self.move.vel.dy)/160), 5), 1)
+						camera:draw(self.jumpUpImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y)
+					end
+				end
+				
+			end
+		
 	end
 	love.graphics.setColor(0, 255, 0)
 	camera:rectangle("line", self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)

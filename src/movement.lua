@@ -87,9 +87,11 @@ function Movement:move(dt, xScaler, jumping, onGround)
 	self:xMove(dt, xScaler)
 	self:yMove(dt, jumping)
 	
-	if (self.onGround or self.hanging) and self.onPlatform then
-		self.pos.x = self.pos.x + self.onPlatform.vel.x*dt
-		self.pos.y = self.pos.y + self.onPlatform.vel.y*dt
+
+	if self.onGround and self.onPlatform then
+		self.pos.x = self.pos.x + self.onPlatform.vel.x*dt*2
+		self.pos.y = self.pos.y + self.onPlatform.vel.y*dt*2
+
 	end
 end
 

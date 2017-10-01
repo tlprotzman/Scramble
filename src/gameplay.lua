@@ -10,6 +10,8 @@ function Gameplay:_init(game)
 	for i = 1, 2 do
 		table.insert(self.players, Player(self.game, "k"..i, {math.random(1, 255), math.random(1, 255), math.random(1, 255)}))
 	end
+	-- uncomment this one for testing joysticks
+	-- table.insert(self.players, Player(self.game, 1, {math.random(1, 255), math.random(1, 255), math.random(1, 255)}))
 	self.platforms = {}
 	
 	camera.d.y = 0
@@ -58,6 +60,7 @@ function Gameplay:update(dt)
 	self.cameraTimer = self.cameraTimer + dt
 	if (self.cameraTimer > 6) then
 		camera.d.y = 0--math.random(40, 150)
+		--camera.d.y = math.random(40, 150)
 		self.cameraTimer = 0
 	end
 
