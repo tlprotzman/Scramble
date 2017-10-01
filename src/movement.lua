@@ -77,6 +77,7 @@ function Movement:collisions(elements, size, dt)
 	
 	self.onGround = false
 	self.onSolidGround = false
+	self.onPlatform = false
 	
 	for i, v in pairs(elements) do
 		if (self.pos.x + size.width > v.pos.x and self.pos.x < v.pos.x + v.w) then

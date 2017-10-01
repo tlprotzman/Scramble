@@ -40,6 +40,7 @@ function Platform:update(dt)
 		end
 	end
 	
+	--[[
 	if (self.breaking) then
 		self.brokenTimer = self.brokenTimer + dt
 		if (self.brokenTimer > self.timeToBreak) then
@@ -53,4 +54,6 @@ function Platform:update(dt)
 			self.breaking = true
 		end
 	end
+	
+	]]--
 end
