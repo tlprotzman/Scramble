@@ -20,9 +20,9 @@ function Game:delayedinit(args)
 	self.screenStack = {}
 	self.drawLayersStart = 0
 
-	-- self:addToScreenStack(self.mainMenu)
+	self:addToScreenStack(self.mainMenu)
 	-- self:addToScreenStack(self.preRunMenu)
-	self:addToScreenStack(self.gameplay)
+	-- self:addToScreenStack(self.gameplay)
 
 	-- these are things for scaling the screen
 	self.SCREENWIDTH = 1920
