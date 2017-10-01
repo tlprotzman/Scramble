@@ -19,6 +19,11 @@ function Game:init(args)
 	self.drawLayersStart = 0
 
 	self:addToScreenStack(self.gameplay)
+	love.window.setFullscreen(true)
+	self.SCREENWIDTH = 1920
+	self.SCREENHEIGHT = 1080
+	self.fullCanvas = love.graphics.newCanvas(self.SCREENWIDTH, self.SCREENHEIGHT)
+
 end
 
 function Game:calculateDrawUpdateLevels()
@@ -59,6 +64,19 @@ function Game:draw()
 		love.graphics.setColor(255, 0, 0)
 		love.graphics.print("FPS: "..love.timer.getFPS(), 10, love.graphics.getHeight()-45)
 		love.graphics.setColor(255, 255, 255)
+	end
+
+	if self.fullscreen then
+		local width = love.graphics.getWidth()
+		local height = love.graphics.getHeight()
+		local scale = math.min(height/1080, width/1920)
+		-- width/2-300*scale
+		love.graphics.draw(self.fullCanvas, width/2-300*scale, 0, 0, scale, scale)
+		love.graphics.setColor(0, 0, 0)
+		love.graphics.rectangle("fill", 0, 0, width/2-300*scale, height)
+		love.graphics.rectangle("fill", width/2+300*scale, 0, width/2-300*scale, height)
+	else
+		love.graphics.draw(self.fullCanvas, 0, 0, 0, love.graphics.getWidth()/600, love.graphics.getHeight()/800)
 	end
 end
 

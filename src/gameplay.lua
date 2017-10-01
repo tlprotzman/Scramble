@@ -13,6 +13,8 @@ function Gameplay:_init(game)
 	
 	self.drawUnder = false
 	self.updateUnder = false
+
+	table.insert(self.platforms, Platform(250, 350, 250, "wood"))
 end
 
 function Gameplay:load()

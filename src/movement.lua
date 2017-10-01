@@ -2,7 +2,7 @@ Movement = class()
 
 
 function Movement:_init(_x, _y, _acceleration, _maxDX)
-	self.gravity = 1500
+	self.gravity = 2000
 
 
 	self.pos = {x = _x, y = _y}
@@ -40,7 +40,7 @@ end
 
 
 function Movement:yMove(dt, jumping)
-	print(self.jumpTimer)
+	-- print(self.jumpTimer)
 	if (jumping) then
 		self.onGround = false
 		self.jumpTimer = self.jumpTimer + dt
@@ -57,7 +57,7 @@ function Movement:yMove(dt, jumping)
 	if (self.onGround) then 
 		self.jumpTimer = 0
 	end
-
+	
 	self.vel.dy = self.vel.dy + self.gravity * dt
 	self.pos.y = self.pos.y + self.vel.dy * dt
 end
@@ -72,10 +72,26 @@ end
 
 
 
-function Movement:collisions(elements, size)
+function Movement:collisions(elements, size, dt)
+	
+	for i, v in pairs(elements) do
+		if (self.pos.x > v.pos.x - size.width and self.pos.x < v.pos.x + v.w) then
+			if (self.pos.y + size.height < v.pos.y and 10 + self.pos.y + size.height + self.vel.dy * dt > v.pos.y) then
+				print(self.pos.y)
+			-- if (self.pos.y < v.pos.y and self.pos.y + self.vel.dy > v.pos.y) then
+				self.pos.y = v.pos.y - size.height
+				self.vel.dy = 0
+				self.onGround = true
+			end 
+		end
+	end			
+
+
+
+
 	if (self.pos.y + size.height > love.graphics.getHeight()) then
 		self.pos.y = love.graphics.getHeight() - size.height
-		self.pos.dy = love.graphics.getHeight()
+		self.pos.dy = 0
 		self.onGround = true
 	end
 	-- print(self.pos.x)
