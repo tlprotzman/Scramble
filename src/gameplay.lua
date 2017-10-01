@@ -36,11 +36,7 @@ function Gameplay:_init(game, inplayers)
 	self.drawUnder = false
 	self.updateUnder = false
 	
-	self.platformSizes = {280, 500}
-
-	table.insert(self.platforms, Platform({x = 100, y = 100, w = self.platformSizes[1], style = style}))
-	table.insert(self.platforms, Platform({x = 1200, y = 400, w = self.platformSizes[2], style = style}))
-	table.insert(self.platforms, Platform({x = 800, y = 800, w = self.platformSizes[2], style = style}))
+	self.platformSizes = {280, 500, 200}
 
 	self.backgroundImage = love.graphics.newImage("images/assets/background.png")
 
@@ -48,8 +44,12 @@ function Gameplay:_init(game, inplayers)
 	self.targetColors = {{255, 255, 255, 40}, {255, 50, 50, 50}, {50, 50, 50, 100}, {255, 255, 50, 40}}
 	self.targetColor = 1
 	
-	table.insert(self.items, Item(900, 600, 2, self.itemColors))
-	table.insert(self.items, Item(1340, 200, 1, self.itemColors))
+	--table.insert(self.items, Item(900, 600, 2, self.itemColors))
+	--table.insert(self.items, Item(1340, 200, 1, self.itemColors))
+	
+	self.chunkCount = 0
+	self:generateNextChunk()
+
 --	table.insert(self.platforms, Platform({x=0, y=1000, w=1920, style="wood", unbreakable=true}))
 
 	
@@ -69,6 +69,10 @@ function Gameplay:draw()
 	camera:draw(self.backgroundImage, 0, camera.pos.y%1080, 1, 1, 0, true)
 	camera:draw(self.backgroundImage, 0, camera.pos.y%1080-1080, 1, 1, 0, true)
 	
+	love.graphics.setColor(255, 255, 255)
+	for i, v in ipairs(self.platforms) do
+		v:drawGears()
+	end
 	for i, v in ipairs(self.platforms) do
 		v:draw()
 	end
@@ -91,13 +95,17 @@ function Gameplay:draw()
 	
 	love.graphics.setColor(self.dayLightColor[1], self.dayLightColor[2], self.dayLightColor[3], self.dayLightColor[4])
 	camera:rectangle("fill", 0, 0, 1920, 1820, true)
+	
+	love.graphics.setColor(255, 0, 0)
+	love.graphics.print(math.abs(camera.pos.y), 50, 50)
+	love.graphics.print(self.chunkCount*1080, 50, 100)
 end
 
 function Gameplay:update(dt)
 	self.cameraTimer = self.cameraTimer + dt
 	if (self.cameraTimer > 6) then
 		camera.d.y = 0
-		--camera.d.y = math.random(40, 100)
+		camera.d.y = math.random(40, 100)
 		self.cameraTimer = 0
 	end
 
@@ -129,6 +137,12 @@ function Gameplay:update(dt)
 	end
 	for i, v in ipairs(self.fallingrocks) do
 		v:update(dt, self.platforms)
+	end
+	
+	
+	if math.abs(camera.pos.y) > self.chunkCount*1080 then
+		self.chunkCount = self.chunkCount + 1
+		self:generateNextChunk()
 	end
 --[[
 	if (camera.pos.y / self.spacing > self.lastChunkGenerated) then
@@ -174,38 +188,40 @@ function Gameplay:handleinput(input)
 	--
 end
 
---[[
-function Gameplay:generateNextChunk(mode, offset)
-	if (mode == 1) then
-	self.variance = 0
-	self.spacing = 250
-		for i=1, 10 do
-			j = i - offset
-			if (math.random(0, 10) < 8) then
-				if math.random(1,4)==1 then
-					table.insert(self.platforms, Platform({x=math.random(0, 900), y=math.random(-self.variance, self.variance) + self.spacing * j, w=400, vx = 100, rx = 1000, style="wood"}))
-				else
-					table.insert(self.platforms, Platform({x=math.random(0, 1720), y=math.random(-self.variance, self.variance) + self.spacing * j, w=math.random(80, 200), style="wood"}))
-					table.insert(self.platforms, Platform({x=math.random(0, 1720), y=math.random(-self.variance, self.variance) + self.spacing * j, w=math.random(80, 200), style="wood"}))
-				end
-			end
-			table.insert(self.platforms, Platform({x=math.random(0, 1720), y=math.random(-self.variance, self.variance) + self.spacing * j, w=math.random(120, 200), style="wood"}))
-			-- table.insert(self.platforms, Platform(1300, 160 * i + 80, 250, "wood"))
-		end
-	elseif (mode == 2) then
-	self.variance = 50
-	self.spacing = 300
-		for i=1, 10 do
-			j = i - offset
-			if (math.random(0, 10) < 8) then
-				table.insert(self.platforms, Platform({x=math.random(0, 1720), y=math.random(-self.variance, self.variance) + self.spacing * j, w=math.random(80, 200), style="wood"}))
-			end
-			table.insert(self.platforms, Platform({x=math.random(0, 1720), y=math.random(-self.variance, self.variance) + self.spacing * j, w=math.random(120, 200), style="wood"}))
-			-- table.insert(self.platforms, Platform(1300, 160 * i + 80, 250, "wood"))
-		end
-	end
+
+function Gameplay:generateNextChunk()
+
+	local chunkType = math.random(1, 4)
 	
-	--table.insert(self.avalanches, Avalanche(100, 3000, 5000))
-	--table.insert(self.fallingrocks, FallingRock(100, 100, 500))		
+	if chunkType == 1 then
+		self:generatePlatform(100, 100,  1)
+		self:generatePlatform(100, 400,  1)
+		self:generatePlatform(100, 700,  1)
+		self:generatePlatform(1300, 400, 2)
+		self:generatePlatform(900, 800,  2)
+	elseif chunkType == 2 then            
+		self:generatePlatform(100, 100,  1)
+		self:generatePlatform(1420, 100, 1)
+		self:generatePlatform(100, 400,  3, 100, 1720-280, 0, 0)
+		self:generatePlatform(200, 800,  2)
+		self:generatePlatform(1220, 800, 2)
+	elseif chunkType == 3 then           
+		self:generatePlatform(200, 100,  3, 0, 0, 100, 880)
+		self:generatePlatform(800, 850,  2)
+		self:generatePlatform(700, 400,  3, 100, 500)
+		self:generatePlatform(1480, 100, 1)
+	elseif chunkType == 4 then           
+		self:generatePlatform(100, 200,  3, 100, 1400, 50, 700)
+		self:generatePlatform(100, 200,  3, 0, 0, 75, 700)
+		self:generatePlatform(1500, 200, 3, 0, 0, 100, 700)
+	end
 end
-]]--
+
+function Gameplay:generatePlatform(x, y, w, vx, rx, vy, ry)
+	local y0 = self.chunkCount*1080
+	table.insert(self.platforms, Platform({x = x, y = y, w = self.platformSizes[w], style = style, vx = vx or 0, vy = vy or 0, rx = rx or 0, ry = ry or 0, y0 = y0}))
+	local item = math.max(math.random(-5, 2))
+	if item > 0 then
+		table.insert(self.items, Item(x + self.platformSizes[w]/2 - 25, y - 50 - y0, item))
+	end
+end

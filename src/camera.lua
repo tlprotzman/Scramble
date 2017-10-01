@@ -34,6 +34,11 @@ function Camera:draw(drawable, x, y, flip, scale, r, ignoreCamera)
 	end
 end
 
+function Camera:line(x1, y1, x2, y2, ignoreCamera)
+	local offset = self:getOffset(ignoreCamera)
+	love.graphics.line(x1 + offset.x, y1 + offset.y, x2 + offset.x, y2 + offset.y)
+end
+
 function Camera:getOffset(ignoreCamera)
 	local x, y = self.pos.x, self.pos.y
 	if ignoreCamera then
