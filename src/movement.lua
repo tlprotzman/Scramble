@@ -4,7 +4,7 @@ Movement = class()
 function Movement:_init(_x, _y, _acceleration, _maxDX)
 	self.gravity = 2000
 
-	self.floatingJumpAllowance = .2 -- the amount of time after someone falls off of a platform that they're still allowed to jump
+	self.floatingJumpAllowance = .1 -- the amount of time after someone falls off of a platform that they're still allowed to jump
 	self.floatingJumpTimer = 0
 
 	self.pos = {x = _x, y = _y}

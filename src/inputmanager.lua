@@ -4,7 +4,7 @@ InputManager = class()
 
 function InputManager:_init(args)
 	self.menuMovementThreshold = .5 -- minimum magnitude of a controller stick to trigger a menu movement
-	self.menuMovementRepeatTime = .5
+	self.menuMovementRepeatTime = .2
 
 	if args == nil then
 		args = {}
@@ -30,6 +30,8 @@ function InputManager:_init(args)
 								k2 = {i = "up", j = "left", k = "down", l = "right", ["."] = "grab", ["/"] = "use"},
 								k3 = {kp8 = "up", kp4 = "left", kp5 = "down", kp6 = "right", kp3 = "grab", kpenter = "use"}}
 	self.gamepadAxisMapping = {leftx = {"left", "right"}, lefty = {nil, "down"}, rightx = {nil, nil}, righty = {nil, nil}, triggerleft = {nil, "use"}, triggerright = {nil, "use"}}
+	self.gamepadAxisMenuMapping = {leftx = {"left", "right"}, lefty = {"up", "down"}, rightx = {nil, nil}, righty = {nil, nil}, triggerleft = {nil, "use"}, triggerright = {nil, "use"}}
+	-- the menuMapping is for when sendMenuInputs is true, otherwise use the top one.
 	self.gamepadButtonMapping = {a = "up", b = "grab"}
 
 	-- I'm going to need to deal with contexts for this.
@@ -53,9 +55,50 @@ function InputManager:update(dt)
 	if self.sendMenuInputs then
 		-- update the menu repeat timers
 		for uid, player in pairs(self.playerValues) do
-			for k, v in ipairs(player.menu) do
+			for k, v in pairs(player.menu) do
 				v.timer = v.timer - dt
-				print(k, v)
+			end
+		end
+		for k, playerValueTable in pairs(self.playerValues) do
+			-- then deal with menu stats as well
+			-- they get reset whenever you start sending menu inputs, so it's fine to stop updating these.
+			-- local menuTable = {x = {timer = 0, value = 0}, y = {timer = 0, value = 0}} -- if value * the actual current x or y is negative or 0, then it should trigger the action if the current magnitude is > a parameter
+			if math.abs(playerValueTable.x) > self.menuMovementThreshold then
+				if playerValueTable.menu.x.timer <= 0 then --  or playerValueTable.menu.x.value * playerValueTable.x <= 0
+					-- then either the timer is 0, and it can do its thing, or the thumbstick was flicked really fast in the opposite direction, so it should move in that direction
+					playerValueTable.menu.x.timer = self.menuMovementRepeatTime
+					-- trigger that menu action pls.
+					if playerValueTable.x > 0 then
+						-- handle the "menuright" event
+						self:distributeInput({inputtype = "menuright", player = playerValueTable.playerID})
+					else
+						-- we don't need an elseif, because it can't be 0
+						-- handle the left event.
+						self:distributeInput({inputtype = "menuleft", player = playerValueTable.playerID})
+					end
+				end
+			else
+				-- set the value to 0, and the timer to 0 as well
+				playerValueTable.menu.x.timer = 0
+			end
+
+			if math.abs(playerValueTable.y) > self.menuMovementThreshold then
+				if playerValueTable.menu.y.timer <= 0 then -- or playerValueTable.menu.y.value * playerValueTable.y <= 0
+					-- then either the timer is 0, and it can do its thing, or the thumbstick was flicked really fast in the opposite direction, so it should move in that direction
+					playerValueTable.menu.y.timer = self.menuMovementRepeatTime
+					-- trigger that menu action pls.
+					if playerValueTable.y > 0 then
+						-- handle the "menudown" event, (keep in mind - is up...)
+						self:distributeInput({inputtype = "menudown", player = playerValueTable.playerID})
+					else
+						-- we don't need an elseif, because it can't be 0
+						-- handle the up event.
+						self:distributeInput({inputtype = "menuup", player = playerValueTable.playerID})
+					end
+				end
+			else
+				-- set the value to 0, and the timer to 0 as well
+				playerValueTable.menu.y.timer = 0
 			end
 		end
 	end
@@ -81,46 +124,7 @@ function InputManager:calculatePlayerStats(playerValueTable)
 	playerValueTable.y = playerValueTable.raw.down - playerValueTable.raw.up
 
 	if self.sendMenuInputs then
-		-- then deal with menu stats as well
-		-- they get reset whenever you start sending menu inputs, so it's fine to stop updating these.
-		-- local menuTable = {x = {timer = 0, value = 0}, y = {timer = 0, value = 0}} -- if value * the actual current x or y is negative or 0, then it should trigger the action if the current magnitude is > a parameter
-		if math.abs(playerValueTable.x) > self.menuMovementThreshold then
-			if playerValueTable.menu.x.timer <= 0 then --  or playerValueTable.menu.x.value * playerValueTable.x <= 0
-				-- then either the timer is 0, and it can do its thing, or the thumbstick was flicked really fast in the opposite direction, so it should move in that direction
-				playerValueTable.menu.x.timer = self.menuMovementRepeatTime
-				-- trigger that menu action pls.
-				if playerValueTable.x > 0 then
-					-- handle the "menuright" event
-					self:distributeInput({inputtype = "menuright", player = playerValueTable.playerID})
-				else
-					-- we don't need an elseif, because it can't be 0
-					-- handle the left event.
-					self:distributeInput({inputtype = "menuleft", player = playerValueTable.playerID})
-				end
-			end
-		else
-			-- set the value to 0, and the timer to 0 as well
-			playerValueTable.menu.x.timer = 0
-		end
-
-		if math.abs(playerValueTable.y) > self.menuMovementThreshold then
-			if playerValueTable.menu.y.timer <= 0 then -- or playerValueTable.menu.y.value * playerValueTable.y <= 0
-				-- then either the timer is 0, and it can do its thing, or the thumbstick was flicked really fast in the opposite direction, so it should move in that direction
-				playerValueTable.menu.y.timer = self.menuMovementRepeatTime
-				-- trigger that menu action pls.
-				if playerValueTable.y > 0 then
-					-- handle the "menudown" event, (keep in mind - is up...)
-					self:distributeInput({inputtype = "menudown", player = playerValueTable.playerID})
-				else
-					-- we don't need an elseif, because it can't be 0
-					-- handle the up event.
-					self:distributeInput({inputtype = "menuup", player = playerValueTable.playerID})
-				end
-			end
-		else
-			-- set the value to 0, and the timer to 0 as well
-			playerValueTable.menu.y.timer = 0
-		end
+		--
 	end
 end
 
@@ -182,7 +186,13 @@ function InputManager:gamepadaxis(gamepad, axis, value)
 		error("JOYSTICK SOMEHOW WASN'T ADDED")
 	end
 	local mapping = self.gamepadAxisMapping[axis] -- this returns a table that has {negative thing, positive thing} but they could both be nil
+	if self.sendMenuInputs then
+		mapping = self.gamepadAxisMenuMapping[axis] -- this is to allow you to go up on your thumbstick
+	end
 	local didSomething = false
+	if math.abs(value) < .1 then
+		value = 0
+	end
 	if mapping[1] ~= nil then
 		values.raw[mapping[1]] = -math.min(value, 0)
 		didSomething = true
