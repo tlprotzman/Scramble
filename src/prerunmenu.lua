@@ -65,9 +65,13 @@ end
 
 function PreRunMenu:drawPlayer(x, y, frame, bodyColor, type)
 	local colors = {{170, 140, 132}, bodyColor, {255, 255, 255}}
+	local offset = 0
+	if type=="celebration" then
+		offset = -150
+	end
 	for i = 1, 3 do
 		love.graphics.setColor(colors[i])
-		love.graphics.draw(images.player[type.."Images"][i][math.floor(frame)], x, y, 0, 1, 1, images.player[type.."Images"][i][math.floor(frame)]:getWidth()/2, 0)
+		love.graphics.draw(images.player[type.."Images"][i][math.floor(frame)], x, y + offset, 0, 1, 1, images.player[type.."Images"][i][math.floor(frame)]:getWidth()/2, 0)
 	end
 end
 
@@ -145,8 +149,7 @@ function PreRunMenu:draw()
 		if not self.players[player].ready then
 			self:drawPlayer(x*i, y, self.players[player].frame, self.players[self.playerOrder[i]].color, "idle")
 		else
-			-- then do celibration one
-			-- self:drawPlayer(x*i, y, 1, self.players[self.playerOrder[i]].color)
+			self:drawPlayer(x*i, y, self.players[player].frame, self.players[self.playerOrder[i]].color, "celebration")
 
 		end
 		-- x = x + 1920/(#self.playerOrder+1)
