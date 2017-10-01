@@ -2,13 +2,11 @@ require "movement"
 
 Player = class()
 
-function Player:_init(game, uid, color)
+function Player:_init(game, x, y, uid, color)
 	self.game = game
-	self.uid = uid
+	self.uid = "k"..uid
 	self.color = color
 
-	local x = 250		-- Holds info about the players location and movement
-	local y = 250
 	local acceleration = 700
 	local maxDX = 700
 	

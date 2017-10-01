@@ -11,6 +11,7 @@ function Platform:_init(args)
 	self.unbounded = args.unbounded
 
 	self.breaking = false
+	self.unbreakable = args.unbreakable
 	self.broken = false
 	self.brokenTimer = 0
 	self.timeToBreak = 1
@@ -40,7 +41,7 @@ function Platform:update(dt)
 		end
 	end
 	
-	--[[
+	-- [[
 	if (self.breaking) then
 		self.brokenTimer = self.brokenTimer + dt
 		if (self.brokenTimer > self.timeToBreak) then
@@ -49,11 +50,11 @@ function Platform:update(dt)
 		end
 
 	elseif (self.pos.y > -camera.pos.y + love.graphics.getHeight() / 2) then
-		print(self.pos.y)
-		if (math.random() < 0.001) then
+		-- print(self.pos.y)
+		if (math.random() < 0.001 and not self.unbreakable) then
 			self.breaking = true
 		end
 	end
 	
-	]]--
+	-- ]]--
 end
