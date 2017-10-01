@@ -17,7 +17,9 @@ function Gameplay:_init(game)
 	self.drawUnder = false
 	self.updateUnder = false
 
-	table.insert(self.platforms, Platform(250, 350, 250, "wood"))
+	for i = 1, 10 do
+		table.insert(self.platforms, Platform(250+50*i, 950 - 100*i, 250, "wood"))
+	end
 end
 
 function Gameplay:load()

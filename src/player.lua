@@ -28,13 +28,15 @@ function Player:_init(game, uid, color)
 end
 
 function Player:loadImages()
+	self.layerColors = {{170, 140, 132}, self.color, {255, 255, 255}}
 	self.idleImages = {{}, {}, {}}
-	self.idleColors = {{170, 140, 132}, self.color, {255, 255, 255}}
 	for i = 1, 7 do
 		self.idleImages[1][i] = love.graphics.newImage("images/player/idleSkin"..i..".png")
 		self.idleImages[2][i] = love.graphics.newImage("images/player/idleClothes"..i..".png")
 		self.idleImages[3][i] = love.graphics.newImage("images/player/idleLines"..i..".png")
 	end
+	self.runImages = {{}, {}, {}}
+
 end
 
 function Player:update(dt, platforms)
