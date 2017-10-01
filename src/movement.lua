@@ -25,7 +25,7 @@ end
 function Movement:xMove(dt, xScaler)
 	ddx = xScaler * self.acceleration
 	self.vel.dx = self.vel.dx + ddx * dt
-	if (math.abs(xScaler) < 0.05 or xScaler * self.vel.dx < 0) then
+	if (self.onGround and (math.abs(xScaler) < 0.05 or xScaler * self.vel.dx < 0)) then
 		self.vel.dx = self.vel.dx - self.vel.dx * self.friction
 	end
 	if (self.vel.dx > self.maxDX) then
@@ -40,7 +40,7 @@ function Movement:yMove(dt, jumping)
 		self.onGround = false
 		self.jumpTimer = self.jumpTimer + dt
 		if (self.onGround or self.jumpTimer < self.maxJumpTime) then
-			self.vel.dy = -500*((self.maxJumpTime-self.jumpTimer+self.maxJumpTime*3)/(self.maxJumpTime*4)) -- this tries to reduce the "double jump feeling"
+			self.vel.dy = -800*((self.maxJumpTime-self.jumpTimer+self.maxJumpTime*3)/(self.maxJumpTime*4)) -- this tries to reduce the "double jump feeling"
 			-- one attempted thing: -500*((self.maxJumpTime-self.jumpTimer+self.maxJumpTime*.999)/(self.maxJumpTime*1.999))
 		end
 	end
@@ -69,8 +69,8 @@ function Movement:collisions(elements, size, dt)
 	
 	for i, v in pairs(elements) do
 		if (self.pos.x + size.width > v.pos.x and self.pos.x < v.pos.x + v.w) then
-			if (self.pos.y + size.height < v.pos.y + 10 and self.pos.y + size.height + self.vel.dy * dt > v.pos.y) then
-				print(self.pos.y)
+			if (not v.broken and self.pos.y + size.height < v.pos.y + 10 and self.pos.y + size.height + self.vel.dy * dt > v.pos.y) then
+				-- print(self.pos.y)
 			-- if (self.pos.y < v.pos.y and self.pos.y + self.vel.dy > v.pos.y) then
 				self.pos.y = v.pos.y - size.height
 				self.vel.dy = 0
