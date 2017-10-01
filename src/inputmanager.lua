@@ -10,15 +10,16 @@ function InputManager:_init(args)
 		args = {}
 	end
 	self.menuMapping = {} -- for player controls to menu controls
-	-- self.gamepads = {} -- gamepads get added to this whenever they're added to the game. we use their uids to index self.players for the player input tables. they currenlty don't actually, and may never be
 
 	self.playerValues = {} -- this is the table that stores all of the x and y coordinates for the relative controllers. It also has a subtable that handles menu timers and such.
 	for k, v in ipairs({"k1", "k2", "k3"}) do
 		self:addControllingMethod(v)
 	end
+	self.numGamepads = 0
 	for k, v in ipairs(love.joystick.getJoysticks()) do
 		if v:isGamepad() then
 			self:gamepadadded(v)
+			self.numGamepads = self.numGamepads + 1
 		end
 	end
 
@@ -161,6 +162,7 @@ end
 
 function InputManager:gamepadadded(gamepad)
 	self:addControllingMethod(gamepad:getID())
+	self.numGamepads = self.numGamepads + 1
 end
 
 function InputManager:addControllingMethod(key)
@@ -173,6 +175,7 @@ end
 
 function InputManager:gamepadremoved(gamepad)
 	self.playerValues[gamepad:getID()].playing = false
+	self.numGamepads = self.numGamepads - 1
 end
 
 function InputManager:gamepadaxis(gamepad, axis, value)
