@@ -43,8 +43,11 @@ function Gameplay:_init(game, inplayers)
 	self.backgroundImage = love.graphics.newImage("images/assets/background.png")
 
 	self.dayLightColor = {255, 255, 255, 100}
-	self.targetColors = {{255, 255, 255, 100}, {255, 0, 0, 20}, {0, 0, 0, 200}, {255, 255, 0, 80}}
+	self.targetColors = {{255, 255, 255, 40}, {255, 50, 50, 50}, {50, 50, 50, 100}, {255, 255, 50, 40}}
 	self.targetColor = 1
+	
+	table.insert(self.items, Item(900, 600, 2, self.itemColors))
+	table.insert(self.items, Item(1340, 200, 1, self.itemColors))
 --	table.insert(self.platforms, Platform({x=0, y=1000, w=1920, style="wood", unbreakable=true}))
 
 	
@@ -61,7 +64,8 @@ end
 function Gameplay:draw()
 
 	love.graphics.setColor(220, 255, 240, 90)
-	camera:draw(self.backgroundImage, 0, 0)
+	camera:draw(self.backgroundImage, 0, camera.pos.y%1080, 1, 1, 0, true)
+	camera:draw(self.backgroundImage, 0, camera.pos.y%1080-1080, 1, 1, 0, true)
 	
 	for i, v in ipairs(self.platforms) do
 		v:draw()
@@ -81,14 +85,14 @@ function Gameplay:draw()
 	love.graphics.print(camera.pos.y, 10, 10)
 	
 	love.graphics.setColor(self.dayLightColor[1], self.dayLightColor[2], self.dayLightColor[3], self.dayLightColor[4])
-	camera:rectangle("fill", 0, 0, 1920, 1820)
+	camera:rectangle("fill", 0, 0, 1920, 1820, true)
 end
 
 function Gameplay:update(dt)
 	self.cameraTimer = self.cameraTimer + dt
 	if (self.cameraTimer > 6) then
 		camera.d.y = 0
-		-- camera.d.y = math.random(40, 150)
+		--camera.d.y = math.random(40, 100)
 		self.cameraTimer = 0
 	end
 
@@ -105,7 +109,11 @@ function Gameplay:update(dt)
 		v:update(dt)
 	end
 	for i, v in ipairs(self.avalanches) do
-		v:update(dt)
+		if v.dead then
+			table.remove(self.avalanches, i)
+		else
+			v:update(dt)
+		end
 	end
 	for i, v in ipairs(self.fallingrocks) do
 		v:update(dt, self.platforms)

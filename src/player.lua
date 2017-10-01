@@ -24,11 +24,12 @@ function Player:_init(game, x, y, uid, color)
 	self.wasHanging = false
 	self.hangingAnimationFrame = 1
 	self.shimmyFrame = 1
+	self.grabAnimationFrame = 0
 	
 	self.isAvalanched = false
 	
 	self.hasItem = 0 	-- 1 = pickaxe, 2 = dynamite
-
+	
 	self:loadImages()
 
 end
@@ -43,6 +44,7 @@ function Player:loadImages()
 	self:loadImageOfType("frontGrab", 6)
 	self:loadImageOfType("shimmy", 5)
 	self:loadImageOfType("pullUp", 13)
+	self:loadImageOfType("pullOff", 10)
 end
 
 function Player:loadImageOfType(name, frames)
@@ -63,8 +65,9 @@ function Player:grab(players)
 					if (math.abs(v.move.pos.x - self.move.pos.x) < 20) then
 						-- print ("HIT")
 						v.move.pos.y = v.move.pos.y + 10
-						v.move.vel.dy = 600
+						v.move.vel.dy = 450
 						v.move.noGrab = 1
+						self.grabAnimationFrame = 1
 					end
 				end
 			end
@@ -119,7 +122,7 @@ function Player:useItem()
 		if (self.hasItem == 1) then
 			table.insert(self.game.gameplay.fallingrocks, FallingRock(self.move.pos.x + 200 * self.move.facing, self.move.pos.y, 500 * self.move.facing))		
 			self.hasItem = 0
-		elseif (self.hasItem == 0) then
+		elseif (self.hasItem == 2) then
 			table.insert(self.game.gameplay.avalanches, Avalanche(self.move.pos.x, 3000, 5000))
 			self.hasItem = 0
 		end
@@ -163,7 +166,7 @@ end
 
 function Player:getRocked(rocks, dt)
 	for i, v in ipairs(rocks) do
-		if self.move.pos.x + self.size.width > v.x - v.s and self.move.pos.x < v.x + v.s then
+		if self.move.pos.x + self.size.width > v.x  and self.move.pos.x < v.x + v.s then
 			if self.move.pos.y + self.size.height > v.y - v.s and self.move.pos.y < v.y + v.s then
 				self.move.vel.dx = self.move.vel.dx + v.vx/2
 				self.move.vel.dy = math.max(self.move.vel.dy + v.vy/2, -1000)
@@ -208,6 +211,12 @@ function Player:animatePlayer(dt)
 	if self.animationFrame > 14 then
 		self.animationFrame = 1
 	end
+	if self.grabAnimationFrame > 0 then
+		self.grabAnimationFrame = self.grabAnimationFrame + .1
+		if self.grabAnimationFrame >= 6 then
+			self.grabAnimationFrame = 0
+		end
+	end
 end
 
 function Player:draw()
@@ -215,8 +224,10 @@ function Player:draw()
 		love.graphics.setColor(unpack(self.layerColors[i]))
 		
 		--drawing images on ground
-		
-			if self.move.climbUpTimer > 0 then
+			if self.grabAnimationFrame > 0 then
+				local frame = math.floor(self.grabAnimationFrame)*2
+				camera:draw(self.pullOffImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y - 140, sign(self.move.vel.dx))
+			elseif self.move.climbUpTimer > 0 then
 				local frame = math.ceil(self.move.climbUpTimer)
 				camera:draw(self.pullUpImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y - 140, sign(self.move.vel.dx))
 			elseif self.move.hanging then
