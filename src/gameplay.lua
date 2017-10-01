@@ -37,7 +37,7 @@ function Gameplay:_init(game)
 	self.backgroundImage = love.graphics.newImage("images/assets/background.png")
 
 	self.dayLightColor = {255, 255, 255, 100}
-	self.targetColors = {{255, 255, 255, 100}, {255, 0, 0, 20}, {0, 0, 0, 200}, {255, 255, 0, 80}}
+	self.targetColors = {{255, 255, 255, 100}, {255, 50, 50, 50}, {50, 50, 50, 100}, {255, 255, 50, 40}}
 	self.targetColor = 1
 --	table.insert(self.platforms, Platform({x=0, y=1000, w=1920, style="wood", unbreakable=true}))
 

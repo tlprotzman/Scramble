@@ -7,11 +7,14 @@ function FallingRock:_init(x, y, vx, vy, s)
 	self.vy = vy or 0
 	self.s = s or 100
 	self.gravity = 2000
+	self.image = love.graphics.newImage("images/assets/boulder.png")
 end
 
 function FallingRock:draw()
-	love.graphics.setColor(100, 100, 100)
-	camera:circle("fill", self.x, self.y, self.s)
+	--love.graphics.setColor(100, 100, 100)
+	--camera:circle("fill", self.x, self.y, self.s)
+	love.graphics.setColor(255, 255, 255)
+	camera:draw(self.image, self.x, self.y)
 end
 
 function FallingRock:update(dt, platforms, players)
