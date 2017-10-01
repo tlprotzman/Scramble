@@ -114,7 +114,6 @@ function Gameplay:generateNextChunk(mode, offset)
 	if (mode == 1) then
 	self.variance = 0
 	self.spacing = 250
-		print("HIT")
 		for i=1, 10 do
 			j = i - offset
 			if (math.random(0, 10) < 8) then
@@ -131,7 +130,6 @@ function Gameplay:generateNextChunk(mode, offset)
 	elseif (mode == 2) then
 	self.variance = 50
 	self.spacing = 300
-		print("HIT")
 		for i=1, 10 do
 			j = i - offset
 			if (math.random(0, 10) < 8) then

@@ -70,13 +70,14 @@ end
 
 function Movement:yMove(dt, jumping)
 	-- print(self.jumpTimer)
-	if (self.climbUpTimer > 1.2) then
+	if (self.climbUpTimer > 12) then
 		self.climbUpTimer = 0
+		self.pos.x = self.pos.x + 50
 	end
 
 	if ((jumping and self.hanging) or self.climbUpTimer > 0) then
 		self.pos.y = self.pos.y - 3
-		self.climbUpTimer = self.climbUpTimer + dt
+		self.climbUpTimer = self.climbUpTimer + 10*dt
 		return
 	end
 
@@ -145,8 +146,8 @@ function Movement:collisions(elements, size, dt)
 		end
 	end			
 
-	if (self.pos.y + size.height > love.graphics.getHeight()) then
-		self.pos.y = love.graphics.getHeight() - size.height
+	if (self.pos.y + size.height > 1080) then
+		self.pos.y = 1080 - size.height
 		self.vel.dy = 0
 		self.onGround = true
 		self.onSolidGround = true
@@ -156,8 +157,8 @@ function Movement:collisions(elements, size, dt)
 		self.pos.x = 0
 		self.vel.dx = 0
 	end
-	if (self.pos.x + size.width > love.graphics.getWidth()) then
-		self.pos.x = love.graphics.getWidth() - size.width
+	if (self.pos.x + size.width > 1920) then
+		self.pos.x = 1920 - size.width
 		self.vel.dx = 0
 	end
 end
