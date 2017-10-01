@@ -10,14 +10,28 @@ inputManager = InputManager()
 game = Game()
 camera = Camera()
 
+images = {}
+
 function love.load(args)
 	-- this is the draw type to make things pixel perfect:
-	love.graphics.setDefaultFilter( 'nearest',  'nearest',  0 ) 
+	love.graphics.setDefaultFilter( 'nearest',  'nearest',  0 )
+	loadImages()
 
 
 	love.math.setRandomSeed(os.time())
 	math.randomseed(os.time()) 
 	game:delayedinit(args)
+end
+
+function loadImages()
+	images.selectionButton = {}
+	for i = 1, 6 do
+		table.insert(images.selectionButton, love.graphics.newImage("images/assets/selectionButton"..i..".png"))
+	end
+	images.selectionArrow = {}
+	for i = 1, 7 do
+		table.insert(images.selectionArrow, love.graphics.newImage("images/assets/selectionArrow"..i..".png"))
+	end
 end
 
 function love.update(dt)
