@@ -9,10 +9,9 @@ function Player:_init(game, uid, color)
 
 	local x = 250		-- Holds info about the players location and movement
 	local y = 250
-	local acceleration = 1500
-	local maxDX = 1000
+	local acceleration = 700
+	local maxDX = 700
 	
-	self.jumpStrength = 500
 	self.move = Movement(x, y, acceleration, maxDX)
 
 	self.facing = 1

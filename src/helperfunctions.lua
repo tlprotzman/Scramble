@@ -12,7 +12,7 @@ function zsign(n)
 	return (n < 0 and -1) or (n > 0 and 1) or 0
 end
 
-function iInTable(item, t)
+function iInTable(t, item)
 	-- this goes through all of the values of a table indexed by numbers and returns the index or -1 if it can't find the item
 	for i = 1, #t do
 		if t[i] == item then
@@ -22,7 +22,7 @@ function iInTable(item, t)
 	return false, -1
 end
 
-function inTable(item, t)
+function inTable(t, item)
 	-- this goes through all of the key value pairs and returns the key or nil if it can't find the item
 	for k, v in pairs(t) do
 		if v == item then
