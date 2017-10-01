@@ -28,12 +28,16 @@ end
 function Avalanche:update(dt)
 	if self.progress < 1800 then
 		self.progress = self.progress + 2000*dt
-		table.insert(self.snow, {x=math.random(self.x-250, self.x+self.w-250), y=math.random(0, self.duration), size=0})
+		for i = 1, 3 do 
+			table.insert(self.snow, {x=math.random(self.x-250, self.x+self.w-250), y=math.random(0, self.duration), size=0})
+		end
 		for i, v in ipairs(self.snow) do
 			v.size = v.size + 10
 			if v.size > 255 then
 				table.remove(self.snow, i)
 			end
 		end
+	else
+		self.dead = true
 	end
 end

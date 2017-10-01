@@ -25,12 +25,12 @@ function Camera:arc(style, style2, x, y, r, angle1, angle2, ignoreCamera)
 	love.graphics.arc(style, style2, x + offset.x, y + offset.y, r, angle1, angle2)
 end
 
-function Camera:draw(drawable, x, y, flip, scale, ignoreCamera)
+function Camera:draw(drawable, x, y, flip, scale, r, ignoreCamera)
 	local offset = self:getOffset(ignoreCamera)
 	if not flip or sign(flip)==1 then
-		love.graphics.draw(drawable, x + offset.x, y + offset.y, 0, 1 or scale, 1 or scale)
+		love.graphics.draw(drawable, x + offset.x + drawable:getWidth()/2, y + offset.y + drawable:getHeight()/2, r or 0, scale or 1, scale or 1, drawable:getWidth()/2, drawable:getHeight()/2)
 	else
-		love.graphics.draw(drawable, x + offset.x + drawable:getWidth() , y + offset.y, 0, -1*(1 or scale), 1 or scale)
+		love.graphics.draw(drawable, x + offset.x  + drawable:getWidth(), y + offset.y , r or 0, -1*(scale or 1), scale or 1)
 	end
 end
 
