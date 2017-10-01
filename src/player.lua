@@ -40,6 +40,7 @@ function Player:loadImages()
 	self:loadImageOfType("turn", 2)
 	self:loadImageOfType("frontGrab", 6)
 	self:loadImageOfType("shimmy", 5)
+	self:loadImageOfType("pullUp", 13)
 end
 
 function Player:loadImageOfType(name, frames)
@@ -177,7 +178,10 @@ function Player:draw()
 		
 		--drawing images on ground
 		
-			if self.move.hanging then
+			if self.move.climbUpTimer > 0 then
+				local frame = math.ceil(self.move.climbUpTimer)
+				camera:draw(self.pullUpImages[i][frame], self.move.pos.x + self.imageOffset.x, self.move.pos.y + self.imageOffset.y, sign(self.move.vel.dx))
+			elseif self.move.hanging then
 				local frame = math.floor(self.hangingAnimationFrame)
 				if frame > 6 then
 					frame = math.floor(self.move.shimmyFrame)
