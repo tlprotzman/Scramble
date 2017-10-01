@@ -10,11 +10,14 @@ function Movement:_init(_x, _y, _acceleration, _maxDX)
 	self.maxDX = _maxDX
 	self.acceleration = _acceleration
 	self.friction = 0.2
+	self.hangingSpeed = 200
 
 	self.onGround = false
 	self.onSolidGround = false
+	self.hanging = false
 	self.maxJumpTime = 0.4
 	self.jumpTimer = 0
+	self.climbUpTimer = 0
 
 end
 
@@ -23,18 +26,29 @@ function Movement:setFriction(value)
 end
 
 function Movement:xMove(dt, xScaler)
-	ddx = xScaler * self.acceleration
-	if (not self.onGround) then
-		xScaler = xScaler * 1.3
+
+	if (self.climbUpTimer > 0) then
+		xScaler = 0
 	end
-	self.vel.dx = self.vel.dx + ddx * dt
-	if (self.onGround and (math.abs(xScaler) < 0.05 or xScaler * self.vel.dx < 0)) then
-		self.vel.dx = self.vel.dx - self.vel.dx * self.friction
-	end
-	if (self.vel.dx > self.maxDX) then
-		self.vel.dx = self.maxDX
-	elseif math.abs(self.vel.dx) < 0.1 then
-		self.vel.dx = 0
+
+
+	if (self.hanging) then
+		self.vel.dx = xScaler * self.hangingSpeed
+	else
+
+		ddx = xScaler * self.acceleration
+		if (not self.onGround) then
+			xScaler = xScaler * 1.3
+		end
+		self.vel.dx = self.vel.dx + ddx * dt
+		if (self.onGround and (math.abs(xScaler) < 0.05 or xScaler * self.vel.dx < 0)) then
+			self.vel.dx = self.vel.dx - self.vel.dx * self.friction
+		end
+		if (self.vel.dx > self.maxDX) then
+			self.vel.dx = self.maxDX
+		elseif math.abs(self.vel.dx) < 0.1 then
+			self.vel.dx = 0
+		end
 	end
 	
 	self.pos.x = self.pos.x + self.vel.dx * dt
@@ -42,6 +56,17 @@ end
 
 function Movement:yMove(dt, jumping)
 	-- print(self.jumpTimer)
+	if (self.climbUpTimer > 1.1) then
+		self.climbUpTimer = 0
+	end
+
+	if ((jumping and self.hanging) or self.climbUpTimer > 0) then
+		self.pos.y = self.pos.y - 3
+		self.climbUpTimer = self.climbUpTimer + dt
+		return
+	end
+
+
 	if (jumping) then
 		self.onGround = false
 		self.jumpTimer = self.jumpTimer + dt
@@ -67,9 +92,11 @@ function Movement:move(dt, xScaler, jumping, onGround)
 	self:xMove(dt, xScaler)
 	self:yMove(dt, jumping)
 	
-	if self.onGround and self.onPlatform then
-		self.pos.x = self.pos.x + self.onPlatform.vel.x*dt
-		self.pos.y = self.pos.y + self.onPlatform.vel.y*dt
+
+	if (self.onGround and self.onPlatform) or (self.hanging and self.onPlatform) or (self.climbUpTimer > 0 and self.onPlatform) then
+		self.pos.x = self.pos.x + self.onPlatform.vel.x*dt*2
+		self.pos.y = self.pos.y + self.onPlatform.vel.y*dt*2
+
 	end
 end
 
@@ -77,16 +104,28 @@ function Movement:collisions(elements, size, dt)
 	
 	self.onGround = false
 	self.onSolidGround = false
-	self.onPlatform = false
+	if (self.climbUpTimer == 0) then
+		self.onPlatform = false
+	end
+	self.hanging = false
 	
 	for i, v in pairs(elements) do
 		if (self.pos.x + size.width > v.pos.x and self.pos.x < v.pos.x + v.w) then
-			if (not v.broken and self.pos.y + size.height < v.pos.y + 10 and self.pos.y + size.height + self.vel.dy * dt > v.pos.y) then
+			if ( self.pos.y + size.height < v.pos.y + 10 and self.pos.y + size.height + self.vel.dy * dt > v.pos.y) then			--not v.broken and
 				-- print(self.pos.y)
 			-- if (self.pos.y < v.pos.y and self.pos.y + self.vel.dy > v.pos.y) then
 				self.pos.y = v.pos.y - size.height
 				self.vel.dy = 0
 				self.onGround = true
+				self.onPlatform = v
+			
+			-- Code to check for hanging conditions
+			elseif (self.vel.dy > 0  and self.pos.y  < v.pos.y + 40 and self.pos.y + self.vel.dy * dt > v.pos.y + 30) then
+				-- print(self.pos.y)
+			-- if (self.pos.y < v.pos.y and self.pos.y + self.vel.dy > v.pos.y) then
+				self.pos.y = v.pos.y + 30
+				self.vel.dy = 0
+				self.hanging = true
 				self.onPlatform = v
 			end 
 		end
