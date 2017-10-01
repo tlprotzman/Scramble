@@ -58,6 +58,7 @@ function Gameplay:_init(game, inplayers)
 	self.chunkCount = 0
 	self:generateNextChunk()
 
+	self.numberPlayers = #self.players
 --	table.insert(self.platforms, Platform({x=0, y=1000, w=1920, style="wood", unbreakable=true}))
 
 	
@@ -65,6 +66,7 @@ end
 
 function Gameplay:load()
 	-- run when the level is given control
+	soundManager:stopSound("titlemusic")
 end
 
 function Gameplay:leave()
@@ -179,7 +181,7 @@ function Gameplay:update(dt)
 		self:generateNextChunk()
 	end
 	
-	if not self.gameOver and #self.players==1 then
+	if not self.gameOver and #self.players==1 and #self.standings < self.numberPlayers then
 		table.insert(self.standings, 1, self.players[1].color)
 		self.gameOver = true
 	end

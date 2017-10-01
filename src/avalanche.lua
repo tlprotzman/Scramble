@@ -26,7 +26,10 @@ function Avalanche:draw()
 end
 
 function Avalanche:update(dt)
-	if self.progress < 1800 then
+	if not self.startedSound and self.progress - camera.pos.y + 100 > 0 then
+		self.startedSound = true
+		soundManager:playSound("avalanche")
+	elseif self.progress < 1800 then
 		self.progress = self.progress + 2000*dt
 		for i = 1, 3 do 
 			table.insert(self.snow, {x=math.random(self.x-250, self.x+self.w-250), y=math.random(0, self.duration), size=0})

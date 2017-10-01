@@ -6,6 +6,7 @@ require "prerunmenu"
 Game = class()
 MainFont = { love.graphics.newFont("fonts/ferrum.otf", 3), love.graphics.newFont("fonts/ferrum.otf", 72), love.graphics.newFont("fonts/ferrum.otf", 144) }
 
+
 function Game:delayedinit(args)
 	self.args = args
 

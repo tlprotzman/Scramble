@@ -42,6 +42,9 @@ function MainMenu:load()
 	-- everyone should be able to control the main menu probably
 	inputManager:ownMenu() -- leave it blank to let anyone control it
 	love.mouse.setVisible(true)
+	if not soundManager:isPlaying("titlemusic") then
+		soundManager:playSound("titlemusic")
+	end
 end
 
 function MainMenu:leave()
