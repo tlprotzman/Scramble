@@ -25,7 +25,7 @@ function Player:_init(game, x, y, uid, color)
 	
 	self.isAvalanched = false
 	
-	self.hasItem = false
+	self.hasItem = 0 	-- 1 = pickaxe, 2 = dynamite
 
 	self:loadImages()
 
@@ -75,6 +75,7 @@ function Player:update(dt, platforms, players, avalanches, fallingrocks, items)
 	self:getAvalanched(avalanches)
 	self:getRocked(fallingrocks)
 	self:getItems(items)
+	self:useItem()
 	self:movePlayer(dt, platforms)
 	self:grab(players)
 	self:animatePlayer(dt)
@@ -83,6 +84,18 @@ function Player:update(dt, platforms, players, avalanches, fallingrocks, items)
 		self.move.noGrab = self.move.noGrab + dt
 		if (self.move.noGrab > 2) then
 			self.move.noGrab =0
+		end
+	end
+end
+
+function Player:useItem()
+	if (inputManager:getPlayerValues(self.uid).raw.use > 0.9) then
+		if (self.hasItem == 1) then
+			table.insert(self.game.gameplay.fallingrocks, FallingRock(self.move.pos.x + 200 * self.move.facing, self.move.pos.y, 500 * self.move.facing))		
+			self.hasItem = 0
+		elseif (self.hasItem == 0) then
+			table.insert(self.game.gameplay.avalanches, Avalanche(self.move.pos.x, 3000, 5000))
+			self.hasItem = 0
 		end
 	end
 end
@@ -139,7 +152,7 @@ function Player:getRocked(rocks, dt)
 end
 
 function Player:getItems(items)
-	if not self.hasItem then
+	if (self.hasItem == 0) then
 		for i, v in ipairs(items) do
 			if self.move.pos.x + self.size.width > v.x and self.move.pos.x < v.x + v.w then
 				if self.move.pos.y + self.size.height > v.y and self.move.pos.y < v.y + v.h then
@@ -223,7 +236,7 @@ function Player:draw()
 	
 	love.graphics.setColor(0, 255, 0)
 	
-	if self.hasItem then
+	if (self.hasItem ~= 0) then
 		love.graphics.setColor(unpack(self.game.gameplay.itemColors[self.hasItem]))
 	end
 	camera:rectangle("line", self.move.pos.x, self.move.pos.y, self.size.width, self.size.height)

@@ -12,6 +12,7 @@ function Movement:_init(_x, _y, _acceleration, _maxDX)
 	self.friction = 0.2
 	self.hangingSpeed = 200
 
+	self.facing = 1
 	self.onGround = false
 	self.onSolidGround = false
 	self.hanging = false
@@ -28,6 +29,11 @@ function Movement:setFriction(value)
 end
 
 function Movement:xMove(dt, xScaler)
+	if (xScaler > 0) then
+		self.facing = 1
+	elseif (xScaler < 0) then
+		self.facing = -1
+	end
 
 	if (self.climbUpTimer > 0) then
 		xScaler = 0

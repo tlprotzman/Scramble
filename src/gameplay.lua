@@ -74,8 +74,8 @@ end
 function Gameplay:update(dt)
 	self.cameraTimer = self.cameraTimer + dt
 	if (self.cameraTimer > 6) then
-		-- camera.d.y = 0
-		camera.d.y = math.random(40, 150)
+		camera.d.y = 0
+		-- camera.d.y = math.random(40, 150)
 		self.cameraTimer = 0
 	end
 
