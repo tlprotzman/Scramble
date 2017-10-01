@@ -29,6 +29,7 @@ function Movement:xMove(dt, xScaler)
 
 	if (self.climbUpTimer > 0) then
 		xScaler = 0
+		self.vel.dx = 0
 	end
 
 
