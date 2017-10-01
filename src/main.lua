@@ -11,9 +11,10 @@ game = Game()
 camera = Camera()
 
 function love.load(args)
-	love.window.setMode(1920/2, 1080/2, {resizable = false, vsync = true, fullscreen = false})
+	-- this is the draw type to make things pixel perfect:
 	love.graphics.setDefaultFilter( 'nearest',  'nearest',  0 ) 
-	-- love.window.setTitle("MultiFarm")
+
+
 	love.math.setRandomSeed(os.time())
 	math.randomseed(os.time()) 
 	game:delayedinit(args)
