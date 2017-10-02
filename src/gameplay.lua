@@ -112,17 +112,19 @@ function Gameplay:draw()
 	
 	if #self.players <=1 then
 		local y = 1080/2-50*#self.standingNames+150
+		local offset = 8
 		for i, v in ipairs(self.standings) do
 			if i==1 then
 				love.graphics.setFont(MainFont[3])
 			else
 				love.graphics.setFont(MainFont[2])
+				offset = 4 -- smaller font has smaller shadow?
 			end
 				
 			love.graphics.setColor(0, 0, 0)
-			love.graphics.printf(self.standingNames[i].." Place", 0, y, 1920, "center")
+			love.graphics.printf(self.standingNames[i].." Place", 0, y+offset, 1920, "center")
 			love.graphics.setColor(unpack(v))
-			love.graphics.printf(self.standingNames[i].." Place", 0, y+8, 1920, "center")
+			love.graphics.printf(self.standingNames[i].." Place", 0, y, 1920, "center")
 			if i==1 then
 				y = y + 200
 			else
