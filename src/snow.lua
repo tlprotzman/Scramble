@@ -4,7 +4,7 @@ function Snow:_init(x, y)
 	self.x = x
 	self.y = y
 	self.s = 0
-	self.image = love.graphics.newImage("images/assets/snowball.png")
+	self.image = images.snowballImage
 end
 
 function Snow:draw()

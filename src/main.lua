@@ -53,6 +53,7 @@ function loadPlayerImageOfType(name, frames)
 end
 
 function loadImages()
+	images.snowballImage = love.graphics.newImage("images/assets/snowball.png")
 	images.selectionButton = {}
 	for i = 1, 6 do
 		table.insert(images.selectionButton, love.graphics.newImage("images/assets/selectionButton"..i..".png"))
