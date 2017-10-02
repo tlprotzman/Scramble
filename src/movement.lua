@@ -84,7 +84,6 @@ end
 function Movement:yMove(dt, jumping)
 	if self.carrier then
 		-- you're being carried unless you spam the jump button
-		self.onGround = true
 		self.thrown = false
 		self.pos.y = self.carrier.move.pos.y - 100
 		self.vel.dy = self.carrier.move.vel.dy

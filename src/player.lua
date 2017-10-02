@@ -36,11 +36,6 @@ function Player:_init(game, x, y, uid, color)
 	
 	self:loadImages()
 	self.dead = false
-
-end
-
-function Player:gatherImages()
-	-- load all of the images from the global "images" table
 end
 
 function Player:loadImages()
@@ -87,7 +82,7 @@ function Player:grab(players)
 					end
 				end
 			end
-		elseif self.playerGrabTimer < 0 and not self.carrying then
+		elseif self.playerGrabTimer < 0 and not self.carrying and not self.move.carrier then -- you can't pick up another player if your grab timer is >0 or if you're already carrying or being carried
 			-- try picking up a player nearby
 			for i, other in pairs(players) do
 				-- the other player can't be climbing, and can't be too far away, and can't be yourself.
@@ -95,6 +90,7 @@ function Player:grab(players)
 					-- it's within grabbing height
 					if math.abs(other.move.pos.x - self.move.pos.x) < 50 then
 						other.move.carrier = self
+						other.move.onGround = false -- they are no longer on the ground, so they shouldn't be able to jump away unless they break free
 						other.carrierBreakFree = math.random(3, 10)
 						self.playerGrabTimer = 1
 						self.carrying = other
@@ -103,16 +99,20 @@ function Player:grab(players)
 				end
 			end
 		end
-	elseif self.carrying then
+	elseif self.carrying then -- throw the other player
+		self.carrying.playerGrabTimer = 1 -- they can't jump for a second
+		self.playerGrabTimer = 1 -- you can't grab immediately either
 		self.carrying.move.carrier = false
 		self.carrying.carrierBreakFree = 0
+		self.carrying.move.onGround = false -- they shouldn't be able to jump after they're thrown.
+		self.carrying.move.floatingJumpTimer = self.carrying.move.floatingJumpAllowance -- if this was 0 then they'd be able to jump! That's not supposed to happen
+		self.carrying.move.jumpTimer = self.carrying.move.maxJumpTime -- this also needs to be set to prevent jumping. Wow. Jumping is really not obvious
 		self.carrying.move.vel.dx = 600 * self.facing + self.move.vel.dx
 		self.carrying.move.vel.dy = self.move.vel.dy + 200
 		self.carrying.move.thrown = true
 		self.carrying = false
 	end
 end
-
 
 function Player:update(dt, platforms, players, avalanches, fallingrocks, items)
 	if self.carrierBreakFree > 0 then
@@ -124,6 +124,8 @@ function Player:update(dt, platforms, players, avalanches, fallingrocks, items)
 					-- jump away, free
 					self.move.carrier.carrying = false
 					self.move.carrier = false
+					self.move.onGround = true -- If you break free you get to jump! Go you!
+					self.playerGrabTimer = 1 -- you have a second after you break free that you can't carry to prevent grab reversals
 					self.carrierBreakFreeToggle = true
 				end
 			end
