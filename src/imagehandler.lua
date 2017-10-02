@@ -6,15 +6,15 @@ At a bare minimum it allows for all loading to be global and shared, and also al
 
 Usage:
 pass in args to the creation, args can be:
-A string filename of a file that returns a lua table divided into two sub tables, stills and animations.
-the stills subtable then has sub tables of {imageKey, imageFilename}
-the animations subtable has sub tables of {imageKey, numberOfFrames, firstPartOfFilename, secondPartOfFilename}
+A string filename of a file that returns a lua table
+it then has sub tables of {imageKey, numberOfFrames, firstPartOfFilename, secondPartOfFilename}
 -- where the frame number (starting from 1 and including the number of frames), is combined between the first half and second half to form the full filename of each frame
+-- if the number of frames is 0 then it's a still, and the filename is simply the two parts appended together
 
 It can also be a table with either:
 a "filename" key, in which case it does the same as just passing the filename in.
 
-two tables containing those subtables from above inside args.stills and args.animations.
+a table containing the subtables from above
 ]]--
 
 ImageHandler = class()
@@ -23,51 +23,50 @@ function  ImageHandler:_init(args)
 	if not args then
 		args = {}
 	end
-	-- filename could be a config text
-	self.images = {stills = {}, animations = {}} -- this will be sub-divided into self.images.animations and self.images.stills?
-	-- animations will be keys of names leading to tables indexed from 1 to the number of frames
+
+	self.images = {}
+	-- the keys are names leading to tables indexed from 1 to the number of frames, obviously for stills it's just 1 frame
 	-- there'll be a function to round a number to 1 if it's larger than the animation key
 
 	if type(args) == "string" then
 		local t = require args
-		self:loadImages(t.stills, t.animations)
+		self:loadImages(t)
 	elseif args.filename then
 		local t = require args.filename
-		self:loadImages(t.stills, t.animations)
+		self:loadImages(t)
 	else
-		self:loadImages(args.stills, args.animations)
+		self:loadImages(args)
 	end
 end
 
-function ImageHandler:loadImages(stills, animations)
+function ImageHandler:loadImages(imagesIn)
 	-- given a list of filenames and number of frames, (and a bunch of stills) load the images
-	local stills = stills or {}
-	local animations = animations or {}
-	for i, f in ipairs(stills) do
-		-- f is a table of key, then filename
-		self.images.stills[f[1]] = love.graphics.newImage(f[2])
-	end
-	for i, f in ipairs(animations) do
+	local imagesIn = imagesIn or {}
+	for i, f in ipairs(imagesIn) do
 		-- f is a table of key, number of frames, first part of filename, second part of filename (the frame number is put in the middle)
-		for frame = 1, animations[2] do
-			self.images.animations[f[1]][frame] = love.graphics.newImage(f[3]..frame..f[4])
+		if f[2] <= 0 then -- it's a still image
+			self.images[f[1]][1] = love.graphics.newImage(f[3]..f[4])
+		else
+			for frame = 1, f[2] do
+				self.images[f[1]][frame] = love.graphics.newImage(f[3]..frame..f[4])
+			end
 		end
 	end
 end
 
-function ImageHandler:roundFrame(frame, animationName)
-	if math.floor(frame) > #self.images.animations[animationName] then
+function ImageHandler:roundFrame(animationName, frame)
+	if math.floor(frame) > #self.images[animationName] then
 		return 1
 	end
 	return frame -- keep it the same otherwise
 end
 
-function ImageHandler:getImage(frame, imageName)
-	-- if frame is 0 then it's a still
-	if frame < 1 then
-		return self.images.stills[imageName]
+function ImageHandler:getImage(imageName, frame)
+	-- if frame is 0 or nil, then it's a still
+	if not frame or frame < 1 then
+		return self.images[imageName][1]
 	else
-		return self.images.animations[imageName][math.floor(frame)]
+		return self.images[imageName][math.floor(frame)]
 	end
 end
 
