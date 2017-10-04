@@ -10,10 +10,8 @@ MainFont = { love.graphics.newFont("fonts/ferrum.otf", 3), love.graphics.newFont
 function Game:delayedinit(args)
 	self.args = args
 
-	-- self.inputManager = InputManager({inputStack = {self}})
 	self.debug = true
 
-	-- self.font = love.graphics.newFont(13)
 	self.gameplay = Gameplay(self)
 
 	self.mainMenu = MainMenu()
@@ -23,8 +21,6 @@ function Game:delayedinit(args)
 	self.drawLayersStart = 0
 
 	self:addToScreenStack(self.mainMenu)
-	-- self:addToScreenStack(self.preRunMenu)
-	-- self:addToScreenStack(self.gameplay)
 
 	-- these are things for scaling the screen
 	self.SCREENWIDTH = 1920
@@ -140,12 +136,3 @@ function Game:keypressed(key, unicode)
 		end
 	end
 end
-
-
--- function Game:textinput(text)
--- 	inputManager:textinput(text)
--- end
-
--- function love.gamepadpressed()
--- 	--
--- end
