@@ -29,6 +29,7 @@ function Player:_init(game, x, y, uid, color)
 	self.hangingAnimationFrame = 1
 	self.shimmyFrame = 1
 	self.grabAnimationFrame = 0
+	self.playerIconFrame = 1
 	
 	self.isAvalanched = false
 	
@@ -115,6 +116,7 @@ function Player:grab(players)
 end
 
 function Player:update(dt, platforms, players, avalanches, fallingrocks, items)
+	self.playerIconFrame = imageManager:updateFrameCount("playerIcon", self.playerIconFrame, dt*10)
 	if self.carrierBreakFree > 0 then
 		if inputManager:getPlayerValues(self.uid).raw.up > .5 then
 			if self.carrierBreakFreeToggle then
@@ -286,8 +288,15 @@ function Player:animatePlayer(dt)
 end
 
 function Player:draw()
+	-- if the player is offscreen, draw the player icon below where they are so people can see.
+	if self.move.pos.y + 180 < -camera.pos.y then
+		-- they're offscreen, so draw the player icon showing what x they're at to make life easier
+		love.graphics.setColor(self.layerColors[2])
+		local icon = imageManager:getImage("playerIcon", self.playerIconFrame)
+		love.graphics.draw(icon, self.move.pos.x+camera.pos.x+self.size.width/2, 50, math.pi/2, 1, 1, icon:getWidth()/2, icon:getHeight()/2)
+	end
 	for i = 1, 3 do
-		love.graphics.setColor(unpack(self.layerColors[i]))
+		love.graphics.setColor(self.layerColors[i])
 		local idleFrames = self.idleImages
 		local runningFrames = self.runningImages
 		local turnFrames = self.turnImages
@@ -302,8 +311,8 @@ function Player:draw()
 			turnFrames = self.turnPickUpImages
 			yOffset = self.size.height
 		end
-		
-	--drawing images on ground
+
+		--drawing images on ground
 		if self.move.carrier then
 			local frame = math.floor((self.animationFrame-1)/2)+1
 			camera:draw(self.idleImages[i][frame], self.move.pos.x + self.imageOffset.x + math.max(math.min(self.move.vel.dx/5, 25), -25), self.move.pos.y + self.imageOffset.y - yOffset - 20, 1, 1, math.pi/2)
