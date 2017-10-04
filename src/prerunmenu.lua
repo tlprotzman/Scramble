@@ -104,7 +104,7 @@ function PreRunMenu:readyButton(text, player)
 		for k, v in pairs(self.players) do
 			v.ready = false -- for next round
 			self.menu.selections[player].ready = false
-			table.insert(inplayers, {uid = k, color = v.color})
+			table.insert(inplayers, math.random(1, #inplayers+1), {uid = k, color = v.color})
 		end
 		game.gameplay = Gameplay(game, inplayers)
 		camera.pos.x = 0
