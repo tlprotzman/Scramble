@@ -12,7 +12,7 @@ function InputManager:_init(args)
 	self.menuMapping = {} -- for player controls to menu controls
 
 	self.playerValues = {} -- this is the table that stores all of the x and y coordinates for the relative controllers. It also has a subtable that handles menu timers and such.
-	for k, v in ipairs({"k1", "k2", "k3"}) do
+	for k, v in ipairs({"k1", "k2", "k3", "k4"}) do
 		self:addControllingMethod(v)
 	end
 	self.numGamepads = 0
@@ -24,11 +24,13 @@ function InputManager:_init(args)
 	end
 
 	self.keyboardPlayerMapping = {w = "k1", a = "k1", s = "k1", d = "k1", c = "k1", v = "k1",
-									i = "k2", j = "k2", k = "k2", l = "k2", ["."] = "k2", ["/"] = "k2",
-									kp8 = "k3", kp4 = "k3", kp5 = "k3", kp6 = "k3", kp3 = "k3", kpenter = "k3"}
+									t = "k2", f = "k2", g = "k2", h = "k2", n = "k2", m = "k2",
+									i = "k3", j = "k3", k = "k3", l = "k3", ["."] = "k3", ["/"] = "k3",
+									kp8 = "k4", kp4 = "k4", kp5 = "k4", kp6 = "k4", kp3 = "k4", kpenter = "k4"}
 	self.keyboardKeyMapping = {k1 = {w = "up", a = "left", s = "down", d = "right", c = "grab", v = "use"},
-								k2 = {i = "up", j = "left", k = "down", l = "right", ["."] = "grab", ["/"] = "use"},
-								k3 = {kp8 = "up", kp4 = "left", kp5 = "down", kp6 = "right", kp3 = "grab", kpenter = "use"}}
+								k2 = {t = "up", f = "left", g = "down", h = "right", n = "grab", m = "use"},
+								k3 = {i = "up", j = "left", k = "down", l = "right", ["."] = "grab", ["/"] = "use"},
+								k4 = {kp8 = "up", kp4 = "left", kp5 = "down", kp6 = "right", kp3 = "grab", kpenter = "use"}}
 	self.gamepadAxisMapping = {leftx = {"left", "right"}, lefty = {nil, "down"}, rightx = {nil, nil}, righty = {nil, nil}, triggerleft = {nil, "use"}, triggerright = {nil, "use"}}
 	self.gamepadAxisMenuMapping = {leftx = {"left", "right"}, lefty = {"up", "down"}, rightx = {nil, nil}, righty = {nil, nil}, triggerleft = {nil, "use"}, triggerright = {nil, "use"}}
 	-- the menuMapping is for when sendMenuInputs is true, otherwise use the top one.
