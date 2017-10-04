@@ -19,6 +19,7 @@ function Button:_init(args)
 	self.leftOption = args.leftOption -- pass in nil if there's no option for that side, it's a function that's called when that option is chosen
 	self.rightOption = args.rightOption
 	self.text = args.text or ""
+	self.color = args.color or {255, 255, 255}
 
 	self.leftSelected = false
 	self.rightSelected = false
@@ -47,15 +48,7 @@ function Button:draw()
 	local scale = (self.width-2*fullArrowWidth)/500
 	love.graphics.draw(imageManager:getImage("selectionButton", self.centerFrame), self.x+fullArrowWidth, self.y, 0, scale, 1)
 	-- love.graphics.rectangle("fill", self.x+fullArrowWidth, self.y, self.width-2*fullArrowWidth, self.height)
-	if self.text == "Red" then
-		love.graphics.setColor(255, 0, 0)
-	elseif self.text == "Green" then
-		love.graphics.setColor(0, 255, 0)
-	elseif self.text == "Blue" then
-		love.graphics.setColor(0, 0, 255)
-	else
-		love.graphics.setColor(255, 255, 255)
-	end
+	love.graphics.setColor(self.color)
 	love.graphics.setFont(MainFont[2])
 	love.graphics.printf(self.text, self.x+fullArrowWidth, self.y+6, self.width-2*fullArrowWidth, "center")
 	-- love.graphics.setColor(0, 0, 0)

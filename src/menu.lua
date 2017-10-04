@@ -17,7 +17,7 @@ function Menu:_init(args)
 	for i, v in ipairs(args.buttons) do
 		-- each should have text, leftOption, rightOption
 		local args = {parent = args.parent, x = self.x, y = self.y + (i-1)*(self.buttonSpacing+self.buttonHeight), width = self.width, height = args.buttonheight, text = v.text,
-								leftOption = v.leftOption, rightOption = v.rightOption}
+								leftOption = v.leftOption, rightOption = v.rightOption, color = v.color}
 		table.insert(self.buttons, Button(args))
 	end
 

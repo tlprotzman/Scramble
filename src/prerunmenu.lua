@@ -12,9 +12,9 @@ function PreRunMenu:_init(args)
 	self.updateUnder = false
 
 	local menuButtons = {{text = "Ready", rightOption = self.readyButton},
-							{text = "Red", rightOption = self.colorIncreased, leftOption = self.colorDecreased},
-							{text = "Green", rightOption = self.colorIncreased, leftOption = self.colorDecreased},
-							{text = "Blue", rightOption = self.colorIncreased, leftOption = self.colorDecreased},
+							{text = "Red", rightOption = self.colorIncreased, leftOption = self.colorDecreased, color = {255, 0, 0}},
+							{text = "Green", rightOption = self.colorIncreased, leftOption = self.colorDecreased, color = {0, 255, 0}},
+							{text = "Blue", rightOption = self.colorIncreased, leftOption = self.colorDecreased, color = {0, 0, 255}},
 							{text = "Back", leftOption = self.backButtonPressed}}
 	self.backgroundImage = love.graphics.newImage("images/assets/titleBackground.png")
 	local buttonWidth = 500
