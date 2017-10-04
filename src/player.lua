@@ -17,6 +17,7 @@ function Player:_init(game, x, y, uid, color)
 	self.playerGrabTimer = 0
 	self.carrierBreakFree = 0 -- if this is 0 then you've broke free and will jump away
 	self.carrierBreakFreeToggle = true -- you have to spam jump, which means it has to be 0 in between
+	self.itemUseToggle = true -- when this is true, they can use an item, this is to prevent using both items when standing on top of an item when you already have one
 
 	
 	self.size = {width = 80, height = 170}
@@ -163,7 +164,7 @@ function Player:update(dt, platforms, players, avalanches, fallingrocks, items)
 end
 
 function Player:useItem()
-	if (inputManager:getPlayerValues(self.uid).raw.use > 0.9) and not self.carrying then -- can't use items when you're carrying someone else
+	if (inputManager:getPlayerValues(self.uid).raw.use > 0.9) and self.itemUseToggle and not self.carrying then -- can't use items when you're carrying someone else
 		if (self.hasItem == 1) then
 			table.insert(self.game.gameplay.fallingrocks, FallingRock(self.move.pos.x + 200 * self.move.facing, self.move.pos.y, 500 * self.move.facing))		
 			self.hasItem = 0
@@ -173,6 +174,9 @@ function Player:useItem()
 			table.insert(self.game.gameplay.alerts, Alert(self.move.pos.x-65, 3))
 			self.hasItem = 0
 		end
+		self.itemUseToggle = false
+	elseif not (inputManager:getPlayerValues(self.uid).raw.use > 0.9) then
+		self.itemUseToggle = true -- then reset the toggle, so you can do it again.
 	end
 end
 
