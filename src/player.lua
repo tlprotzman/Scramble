@@ -92,7 +92,7 @@ function Player:grab(players)
 					if math.abs(other.move.pos.x - self.move.pos.x) < 50 then
 						other.move.carrier = self
 						other.move.onGround = false -- they are no longer on the ground, so they shouldn't be able to jump away unless they break free
-						other.carrierBreakFree = math.random(3, 10)
+						other.carrierBreakFree = math.random(3, 6)
 						self.playerGrabTimer = 1
 						self.carrying = other
 						break
