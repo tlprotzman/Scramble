@@ -3,7 +3,6 @@
 SoundManager = class()
 
 function SoundManager:_init(game, gameplay, settingsFilename)
-	self.debug = false
 	self.game = game
 	self.gameplay = gameplay
 	self.settingsFilename = settingsFilename
@@ -14,7 +13,7 @@ function SoundManager:loadSounds()
 	self.soundFiles = {}
 
 	if self.settingsFilename ~= nil and love.filesystem.exists(self.settingsFilename) then
-		if self.debug then
+		if debug then
 			print("Loading sound files from "..tostring(self.settingsFilename))
 		end
 		local i = 0
@@ -45,7 +44,7 @@ function SoundManager:loadSounds()
 				elseif i % numOptions == 5 then
 					volume = tonumber(line)
 					self.soundFiles[soundName] = {count = soundCount, playThis = 1, pitchRandomizer = pitchRandomizer, filename = fileLocation, sounds = {}, volume = volume, looping = looping}
-					if self.debug then
+					if debug then
 						print("loading " .. tostring(fileLocation))
 					end
 					for j = 1, soundCount do

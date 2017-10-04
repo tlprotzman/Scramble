@@ -1,11 +1,14 @@
 io.stdout:setvbuf("no") -- this is so that sublime will print things when they come (rather than buffering).
 
+debug = false
+
 require "helperfunctions"
 
 require "game"
 require "camera"
 require "inputmanager"
 require "soundmanager"
+require "imagemanager"
 
 
 inputManager = InputManager()
@@ -13,6 +16,7 @@ game = Game()
 camera = Camera()
 
 soundManager = SoundManager(game, game.gameplay, "soundconfig.txt")
+imageManager = ImageManager("imageconfig")
 
 images = {}
 
@@ -27,6 +31,7 @@ function love.load(args)
 end
 
 function loadPlayerImages()
+	-- load the player images:
 	images.player = {}
 	loadPlayerImageOfType("running", 14)
 	loadPlayerImageOfType("runningPickUp", 14)
@@ -53,15 +58,7 @@ function loadPlayerImageOfType(name, frames)
 end
 
 function loadImages()
-	images.snowballImage = love.graphics.newImage("images/assets/snowball.png")
-	images.selectionButton = {}
-	for i = 1, 6 do
-		table.insert(images.selectionButton, love.graphics.newImage("images/assets/selectionButton"..i..".png"))
-	end
-	images.selectionArrow = {}
-	for i = 1, 7 do
-		table.insert(images.selectionArrow, love.graphics.newImage("images/assets/selectionArrow"..i..".png"))
-	end
+	-- I'm slowly moving all of this into the imageManager
 	loadPlayerImages()
 end
 
