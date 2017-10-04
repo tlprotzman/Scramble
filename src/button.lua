@@ -28,9 +28,9 @@ function Button:_init(args)
 
 
 	-- animation stuff
-	self.centerFrame = math.random(1, #images.selectionButton)
-	self.leftArrowFrame = math.random(1, #images.selectionArrow)
-	self.rightArrowFrame = math.random(1, #images.selectionArrow)
+	self.centerFrame = imageManager:getRandomFrame("selectionButton")
+	self.leftArrowFrame = imageManager:getRandomFrame("selectionArrow") --math.random(1, #images.selectionArrow)
+	self.rightArrowFrame = imageManager:getRandomFrame("selectionArrow")--math.random(1, #images.selectionArrow)
 end
 
 function Button:setColor(selected)
@@ -45,7 +45,7 @@ function Button:draw()
 	self:setColor((self.leftSelected and self.leftOption) or (self.rightSelected and self.rightOption))
 	local fullArrowWidth = self.arrowWidth + self.arrowSpacing
 	local scale = (self.width-2*fullArrowWidth)/500
-	love.graphics.draw(images.selectionButton[math.floor(self.centerFrame)], self.x+fullArrowWidth, self.y, 0, scale, 1)
+	love.graphics.draw(imageManager:getImage("selectionButton", self.centerFrame), self.x+fullArrowWidth, self.y, 0, scale, 1)
 	-- love.graphics.rectangle("fill", self.x+fullArrowWidth, self.y, self.width-2*fullArrowWidth, self.height)
 	if self.text == "Red" then
 		love.graphics.setColor(255, 0, 0)
@@ -57,7 +57,7 @@ function Button:draw()
 		love.graphics.setColor(255, 255, 255)
 	end
 	love.graphics.setFont(MainFont[2])
-	love.graphics.printf(self.text, self.x+fullArrowWidth, self.y, self.width-2*fullArrowWidth, "center")
+	love.graphics.printf(self.text, self.x+fullArrowWidth, self.y+6, self.width-2*fullArrowWidth, "center")
 	-- love.graphics.setColor(0, 0, 0)
 	-- love.graphics.rectangle("line", self.x+fullArrowWidth, self.y, self.width-2*fullArrowWidth, self.height)
 	if self.leftOption then
@@ -78,12 +78,13 @@ function Button:drawArrow(isRightSide)
 	-- love.graphics.rectangle("fill", x, y, width, height)
 	-- love.graphics.setColor(255, 255, 255)
 	-- draw the arrow
+	local arrowImage = imageManager:getImage("selectionArrow", self.leftArrowFrame)
 	if isRightSide then
-		love.graphics.draw(images.selectionArrow[math.floor(self.leftArrowFrame)], x, y, 0, -1, 1, images.selectionArrow[1]:getWidth())
+		love.graphics.draw(arrowImage, x, y, 0, -1, 1, arrowImage:getWidth())
 		-- love.graphics.line(x, y, x+width, y+height/2)
 		-- love.graphics.line(x, y+height, x+width, y+height/2)
 	else
-		love.graphics.draw(images.selectionArrow[math.floor(self.rightArrowFrame)], x, y, 0, 1, 1)--, images.selectionArrow[1]:getWidth())
+		love.graphics.draw(arrowImage, x, y, 0, 1, 1)--, images.selectionArrow[1]:getWidth())
 		-- love.graphics.line(x+width, y, x, y+height/2)
 		-- love.graphics.line(x+width, y+height, x, y+height/2)
 	end
@@ -92,18 +93,9 @@ function Button:drawArrow(isRightSide)
 end
 
 function Button:update(dt)
-	self.centerFrame = self.centerFrame + dt*self.frameUpdateSpeed
-	if self.centerFrame >= #images.selectionButton + 1 then
-		self.centerFrame = 1
-	end
-	self.leftArrowFrame = self.leftArrowFrame + dt*self.frameUpdateSpeed
-	if self.leftArrowFrame >= #images.selectionArrow + 1 then
-		self.leftArrowFrame = 1
-	end
-	self.rightArrowFrame = self.rightArrowFrame + dt*self.frameUpdateSpeed
-	if self.rightArrowFrame >= #images.selectionArrow + 1 then
-		self.rightArrowFrame = 1
-	end
+	self.centerFrame = imageManager:updateFrameCount("selectionButton", self.centerFrame, dt*self.frameUpdateSpeed)
+	self.leftArrowFrame = imageManager:updateFrameCount("selectionArrow", self.leftArrowFrame, dt*self.frameUpdateSpeed)
+	self.rightArrowFrame = imageManager:updateFrameCount("selectionArrow", self.rightArrowFrame, dt*self.frameUpdateSpeed)
 end
 
 function Button:handleinput(input)

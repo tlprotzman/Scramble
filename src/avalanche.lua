@@ -6,7 +6,6 @@ function Avalanche:_init(x, duration, delay)
 	self.w = 600
 	self.duration = duration
 	self.snow = {}
-	self.image = love.graphics.newImage("images/assets/snowball.png")
 end
 
 function Avalanche:draw()
@@ -17,7 +16,7 @@ function Avalanche:draw()
 	--camera:rectangle("fill", self.x, self.progress, self.w, self.duration)
 	for i, v in ipairs(self.snow) do
 		love.graphics.setColor(255, 255, 255, math.max(0, 255-v.size))
-		camera:draw(self.image, v.x, v.y + self.progress, v.size)
+		camera:draw(imageManager:getImage("snowball"), v.x, v.y + self.progress, v.size)
 		--[[
 		camera:circle("fill", v.x, v.y + self.progress, v.size)
 		love.graphics.setColor(100, 100, 100, math.max(0, 255-v.size))

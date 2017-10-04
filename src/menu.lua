@@ -5,14 +5,6 @@ require "button"
 Menu = class()
 
 function Menu:_init(args)
-	self.playerIcon = {}
-	for i = 1, 12 do
-		table.insert(self.playerIcon, love.graphics.newImage("images/assets/pointer"..i..".png"))
-	end
-	self.playerReadyIcon = {}
-	for i = 1, 9 do
-		table.insert(self.playerReadyIcon, love.graphics.newImage("images/assets/checkmark"..i..".png"))
-	end
 	if not args then
 		args = {}
 	end
@@ -50,7 +42,7 @@ function Menu:handleinput(input)
 	if self.selections[input.player] == nil then
 		if not self.oneSelection then
 			-- add them to the game
-			self.selections[input.player] = {index = 1, color = {0, 0, 0}, string = "", frame = math.random(1, #self.playerIcon), ready = false}
+			self.selections[input.player] = {index = 1, color = {0, 0, 0}, string = "", frame = imageManager:getRandomFrame("playerIcon"), ready = false}
 			self:addNewPlayerIcon(input.player)
 			return -- for now when you are added you can't move around
 		else
@@ -60,7 +52,7 @@ function Menu:handleinput(input)
 
 	if input.inputtype == "join" then
 		-- they pressed start, so let them join in
-		self.selections[input.player] = {index = 1, color = {0, 0, 0}, string = "" , frame = math.random(1, #self.playerIcon)} -- perhaps also color and player number though
+		self.selections[input.player] = {index = 1, color = {0, 0, 0}, string = "" , frame = math.random(1, #images.playerIcon)} -- perhaps also color and player number though
 		self:addNewPlayerIcon(input.player)
 	elseif input.inputtype == "menuup" then
 		if not self.oneSelection then
@@ -167,9 +159,10 @@ function Menu:draw()
 				love.graphics.setColor(self.selections[player].color)
 				if self.selections[player].ready then
 					-- draw the check mark
-					love.graphics.draw(self.playerReadyIcon[math.floor(self.selections[player].frame)], x, y, 0, 1, 1, self.playerReadyIcon[math.floor(self.selections[player].frame)]:getWidth())
+					local icon = imageManager:getImage("playerReadyIcon", self.selections[player].frame)
+					love.graphics.draw(icon, x, y, 0, 1, 1, icon:getWidth())
 				else
-					love.graphics.draw(self.playerIcon[math.floor(self.selections[player].frame)], x, y, 0, -1, 1)
+					love.graphics.draw(imageManager:getImage("playerIcon", self.selections[player].frame), x, y, 0, -1, 1)
 				end
 				-- love.graphics.rectangle("fill", x, y, 20, self.buttonHeight)
 				x = x - 90
@@ -184,9 +177,9 @@ function Menu:draw()
 				love.graphics.setColor(self.selections[player].color)
 				if self.selections[player].ready then
 					-- draw the check mark
-					love.graphics.draw(self.playerReadyIcon[math.floor(self.selections[player].frame)], x, y, 0, 1, 1)
+					love.graphics.draw(imageManager:getImage("playerReadyIcon", self.selections[player].frame), x, y, 0, 1, 1)
 				else
-					love.graphics.draw(self.playerIcon[math.floor(self.selections[player].frame)], x, y, 0, 1, 1)
+					love.graphics.draw(imageManager:getImage("playerIcon", self.selections[player].frame), x, y, 0, 1, 1)
 				end
 				-- love.graphics.rectangle("fill", x, y, 20, self.buttonHeight)
 				x = x + 90
@@ -195,7 +188,7 @@ function Menu:draw()
 	elseif self.usedSingleSelection or inputManager.numGamepads > 0 then
 		-- draw the white rectangle around the boxes I guesss...
 		love.graphics.setColor(255, 255, 255)
-		love.graphics.draw(self.playerIcon[math.floor(self.singleSelectionFrame)], self.x-5, self.buttons[self.singleSelection].y, 0, -1, 1)
+		love.graphics.draw(imageManager:getImage("playerIcon", self.singleSelectionFrame), self.x-5, self.buttons[self.singleSelection].y, 0, -1, 1)
 		-- love.graphics.rectangle("line", self.x, self.buttons[self.singleSelection].y, self.width, self.buttonHeight)
 	end -- otherwise don't draw, they may be using the mouse
 end
@@ -205,19 +198,12 @@ function Menu:update(dt)
 		v:update(dt)
 	end
 	if self.oneSelection then
-		self.singleSelectionFrame = self.singleSelectionFrame + dt*10
-		if self.singleSelectionFrame >= #self.playerIcon + 1 then
-			self.singleSelectionFrame = 1
-		end
+		self.singleSelectionFrame = imageManager:updateFrameCount("playerIcon", self.singleSelectionFrame, dt*10)
 	else
 		-- update all of the selections[player].frame
 		for k, player in pairs(self.selections) do
-			player.frame = player.frame + dt*10
-			if not player.ready and player.frame >= #self.playerIcon + 1 then
-				player.frame = 1
-			elseif player.ready and player.frame >= #self.playerReadyIcon + 1 then
-				player.frame = 1
-			end
+			local animationName = player.ready and "playerReadyIcon" or "playerIcon"
+			player.frame = imageManager:updateFrameCount(animationName, player.frame, dt*10)
 		end
 	end
 end
